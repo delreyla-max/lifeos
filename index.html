@@ -181,10 +181,11 @@
 
   <nav class="tabs" id="tabs">
     <a href="#today" data-page="today">🔆 Today</a>
-    <a href="#money" data-page="money">💰 Money</a>
+    <a href="#money" data-page="money">💰 Personal Finance</a>
     <a href="#investing" data-page="investing">📈 Investing</a>
-    <a href="#jobs" data-page="jobs">🔎 Jobs</a>
+    <a href="#jobs" data-page="jobs">🔎 Career</a>
     <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
+    <a href="#adu" data-page="adu">🏘️ ADU Rental</a>
     <a href="#projects" data-page="projects">🚀 Projects</a>
     <a href="#child" data-page="child">🧒 Child</a>
   </nav>
@@ -402,7 +403,6 @@
       <div class="chk" data-key="doc-bofasav"><span class="box">✓</span><span class="nm">BofA savings ...1246</span><span class="det">monthly</span></div>
       <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">monthly</span></div>
       <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">monthly</span></div>
-      <div class="chk" data-key="doc-utopia"><span class="box">✓</span><span class="nm">Utopia owner statement (ADU)</span><span class="det">monthly</span></div>
     </section>
    </div>
   </div>
@@ -518,7 +518,86 @@
       <div class="chk" data-key="prop-electrician"><span class="box">✓</span><span class="nm">Hire electrician — six lights (main house)</span></div>
       <div class="chk" data-key="prop-appraisal"><span class="box">✓</span><span class="nm">Get home appraisal / market estimate</span></div>
       <div class="chk" data-key="prop-mortstmt"><span class="box">✓</span><span class="nm">Pull current mortgage statement (balance)</span></div>
-      <div class="chk" data-key="prop-utopia"><span class="box">✓</span><span class="nm">Get Utopia owner statements 2025 / 2026</span></div>
+      <div class="note" style="margin-top:8px">🏘️ Rental ops, P&amp;L, repairs &amp; documents now live on the <b>ADU Rental</b> page.</div>
+    </section>
+   </div>
+  </div>
+
+  <!-- ============================= ADU RENTAL ============================= -->
+  <div class="page" id="page-adu">
+   <div class="grid">
+    <!-- KPIs -->
+    <section class="card col8">
+      <h2>🏘️ ADU Rental — 12708 Rubens <span class="sub" style="font-weight:400">acting PM view · figures from DB</span></h2>
+      <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Gross rent</div><div class="val" id="aduRent">•••</div></div>
+        <div class="cell"><div class="lbl">Net owner draw</div><div class="val pos" id="aduDraw">•••</div></div>
+        <div class="cell"><div class="lbl">Utopia costs</div><div class="val" id="aduFees">•••</div></div>
+        <div class="cell"><div class="lbl">2026 net to bank</div><div class="val pos" id="aduYtd">•••</div></div>
+      </div>
+      <div class="note" style="margin-top:10px">Tenant <b id="aduTenant">—</b> · managed by <b id="aduPm">—</b> · month-to-month, rent raised to $2,652 in Jan 2026. The <b>net owner draw</b> (not gross rent) is what feeds Personal Finance cash flow — it's already counted there; this page is the operating view. Detail: vault <b>ADU-Rental</b>, <b>Rental-Ledger</b>.</div>
+    </section>
+    <section class="card col4">
+      <h2>🔑 Lease &amp; tenant</h2>
+      <div class="row"><span>Unit</span><span class="v">12708 (rear ADU)</span></div>
+      <div class="row"><span>Rent</span><span class="v">$2,652/mo</span></div>
+      <div class="row"><span>Lease</span><span class="v">Month-to-month</span></div>
+      <div class="row"><span>Mgmt fee</span><span class="v">8% + $25 evict</span></div>
+      <div class="row"><span>Owner pays</span><span class="v">Water + trash</span></div>
+    </section>
+
+    <!-- Charts -->
+    <section class="card col6">
+      <h2>💵 Owner draw — 2026 by month</h2>
+      <div style="position:relative;height:150px;margin-top:8px"><canvas id="cAduDraw" role="img" aria-label="Monthly owner draw in 2026"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>🍩 Where the rent goes — 2026 YTD</h2>
+      <div style="position:relative;height:150px;margin-top:8px"><canvas id="cAduSplit" role="img" aria-label="Split of rent between owner draw, management, repairs and other fees"></canvas></div>
+      <div class="note" style="margin-top:6px">Management vs repairs vs owner draw, of $13,260 collected Jan–May.</div>
+    </section>
+    <section class="card col6">
+      <h2>📊 Net owner draw — by year</h2>
+      <div style="position:relative;height:150px;margin-top:8px"><canvas id="cAduNet" role="img" aria-label="Net owner draw by year, split by unit"></canvas></div>
+      <div class="note" style="margin-top:6px">12706 (main house) was also rented Dec 2024–Oct 2025 — the 2025 spike.</div>
+    </section>
+    <section class="card col6">
+      <h2>🛠️ Management vs repairs — by year</h2>
+      <div style="position:relative;height:150px;margin-top:8px"><canvas id="cAduCosts" role="img" aria-label="Management fees versus repair costs by year"></canvas></div>
+    </section>
+
+    <!-- Maintenance log -->
+    <section class="card col6">
+      <h2>🧾 Recent maintenance &amp; repairs</h2>
+      <div id="aduRepairs"><div class="note">loading…</div></div>
+      <div class="note" style="margin-top:6px">2026 repairs ≈ $1,023 YTD. Authoritative annual breakdown in vault <b>Rental-Ledger</b>.</div>
+    </section>
+
+    <!-- Open issues -->
+    <section class="card col6">
+      <h2>✅ Open issues &amp; to-dos <span class="sub" style="font-weight:400">checks sync · routed to Utopia</span></h2>
+      <div class="chk" data-key="adu-rats"><span class="box">✓</span><span class="nm">① Rat exterminator</span><span class="det">priority</span></div>
+      <div class="chk" data-key="adu-fence"><span class="box">✓</span><span class="nm">② Fence cover repair</span></div>
+      <div class="chk" data-key="adu-tree"><span class="box">✓</span><span class="nm">③ Tree removal</span></div>
+      <div class="chk" data-key="adu-rent-review"><span class="box">✓</span><span class="nm">Review rent vs market (next increase)</span></div>
+      <div class="chk" data-key="adu-insurance"><span class="box">✓</span><span class="nm">Reinstate proper landlord/home insurance</span></div>
+    </section>
+
+    <!-- Documents -->
+    <section class="card col12">
+      <h2>📥 Documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → re-run ingest</span></h2>
+      <div class="grid" style="margin-top:4px">
+        <div class="col6">
+          <div class="chk" data-key="adu-doc-stmt"><span class="box">✓</span><span class="nm">Utopia monthly owner statement</span><span class="det">monthly</span></div>
+          <div class="chk" data-key="adu-doc-annual"><span class="box">✓</span><span class="nm">Utopia annual cash-flow statement</span><span class="det">yearly</span></div>
+          <div class="chk" data-key="adu-doc-lease"><span class="box">✓</span><span class="nm">Lease / renewal agreement</span></div>
+        </div>
+        <div class="col6">
+          <div class="chk" data-key="adu-doc-sched-e"><span class="box">✓</span><span class="nm">Schedule E figures (rental taxes)</span><span class="det">yearly</span></div>
+          <div class="chk" data-key="adu-doc-1099"><span class="box">✓</span><span class="nm">Insurance / property-tax share</span></div>
+          <div class="chk" data-key="adu-doc-repairs"><span class="box">✓</span><span class="nm">Repair invoices / vendor bills</span></div>
+        </div>
+      </div>
     </section>
    </div>
   </div>
@@ -663,7 +742,7 @@
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','money','investing','jobs','realestate','projects','child'];
+  const PAGES=['today','money','investing','jobs','realestate','adu','projects','child'];
   function showPage(p){
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
@@ -716,7 +795,7 @@
     tasks=t.data||[]; items=fi.data||[]; statusMap={}; SNAP={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
-    renderTodo(); renderFinance(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderGoals();
+    renderTodo(); renderFinance(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
     loadHabits(); loadChecklist(); loadChild(); wireChild();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
@@ -900,6 +979,21 @@
     el('gbProj').textContent='~'+money(g.projAdd||0)+(g.shortfall?'  (−'+money(g.shortfall)+')':'');
     const leaks=(g.leaks||[]).map(l=>l[0]+' +'+money(l[1])).join(' · ');
     el('gbLeaks').innerHTML='You ran ~<b>'+money(g.overByMo||0)+'/mo over budget</b> (≈'+money(g.over3mo||0)+' across Apr–Jun) — about the size of the shortfall. Biggest leaks: <b>'+leaks+'</b>. Trim roughly half of this and the +$50K is back in reach. <i>(Save pace lifts most if the new job lands.)</i>';
+  }
+  function renderAdu(){
+    const a=SNAP.adu;
+    if(a&&el('aduRent')){
+      el('aduRent').textContent=money(a.rent||0)+'/mo';
+      el('aduDraw').textContent='~'+money(a.draw||0)+'/mo';
+      el('aduFees').textContent='~'+money(a.fees||0)+'/mo ('+(a.expRatio||0)+'% of rent)';
+      el('aduYtd').textContent=money(a.ytd||0)+' ('+(a.ytdMonths||0)+' mo)';
+      if(el('aduTenant')) el('aduTenant').textContent=a.tenant||'—';
+      if(el('aduPm')) el('aduPm').textContent=a.pm||'—';
+    }
+    const r=SNAP.adu_repairs;
+    if(r&&el('aduRepairs')){
+      el('aduRepairs').innerHTML=(r.rows||[]).map(x=>'<div class="row"><span>'+esc(x[0])+' · '+esc(x[1])+' <small style="color:var(--muted)">'+esc(x[2])+'</small></span><span class="v neg">-'+money(x[3])+'</span></div>').join('')||'<div class="note">No repairs logged.</div>';
+    }
   }
   function renderFidelity(){
     const f=SNAP.fid; if(!f||!el('fidTotal')) return;
@@ -1102,6 +1196,26 @@
       if(eq) C('cEquity',{type:'doughnut',data:{labels:eq.labels,
         datasets:[{data:eq.data,backgroundColor:['#1d9e75','#e24b4a'],borderWidth:0}]},
         options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+(c.parsed/1000).toFixed(2)+'M'}}}}});
+    }
+    if(page==='adu'){
+      const d=SNAP.chart_adu_draw;
+      if(d) C('cAduDraw',{type:'bar',data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:'#1d9e75',borderRadius:4,borderWidth:0}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y.toLocaleString()}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(1)+'K'}}}}});
+      const s=SNAP.chart_adu_split;
+      if(s) C('cAduSplit',{type:'doughnut',data:{labels:s.labels,datasets:[{data:s.data,backgroundColor:['#1d9e75','#378add','#e24b4a','#ef9f27'],borderWidth:0}]},
+        options:{cutout:'56%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed.toLocaleString()}}}}});
+      const ny=SNAP.chart_adu_net_year;
+      if(ny) C('cAduNet',{type:'bar',data:{labels:ny.labels,datasets:[
+          {label:'12708 ADU',data:ny.u12708,backgroundColor:'#1d9e75',borderWidth:0,stack:'s'},
+          {label:'12706 House',data:ny.u12706,backgroundColor:'#378add',borderWidth:0,stack:'s'}
+        ]},options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()}}},
+          scales:{x:{...ax,stacked:true},y:{...ax,stacked:true,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      const cs=SNAP.chart_adu_costs;
+      if(cs) C('cAduCosts',{type:'bar',data:{labels:cs.labels,datasets:[
+          {label:'Management',data:cs.mgmt,backgroundColor:'#378add',borderWidth:0},
+          {label:'Repairs',data:cs.repairs,backgroundColor:'#e24b4a',borderWidth:0}
+        ]},options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()}}},
+          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
     }
     if(page==='investing'){
       const ye=SNAP.chart_fid_ye;
