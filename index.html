@@ -991,6 +991,26 @@
     el('nwSave').textContent='~'+money(s.saveRate||0);
     el('nwFico').textContent=s.fico||'—';
   }
+  let vbChart=null;
+  function renderVarBreakdown(variable){
+    const cv=el('cVarBreak'); if(!cv||!window.Chart) return;
+    variable=variable||items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
+    if(el('vbMonth')) el('vbMonth').textContent=mlabel(cur);
+    const labels=variable.map(i=>i.name);
+    const bud=variable.map(i=>Number(i.amount)||0);
+    const spent=variable.map(it=>{ const s=statusMap[it.id+'|'+mkey(cur)]; return (s&&s.spent!=null)?Number(s.spent):null; });
+    const spentColors=variable.map((it,i)=> (spent[i]!=null&&spent[i]>bud[i])?'#e24b4a':'#1d9e75');
+    const data={labels,datasets:[
+      {label:'Budget',data:bud,backgroundColor:'rgba(127,127,127,.32)',borderWidth:0},
+      {label:'Spent',data:spent,backgroundColor:spentColors,borderWidth:0}
+    ]};
+    const options={indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,position:'top',labels:{boxWidth:9,font:{size:9}}},
+        tooltip:{callbacks:{label:c=>{ if(c.dataset.label==='Spent'&&(c.parsed.x==null)) return 'Spent: — (not ingested)'; const lbl=c.dataset.label+': $'+(c.parsed.x||0).toLocaleString(); if(c.dataset.label==='Spent'&&c.parsed.x!=null){ const o=c.parsed.x-bud[c.dataIndex]; return lbl+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')'; } return lbl; }}}},
+      scales:{x:{grid:{color:'rgba(127,127,127,.15)'},beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v}},y:{grid:{display:false},ticks:{font:{size:9},autoSkip:false}}}};
+    if(vbChart){ vbChart.data=data; vbChart.options=options; vbChart.update(); }
+    else vbChart=new Chart(cv,{type:'bar',data,options});
+  }
   function renderBudgetActual(){
     const c=SNAP.chart_budget_actual; if(!c||!el('budActNote')) return;
     let over=0,n=0; (c.actual||[]).forEach((a,i)=>{ if(a!=null){ over+=a-c.budget[i]; n++; } });
