@@ -297,12 +297,21 @@
   <!-- ============================= MONEY ============================= -->
   <div class="page" id="page-money">
    <div class="grid">
-    <!-- 0 ▸ MONTHLY SPENT vs BUDGET (most important — above the goal) -->
+    <!-- 0 ▸ MONTHLY SPENT vs BUDGET + CATEGORY DRILL-DOWN (above the goal) -->
     <section class="card col12">
-      <h2>📅 Monthly — spent vs budget (2026)</h2>
-      <div class="subhead" style="margin-top:4px">How much you spent each month vs your budget — the clearest read on how much you save toward the goal</div>
-      <div style="position:relative;height:210px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
-      <div class="note" id="budActNote" style="margin-top:8px"></div>
+      <h2>📅 Monthly spending vs budget — 2026 <span class="sub" style="font-weight:400">click a month to drill into categories</span></h2>
+      <div class="grid" style="margin-top:6px">
+        <div class="col5">
+          <div class="subhead">Total — spent vs budget by month</div>
+          <div style="position:relative;height:300px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
+          <div class="note" id="budActNote" style="margin-top:8px"></div>
+        </div>
+        <div class="col7">
+          <div class="subhead">Category breakdown — <span id="vbMonth" style="color:var(--text)"></span></div>
+          <div style="position:relative;height:340px"><canvas id="cVarBreak" role="img" aria-label="Spending vs budget by category for the selected month"></canvas></div>
+          <div class="note" style="margin-top:6px">Each category's spend vs its budget for the selected month. Spent auto-fills on statement ingest; set budgets in the Variable card below.</div>
+        </div>
+      </div>
     </section>
 
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
@@ -946,6 +955,7 @@
     el('varProg').textContent= haveAny
       ? ('Spent '+money(spentTot)+' of '+money(budTot)+' budget · '+(budTot-spentTot>=0?money(budTot-spentTot)+' under':money(spentTot-budTot)+' over'))
       : ('Budget '+money(budTot)+'/mo · spent fills from ingested statements');
+    renderVarBreakdown(variable);
 
     const totalBudget=fixedTotal+subsTotal+annualMonthly+budTot;
     el('expTotal').textContent=money(totalBudget);
