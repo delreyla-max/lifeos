@@ -411,14 +411,14 @@
    <div class="grid">
     <!-- FIDELITY SNAPSHOT -->
     <section class="card col12">
-      <h2>📈 Investing — Fidelity <span class="sub" style="font-weight:400">5 accounts · figures from DB</span></h2>
+      <h2>📈 Investing — Fidelity <span class="sub" style="font-weight:400">6 accounts · figures from DB</span></h2>
       <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
-        <div class="cell"><div class="lbl">Portfolio value (May)</div><div class="val" id="fidTotal">•••</div></div>
-        <div class="cell"><div class="lbl">Unrealized gain/loss</div><div class="val pos" id="fidGain">•••</div></div>
-        <div class="cell"><div class="lbl">YTD 2026</div><div class="val pos" id="fidYtd">•••</div></div>
-        <div class="cell"><div class="lbl">Accounts</div><div class="val" id="fidAccts">•••</div></div>
+        <div class="cell"><div class="lbl">All accounts (Fidelity.com, Jun 21)</div><div class="val" id="fidAll">•••</div></div>
+        <div class="cell"><div class="lbl">Retail portfolio (5 acct, May stmt)</div><div class="val" id="fidTotal">•••</div></div>
+        <div class="cell"><div class="lbl">Omnicom 401(k) (Jun 21)</div><div class="val pos" id="fidK401">•••</div></div>
+        <div class="cell"><div class="lbl">Unrealized gain (retail)</div><div class="val pos" id="fidGain">•••</div></div>
       </div>
-      <div class="note" style="margin-top:10px">Individual brokerage, Roth IRA, Rollover IRA, Child's 529 &amp; HSA. Detail in the vault: <b>2026-Fidelity</b>, <b>Fidelity-History</b>, <b>Investing Fidelity</b>.</div>
+      <div class="note" style="margin-top:10px"><b>Why two numbers:</b> the monthly Fidelity statements (and the charts below) cover the <b>5 retail accounts</b> — Individual, Roth, Rollover, Child's 529 &amp; HSA = <b>$199,806</b> (May). Your <b>Omnicom 401(k)</b> (~<b>$72,119</b>, Fidelity NetBenefits) is <b>not</b> on those statements, so Fidelity.com shows <b>$269,544</b> all-in. Retail is up <span id="fidYtd">•••</span> YTD. 401(k) value is a live web reading (Jun 21), not a statement. Detail: vault <b>2026-Fidelity</b>, <b>Fidelity-History</b>.</div>
     </section>
 
     <!-- FIDELITY CHARTS -->
@@ -427,15 +427,16 @@
       <div class="grid" style="margin-top:8px">
         <div class="col12"><div class="subhead">Year-end value — 2016 → 2026 (2021 missing)</div><div style="position:relative;height:170px"><canvas id="cFidYE" role="img" aria-label="Fidelity portfolio value at each year end from 2016 to 2026"></canvas></div></div>
         <div class="col6"><div class="subhead">2026 by month</div><div style="position:relative;height:150px"><canvas id="cFidM" role="img" aria-label="Fidelity portfolio value by month in 2026"></canvas></div></div>
-        <div class="col6"><div class="subhead">By account (May 2026)</div><div style="position:relative;height:150px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account, May 2026"></canvas></div></div>
+        <div class="col6"><div class="subhead">By account (retail May + 401k Jun)</div><div style="position:relative;height:150px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account including the Omnicom 401k"></canvas></div></div>
       </div>
-      <div class="note" style="margin-top:8px">Big arc: $27K (2016) → $140K (2020) → dip to $82K (2022) → $204K (2024) → $200K now. 2026 up ~$15K YTD; largest positions NVIDIA &amp; Alphabet (Roth).</div>
+      <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → $138K (2021) → dip to $82K (2022) → $204K (2024) → $200K now; up ~$15K YTD (largest positions NVIDIA &amp; Alphabet, Roth). The year-end &amp; monthly lines are retail-only; the Omnicom 401(k) (~$72K) appears in the by-account ring.</div>
     </section>
 
     <!-- INVESTING TO-DOS -->
     <section class="card col12">
       <h2>✅ Investing to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="inv-june-stmt"><span class="box">✓</span><span class="nm">Drop June Fidelity statement in 0-Inbox</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="inv-june-stmt"><span class="box">✓</span><span class="nm">Drop monthly Fidelity statement in 0-Inbox</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="inv-401k-snap"><span class="box">✓</span><span class="nm">Grab Fidelity.com "All accounts" screenshot for the 401(k) balance</span><span class="det">monthly · off-statement</span></div>
       <div class="chk" data-key="inv-2021"><span class="box">✓</span><span class="nm">Find 2021 year-end report (gap in history)</span></div>
       <div class="chk" data-key="inv-1099"><span class="box">✓</span><span class="nm">File 1099 / 5498 / 5498-SA when they arrive → Taxes</span></div>
       <div class="chk" data-key="inv-rebalance"><span class="box">✓</span><span class="nm">Review allocation / rebalance</span></div>
@@ -890,10 +891,11 @@
   }
   function renderFidelity(){
     const f=SNAP.fid; if(!f||!el('fidTotal')) return;
-    el('fidTotal').textContent=money(f.total||0);
+    el('fidAll').textContent=money(f.all||0);
+    el('fidTotal').textContent=money(f.retail||0);
+    el('fidK401').textContent=money(f.k401||0);
     el('fidGain').textContent=(f.gain>=0?'+':'')+money(f.gain||0);
     el('fidYtd').textContent=(f.ytd>=0?'+':'')+money(f.ytd||0)+(f.ytdPct!=null?' ('+(f.ytdPct>=0?'+':'')+f.ytdPct+'%)':'');
-    el('fidAccts').textContent=f.accounts||'—';
   }
   function renderGoals(){
     const wrap=el('goalStrip'); if(!wrap) return; const g=SNAP.goals||[];
@@ -1093,7 +1095,7 @@
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
       const fa=SNAP.chart_fid_accounts;
       if(fa) C('cFidAcc',{type:'doughnut',data:{labels:fa.labels,
-        datasets:[{data:fa.data,backgroundColor:['#378add','#1d9e75','#ef9f27','#a06ee0','#e24b4a'],borderWidth:0}]},
+        datasets:[{data:fa.data,backgroundColor:['#378add','#1d9e75','#ef9f27','#a06ee0','#e24b4a','#2bb4a0'],borderWidth:0}]},
         options:{cutout:'55%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'K'}}}}});
     }
     Object.values(charts).forEach(c=>{ try{c.resize();}catch(e){} });
