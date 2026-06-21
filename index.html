@@ -301,23 +301,21 @@
   <!-- ============================= MONEY ============================= -->
   <div class="page" id="page-money">
    <div class="grid">
-    <!-- 0 ▸ MONTHLY SPENT vs BUDGET + CATEGORY DRILL-DOWN (above the goal) -->
+    <!-- 0 ▸ MONTHLY SPENT vs BUDGET + EDITABLE CATEGORY BUDGETS (above the goal) -->
     <section class="card col12">
-      <h2>📅 Monthly spending vs budget — 2026 <span class="sub" style="font-weight:400">click a month to drill into categories</span></h2>
+      <h2><span>📅 Monthly spending vs budget — 2026</span><span class="mnav"><button class="navbtn" id="mPrev2">◀</button><b id="mMonth2"></b><button class="navbtn" id="mNext2">▶</button></span></h2>
       <div class="grid" style="margin-top:6px">
         <div class="col5">
-          <div class="subhead">Total — spent vs budget by month</div>
-          <div style="position:relative;height:300px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
+          <div class="subhead">Total — spent vs budget by month <span class="sub" style="font-weight:400">· click a month</span></div>
+          <div style="position:relative;height:330px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
           <div class="note" id="budActNote" style="margin-top:8px"></div>
         </div>
         <div class="col7">
-          <div class="subhead">Category breakdown — <span id="vbMonth" style="color:var(--text)"></span></div>
-          <div style="position:relative;height:340px"><canvas id="cVarBreak" role="img" aria-label="Spending vs budget by category for the selected month"></canvas></div>
+          <div class="subhead">Categories — <span id="vbMonth" style="color:var(--text)"></span> <span class="sub" style="font-weight:400">· set the budget; spent + bar fill on ingest</span></div>
+          <ul id="varexp" class="vargrid"></ul>
+          <div class="progress" id="varProg">Spent: $0</div>
         </div>
       </div>
-      <div class="subhead" style="margin-top:16px">🛒 Set category budgets <span class="sub" style="font-weight:400">spent auto-fills on statement ingest · click a month above (or use ◀▶) to change the month shown</span></div>
-      <ul id="varexp" class="vargrid"></ul>
-      <div class="progress" id="varProg">Spent: $0</div>
     </section>
 
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
@@ -929,6 +927,8 @@
     const income=items.filter(i=>i.kind==='income').sort((a,b)=>a.sort_order-b.sort_order);
     const variable=items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
     el('mMonth').textContent=mlabel(cur);
+    if(el('mMonth2')) el('mMonth2').textContent=mlabel(cur);
+    if(el('vbMonth')) el('vbMonth').textContent=mlabel(cur);
     if(el('yYear')) el('yYear').textContent=curYear;
     const curMonthNum=cur.getMonth()+1;
 
@@ -963,7 +963,6 @@
     el('varProg').textContent= haveAny
       ? ('Spent '+money(spentTot)+' of '+money(budTot)+' budget · '+(budTot-spentTot>=0?money(budTot-spentTot)+' under':money(spentTot-budTot)+' over'))
       : ('Budget '+money(budTot)+'/mo · spent fills from ingested statements');
-    renderVarBreakdown(variable);
 
     const totalBudget=fixedTotal+subsTotal+annualMonthly+budTot;
     el('expTotal').textContent=money(totalBudget);
@@ -980,6 +979,8 @@
   function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
   if(el('mPrev')) el('mPrev').onclick=()=>shift(-1);
   if(el('mNext')) el('mNext').onclick=()=>shift(1);
+  if(el('mPrev2')) el('mPrev2').onclick=()=>shift(-1);
+  if(el('mNext2')) el('mNext2').onclick=()=>shift(1);
   if(el('yPrev')) el('yPrev').onclick=()=>{ curYear--; renderFinance(); };
   if(el('yNext')) el('yNext').onclick=()=>{ curYear++; renderFinance(); };
 
@@ -998,26 +999,6 @@
     el('nwOut').textContent='~'+money(s.totalOut||0);
     el('nwSave').textContent='~'+money(s.saveRate||0);
     el('nwFico').textContent=s.fico||'—';
-  }
-  let vbChart=null;
-  function renderVarBreakdown(variable){
-    const cv=el('cVarBreak'); if(!cv||!window.Chart) return;
-    variable=variable||items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
-    if(el('vbMonth')) el('vbMonth').textContent=mlabel(cur);
-    const labels=variable.map(i=>i.name);
-    const bud=variable.map(i=>Number(i.amount)||0);
-    const spent=variable.map(it=>{ const s=statusMap[it.id+'|'+mkey(cur)]; return (s&&s.spent!=null)?Number(s.spent):null; });
-    const spentColors=variable.map((it,i)=> (spent[i]!=null&&spent[i]>bud[i])?'#e24b4a':'#1d9e75');
-    const data={labels,datasets:[
-      {label:'Budget',data:bud,backgroundColor:'rgba(127,127,127,.32)',borderWidth:0},
-      {label:'Spent',data:spent,backgroundColor:spentColors,borderWidth:0}
-    ]};
-    const options={indexAxis:'y',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,position:'top',labels:{boxWidth:9,font:{size:9}}},
-        tooltip:{callbacks:{label:c=>{ if(c.dataset.label==='Spent'&&(c.parsed.x==null)) return 'Spent: — (not ingested)'; const lbl=c.dataset.label+': $'+(c.parsed.x||0).toLocaleString(); if(c.dataset.label==='Spent'&&c.parsed.x!=null){ const o=c.parsed.x-bud[c.dataIndex]; return lbl+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')'; } return lbl; }}}},
-      scales:{x:{grid:{color:'rgba(127,127,127,.15)'},beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v}},y:{grid:{display:false},ticks:{font:{size:9},autoSkip:false}}}};
-    if(vbChart){ vbChart.data=data; vbChart.options=options; vbChart.update(); }
-    else vbChart=new Chart(cv,{type:'bar',data,options});
   }
   function renderBudgetActual(){
     const c=SNAP.chart_budget_actual; if(!c||!el('budActNote')) return;
@@ -1241,7 +1222,6 @@
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},
           scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>(v<0?'-$':'$')+Math.abs(v/1000)+'K'}}}}});
-      renderVarBreakdown(); if(vbChart){ try{vbChart.resize();}catch(e){} }
     }
     if(page==='realestate'){
       const m=SNAP.chart_mort;
