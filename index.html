@@ -120,6 +120,8 @@
   details.collapse>summary h2{margin:0}
   details.collapse>summary .caret{color:var(--muted);font-size:11px;transition:transform .15s}
   details.collapse[open]>summary .caret{transform:rotate(90deg)}
+  .vargrid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+  @media(max-width:820px){.vargrid{grid-template-columns:1fr}}
   .varwrap{padding:8px 0;border-bottom:1px solid var(--line)}
   .varwrap:last-child{border-bottom:0}
   .varwrap .var{border-bottom:0;padding:0}
@@ -309,9 +311,11 @@
         <div class="col7">
           <div class="subhead">Category breakdown — <span id="vbMonth" style="color:var(--text)"></span></div>
           <div style="position:relative;height:340px"><canvas id="cVarBreak" role="img" aria-label="Spending vs budget by category for the selected month"></canvas></div>
-          <div class="note" style="margin-top:6px">Each category's spend vs its budget for the selected month. Spent auto-fills on statement ingest; set budgets in the Variable card below.</div>
         </div>
       </div>
+      <div class="subhead" style="margin-top:16px">🛒 Set category budgets <span class="sub" style="font-weight:400">spent auto-fills on statement ingest · click a month above (or use ◀▶) to change the month shown</span></div>
+      <ul id="varexp" class="vargrid"></ul>
+      <div class="progress" id="varProg">Spent: $0</div>
     </section>
 
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
@@ -391,12 +395,7 @@
       </div>
     </section>
 
-    <section class="card col6">
-      <h2>🛒 Variable — set budget <span class="sub" style="font-weight:400">spent auto-fills on statement ingest</span></h2>
-      <ul id="varexp"></ul>
-      <div class="progress" id="varProg">Spent: $0</div>
-    </section>
-    <section class="card col6">
+    <section class="card col12">
       <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
       <ul id="annual"></ul>
       <div class="progress" id="annualProg">Set-aside: $0/mo</div>
@@ -1215,7 +1214,8 @@
           {type:'bar',label:'Spent',data:ba.actual,backgroundColor:ba.actual.map((a,i)=>a>ba.budget[i]?'#e24b4a':'#1d9e75'),borderWidth:0,order:2},
           {type:'line',label:'Budget',data:ba.budget,borderColor:'#ef9f27',borderDash:[6,4],fill:false,pointRadius:0,borderWidth:2,order:1}
         ]},
-        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y; if(c.dataset.label==='Budget') return 'Budget: $'+v.toLocaleString(); const o=v-ba.budget[c.dataIndex]; return 'Spent: $'+v.toLocaleString()+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')';}}}},
+        options:{onClick:(e,els,ch)=>{ let i=(els&&els.length)?els[0].index:null; if(i==null){ const p=ch.getElementsAtEventForMode(e,'index',{intersect:false},true); if(p&&p.length) i=p[0].index; } if(i!=null){ cur=new Date(2026, i, 1); renderFinance(); } },
+          plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y; if(c.dataset.label==='Budget') return 'Budget: $'+v.toLocaleString(); const o=v-ba.budget[c.dataIndex]; return 'Spent: $'+v.toLocaleString()+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')';}}}},
           scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
       const gp=SNAP.chart_goalproj;
       if(gp) C('cGoalProj',{type:'line',data:{labels:gp.labels,datasets:[
@@ -1232,6 +1232,7 @@
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},
           scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>(v<0?'-$':'$')+Math.abs(v/1000)+'K'}}}}});
+      renderVarBreakdown(); if(vbChart){ try{vbChart.resize();}catch(e){} }
     }
     if(page==='realestate'){
       const m=SNAP.chart_mort;
