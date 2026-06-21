@@ -42,6 +42,8 @@
   .task .box{width:14px;height:14px;border:2px solid var(--accent);border-radius:4px;flex:0 0 auto;margin-top:1px;display:grid;place-items:center;font-size:9px;color:transparent;cursor:pointer}
   .task.done .box{background:var(--accent);color:#fff}
   .task.done .label{color:var(--muted);text-decoration:line-through}
+  .donetoggle{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);cursor:pointer;padding:6px 0 2px;user-select:none}
+  .donetoggle:hover{color:var(--text)}
   .label{flex:1;cursor:pointer}
   .label small{display:block;color:var(--muted);font-size:9px;text-decoration:none}
   .bud{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px;cursor:pointer}
@@ -136,6 +138,15 @@
   .chk.done .nm{color:var(--muted);text-decoration:line-through}
   .chk .det{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap}
   .note{color:var(--muted);font-size:11px;line-height:1.4}
+  .cinput{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:4px 7px}
+  .cinput:focus{outline:none;border-color:var(--accent)}
+  .crow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:12px}
+  .crow:last-child{border-bottom:0}
+  .crow .g{flex:1}
+  .crow .gr{font-weight:700;font-variant-numeric:tabular-nums;min-width:46px;text-align:right}
+  .crow .x{color:var(--muted);cursor:pointer;opacity:.45;font-size:11px;padding:0 2px}
+  .crow .x:hover{opacity:1;color:var(--bad)}
+  .cyear{font-size:12px;font-weight:700;color:var(--accent);margin:11px 0 2px}
   #gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:100;padding:20px}
   #gate .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 24px;width:100%;max-width:320px;text-align:center}
   #gate h1{font-size:20px;margin:0 0 4px}
@@ -171,6 +182,7 @@
   <nav class="tabs" id="tabs">
     <a href="#today" data-page="today">🔆 Today</a>
     <a href="#money" data-page="money">💰 Money</a>
+    <a href="#investing" data-page="investing">📈 Investing</a>
     <a href="#jobs" data-page="jobs">🔎 Jobs</a>
     <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
     <a href="#projects" data-page="projects">🚀 Projects</a>
@@ -211,11 +223,13 @@
       <div class="chk" data-key="date-proptax"><span class="box">✓</span><span class="nm">Property tax</span><span class="det">2× / yr</span></div>
     </section>
 
-    <!-- WEEKLY CHALLENGE: workout -->
+    <!-- WEEKLY CHALLENGES -->
     <section class="card col12">
-      <h2>🏆 Weekly challenge <span class="sub" style="font-weight:400">resets Monday 12am</span></h2>
+      <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
       <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
         <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
     </section>
 
     <!-- OBSIDIAN WIKI TODOS -->
@@ -317,27 +331,27 @@
 
     <!-- ANNUAL -->
     <section class="card col12">
-      <h2>📆 Annual — set aside monthly</h2>
+      <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
       <ul id="annual"></ul>
       <div class="progress" id="annualProg">Set-aside: $0/mo</div>
     </section>
 
     <!-- MONEY SNAPSHOT (figures from DB) -->
     <section class="card col12">
-      <h2><span>📊 Snapshot</span><button class="btn" id="revealBtn">Reveal numbers</button></h2>
-      <div class="metric"><span id="nw" class="hide">•••</span> <small>total net worth (est., incl. home)</small></div>
+      <h2>📊 Snapshot</h2>
+      <div class="metric"><span id="nw">•••</span> <small>total net worth (est., incl. home)</small></div>
       <div class="grid" style="margin-top:12px">
         <div class="col6">
-          <div class="row"><span>Bank cash</span><span class="v hideable hide" id="nwBank">•••</span></div>
-          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v hideable hide" id="nwFid">•••</span></div>
-          <div class="row"><span id="nwEqLbl">Home equity</span><span class="v hideable hide" id="nwEq">•••</span></div>
-          <div class="row"><span>Debts (cards + gas)</span><span class="v neg hideable hide" id="nwDebt">•••</span></div>
+          <div class="row"><span>Bank cash</span><span class="v" id="nwBank">•••</span></div>
+          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v" id="nwFid">•••</span></div>
+          <div class="row"><span id="nwEqLbl">Home equity</span><span class="v" id="nwEq">•••</span></div>
+          <div class="row"><span>Debts (cards + gas)</span><span class="v neg" id="nwDebt">•••</span></div>
         </div>
         <div class="col6">
-          <div class="row"><span>Monthly in</span><span class="v pos hideable hide" id="nwIn">•••</span></div>
-          <div class="row"><span>Total out (fixed + living)</span><span class="v hideable hide" id="nwOut">•••</span></div>
-          <div class="row"><span>Save rate / surplus</span><span class="v pos hideable hide" id="nwSave">•••</span></div>
-          <div class="row"><span>FICO</span><span class="v hideable hide" id="nwFico">•••</span></div>
+          <div class="row"><span>Monthly in</span><span class="v pos" id="nwIn">•••</span></div>
+          <div class="row"><span>Total out (fixed + living)</span><span class="v" id="nwOut">•••</span></div>
+          <div class="row"><span>Save rate / surplus</span><span class="v pos" id="nwSave">•••</span></div>
+          <div class="row"><span>FICO</span><span class="v" id="nwFico">•••</span></div>
         </div>
       </div>
     </section>
@@ -346,11 +360,26 @@
     <section class="card col12">
       <h2>📊 Finance snapshots</h2>
       <div class="grid" style="margin-top:8px">
-        <div class="col6"><div class="subhead">Net worth (est.)</div><div style="position:relative;height:128px"><canvas id="cNW" role="img" aria-label="Net worth trend"></canvas></div></div>
+        <div class="col6"><div class="subhead">Net worth — by year (est., incl. home)</div><div style="position:relative;height:128px"><canvas id="cNW" role="img" aria-label="Net worth trend by year"></canvas></div></div>
+        <div class="col6"><div class="subhead">Net worth — 2026 by month (tracked cash + investments)</div><div style="position:relative;height:128px"><canvas id="cNWm" role="img" aria-label="Tracked net worth by month in 2026"></canvas></div></div>
         <div class="col6"><div class="subhead">What it's made of</div><div style="position:relative;height:128px"><canvas id="cComp" role="img" aria-label="Net worth composition"></canvas></div></div>
+        <div class="col6"><div class="subhead">Income on record — by year</div><div style="position:relative;height:128px"><canvas id="cIncome" role="img" aria-label="Annual income on record"></canvas></div></div>
       </div>
-      <div class="subhead" style="margin-top:14px">🚩 Biggest offenders — H1 2026, by subcategory</div>
-      <div style="position:relative;height:210px"><canvas id="cOff" role="img" aria-label="Top spending categories"></canvas></div>
+    </section>
+
+    <!-- PROFIT & LOSS (data from DB) -->
+    <section class="card col12">
+      <h2>📈 Profit &amp; loss — 2026</h2>
+      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
+      <div style="position:relative;height:230px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
+      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending combines everyday cards with direct bank outflow (mortgage, property tax, utilities, reno). March/April dipped negative on property tax + renovation; other months ran a surplus toward the bank goal.</div>
+    </section>
+
+    <!-- OVER BUDGET (data from DB) -->
+    <section class="card col12">
+      <h2>🚩 Over budget — last 3 months</h2>
+      <div class="subhead" style="margin-top:4px">Amount over budget by category (Apr–Jun)</div>
+      <div style="position:relative;height:240px"><canvas id="cOver" role="img" aria-label="Amount over budget by category, last three months"></canvas></div>
     </section>
 
     <!-- TAXES gather -->
@@ -377,6 +406,43 @@
    </div>
   </div>
 
+  <!-- ============================= INVESTING ============================= -->
+  <div class="page" id="page-investing">
+   <div class="grid">
+    <!-- FIDELITY SNAPSHOT -->
+    <section class="card col12">
+      <h2>📈 Investing — Fidelity <span class="sub" style="font-weight:400">5 accounts · figures from DB</span></h2>
+      <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Portfolio value (May)</div><div class="val" id="fidTotal">•••</div></div>
+        <div class="cell"><div class="lbl">Unrealized gain/loss</div><div class="val pos" id="fidGain">•••</div></div>
+        <div class="cell"><div class="lbl">YTD 2026</div><div class="val pos" id="fidYtd">•••</div></div>
+        <div class="cell"><div class="lbl">Accounts</div><div class="val" id="fidAccts">•••</div></div>
+      </div>
+      <div class="note" style="margin-top:10px">Individual brokerage, Roth IRA, Rollover IRA, Child's 529 &amp; HSA. Detail in the vault: <b>2026-Fidelity</b>, <b>Fidelity-History</b>, <b>Investing Fidelity</b>.</div>
+    </section>
+
+    <!-- FIDELITY CHARTS -->
+    <section class="card col12">
+      <h2>📊 Portfolio charts</h2>
+      <div class="grid" style="margin-top:8px">
+        <div class="col12"><div class="subhead">Year-end value — 2016 → 2026 (2021 missing)</div><div style="position:relative;height:170px"><canvas id="cFidYE" role="img" aria-label="Fidelity portfolio value at each year end from 2016 to 2026"></canvas></div></div>
+        <div class="col6"><div class="subhead">2026 by month</div><div style="position:relative;height:150px"><canvas id="cFidM" role="img" aria-label="Fidelity portfolio value by month in 2026"></canvas></div></div>
+        <div class="col6"><div class="subhead">By account (May 2026)</div><div style="position:relative;height:150px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account, May 2026"></canvas></div></div>
+      </div>
+      <div class="note" style="margin-top:8px">Big arc: $27K (2016) → $140K (2020) → dip to $82K (2022) → $204K (2024) → $200K now. 2026 up ~$15K YTD; largest positions NVIDIA &amp; Alphabet (Roth).</div>
+    </section>
+
+    <!-- INVESTING TO-DOS -->
+    <section class="card col12">
+      <h2>✅ Investing to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="inv-june-stmt"><span class="box">✓</span><span class="nm">Drop June Fidelity statement in 0-Inbox</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="inv-2021"><span class="box">✓</span><span class="nm">Find 2021 year-end report (gap in history)</span></div>
+      <div class="chk" data-key="inv-1099"><span class="box">✓</span><span class="nm">File 1099 / 5498 / 5498-SA when they arrive → Taxes</span></div>
+      <div class="chk" data-key="inv-rebalance"><span class="box">✓</span><span class="nm">Review allocation / rebalance</span></div>
+    </section>
+   </div>
+  </div>
+
   <!-- ============================= JOBS ============================= -->
   <div class="page" id="page-jobs">
    <div class="grid">
@@ -391,10 +457,9 @@
     </section>
 
     <section class="card col6">
-      <h2>🏆 Weekly challenge <span class="sub" style="font-weight:400">resets Monday 12am</span></h2>
-      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
-      <div class="note" style="margin-top:12px">Goal: <b>client-side creative role in LA</b>. A daily job-search task runs automatically and feeds candidates → review them in the vault <b>Job-Search</b> note. Resume + applications live in the <b>Job Apply</b> folder.</div>
+      <h2>🚀 JobMatch — agent dashboard</h2>
+      <a href="https://gyip.com/agent-dashboard/" target="_blank" rel="noopener" style="display:inline-block;padding:9px 15px;font-size:12px;font-weight:600;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none">Open JobMatch ↗</a>
+      <div class="note" style="margin-top:12px">Goal: <b>client-side creative role in LA</b>. JobMatch pulls fresh listings daily from LinkedIn, Indeed, Glassdoor &amp; ZipRecruiter and ranks them by fit. The weekly <b>Job apply</b> challenge now lives on the <b>Today</b> page. Resume + applications: <b>Job Apply</b> folder; notes: vault <b>Job-Search</b>.</div>
     </section>
 
     <section class="card col12">
@@ -429,8 +494,19 @@
 
     <section class="card col6">
       <h2>📉 Mortgage paydown</h2>
-      <div style="position:relative;height:150px"><canvas id="cMort" role="img" aria-label="Mortgage paydown"></canvas></div>
-      <div class="note" style="margin-top:8px">Estimate until a current lender statement + appraisal confirm the balance.</div>
+      <div style="position:relative;height:150px"><canvas id="cMort" role="img" aria-label="Mortgage principal balance by year"></canvas></div>
+      <div class="note" style="margin-top:8px">Truist · 3.5% fixed · $1,911/mo · ~$427K principal (Jun 2026) on a ~$1.8M home. Balance is exact from statements; home value still an estimate.</div>
+    </section>
+
+    <!-- MORTGAGE DETAIL (data from DB) -->
+    <section class="card col12">
+      <h2>🏦 Mortgage detail</h2>
+      <div class="grid" style="margin-top:8px">
+        <div class="col4"><div class="subhead">Where the payment goes</div><div style="position:relative;height:170px"><canvas id="cPaySplit" role="img" aria-label="Monthly mortgage payment split between interest, principal and escrow"></canvas></div></div>
+        <div class="col4"><div class="subhead">Interest vs principal — by year</div><div style="position:relative;height:170px"><canvas id="cMortBd" role="img" aria-label="Interest paid versus principal paid down each year"></canvas></div></div>
+        <div class="col4"><div class="subhead">Home equity vs debt (≈$1.8M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
+      </div>
+      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal — but principal paydown is accelerating (~$451/mo in 2023 → ~$499/mo in 2026). Equity (~$1.37M) is almost the entire net worth.</div>
     </section>
 
     <section class="card col12">
@@ -452,7 +528,7 @@
       <h2>🚀 Projects</h2>
       <div class="areawrap">
         <div class="areagrp"><div class="lbl">💻 Build</div>
-          <span class="chip">Agent-Dashboard</span><span class="chip">Gyip-com</span><span class="chip">Web-Projects</span>
+          <span class="chip">Agent-Dashboard</span><span class="chip">Gyip-com</span><span class="chip">Web-Projects</span><span class="chip">Second Brain (Obsidian)</span>
         </div>
         <div class="areagrp"><div class="lbl">🎬 Content</div>
           <span class="chip">TikTok-YouTube</span><span class="chip">Travel-Channel</span><span class="chip">Pokémon Channel</span>
@@ -476,6 +552,70 @@
   <!-- ============================= CHILD ============================= -->
   <div class="page" id="page-child">
    <div class="grid">
+    <!-- UC PREP SNAPSHOT -->
+    <section class="card col12">
+      <h2>🎓 UC prep snapshot</h2>
+      <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Unweighted GPA</div><div class="val" id="ucGpa">—</div></div>
+        <div class="cell"><div class="lbl">Volunteer hours</div><div class="val pos" id="ucVol">0h</div></div>
+        <div class="cell"><div class="lbl">Courses logged</div><div class="val" id="ucCourses">0</div></div>
+        <div class="cell"><div class="lbl">Activities / awards</div><div class="val" id="ucActs">0</div></div>
+      </div>
+      <div class="note" style="margin-top:10px">Targeting a UC. Community-service goal: <b>100 hrs</b> by senior year.
+        <div class="bar" style="margin-top:6px"><i id="ucVolBar" style="width:0%"></i></div></div>
+    </section>
+
+    <!-- COURSES & GRADES -->
+    <section class="card col12">
+      <h2>📚 Courses &amp; grades <span class="sub" style="font-weight:400">freshman → senior</span></h2>
+      <div id="coursesWrap"><div class="note">loading…</div></div>
+      <div class="addrow" style="flex-wrap:wrap">
+        <select id="c-year" class="cinput"><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option></select>
+        <select id="c-term" class="cinput"><option value="">Term</option><option>Sem 1</option><option>Sem 2</option><option>Full year</option></select>
+        <select id="c-subject" class="cinput"><option value="">A–G</option><option>a · History</option><option>b · English</option><option>c · Math</option><option>d · Science</option><option>e · Language</option><option>f · Visual/Perf Arts</option><option>g · Elective</option></select>
+        <input id="c-course" placeholder="Course name" style="flex:2;min-width:120px">
+        <input id="c-grade" placeholder="Grade" style="max-width:80px">
+        <button class="btn" id="c-add">Add</button>
+      </div>
+      <div class="note" style="margin-top:6px">UC counts <b>a–g</b> courses in grades 10–11. For honors/AP, note it in the grade (e.g. <code>A (AP)</code>) — GPA above is a simple unweighted average.</div>
+    </section>
+
+    <!-- VOLUNTEER HOURS -->
+    <section class="card col6">
+      <h2>🤝 Volunteer hours <span class="sub" style="font-weight:400">running log</span></h2>
+      <div id="volWrap"><div class="note">loading…</div></div>
+      <div class="addrow" style="flex-wrap:wrap">
+        <input id="v-date" type="date" class="cinput">
+        <input id="v-act" placeholder="Activity" style="flex:2;min-width:110px">
+        <input id="v-hrs" type="number" min="0" step="0.5" placeholder="hrs" style="max-width:70px">
+        <button class="btn" id="v-add">Add</button>
+      </div>
+    </section>
+
+    <!-- ACTIVITIES & AWARDS -->
+    <section class="card col6">
+      <h2>🏅 Activities &amp; awards <span class="sub" style="font-weight:400">UC app lists up to 20</span></h2>
+      <div id="actWrap"><div class="note">loading…</div></div>
+      <div class="addrow" style="flex-wrap:wrap">
+        <input id="a-name" placeholder="Activity / award" style="flex:2;min-width:120px">
+        <input id="a-role" placeholder="Role" style="max-width:120px">
+        <button class="btn" id="a-add">Add</button>
+      </div>
+    </section>
+
+    <!-- UC MILESTONES -->
+    <section class="card col12">
+      <h2>✅ UC prep milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="uc-ag-plan"><span class="box">✓</span><span class="nm">Map a 4-year a–g course plan with the counselor</span></div>
+      <div class="chk" data-key="uc-volunteer"><span class="box">✓</span><span class="nm">Log community-service hours regularly (goal 100)</span></div>
+      <div class="chk" data-key="uc-activities"><span class="box">✓</span><span class="nm">Build the activities/awards list (UC allows 20)</span></div>
+      <div class="chk" data-key="uc-test"><span class="box">✓</span><span class="nm">Decide on SAT/ACT</span><span class="det">UC test-blind</span></div>
+      <div class="chk" data-key="uc-campuses"><span class="box">✓</span><span class="nm">Shortlist target UC campuses</span></div>
+      <div class="chk" data-key="uc-piq"><span class="box">✓</span><span class="nm">Draft Personal Insight Questions (senior fall)</span></div>
+      <div class="chk" data-key="uc-deadline"><span class="box">✓</span><span class="nm">UC application</span><span class="det">opens Aug 1 · due Nov 30 (sr)</span></div>
+    </section>
+
+    <!-- HEALTH -->
     <section class="card col6">
       <h2>🩺 Health to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
       <div class="chk" data-key="child-psych"><span class="box">✓</span><span class="nm">Book psychiatrist (Aetna, 1–3 mo wait)</span></div>
@@ -485,6 +625,7 @@
       <div class="chk" data-key="child-dentist"><span class="box">✓</span><span class="nm">Dentist — make appointment</span></div>
     </section>
 
+    <!-- MILESTONES -->
     <section class="card col6">
       <h2>📅 Milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
       <div class="chk" data-key="child-permit"><span class="box">✓</span><span class="nm">Driver's permit → license</span><span class="det">summer</span></div>
@@ -495,7 +636,7 @@
     </section>
 
     <section class="card col12">
-      <h2 class="note" style="text-transform:none;letter-spacing:0;font-size:11px">Full Child notes (health history, school, custody context) live in the Obsidian vault — kept in <code>Private/</code>, not on this hosted page.</h2>
+      <h2 class="note" style="text-transform:none;letter-spacing:0;font-size:11px">Sensitive Child notes (health history, custody) stay in the Obsidian vault <code>Private/</code> — not on this hosted page. Grades, hours &amp; activities here sync to the database.</h2>
     </section>
    </div>
   </div>
@@ -513,14 +654,14 @@
   const el=id=>document.getElementById(id);
   const setStatus=(m,e)=>{const s=el('status'); s.textContent=m; s.style.color=e?'var(--bad)':'var(--muted)';};
 
-  let now=new Date(), cur=new Date(now.getFullYear(), now.getMonth(), 1);
+  let now=new Date(), cur=new Date(now.getFullYear(), now.getMonth(), 1), curYear=now.getFullYear();
   const mkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
   const mlabel=d=>d.toLocaleDateString(undefined,{month:'long',year:'numeric'});
 
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','money','jobs','realestate','projects','child'];
+  const PAGES=['today','money','investing','jobs','realestate','projects','child'];
   function showPage(p){
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
@@ -573,8 +714,8 @@
     tasks=t.data||[]; items=fi.data||[]; statusMap={}; SNAP={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
-    renderTodo(); renderFinance(); renderSnapshot(); renderGoals();
-    loadHabits(); loadChecklist();
+    renderTodo(); renderFinance(); renderSnapshot(); renderFidelity(); renderGoals();
+    loadHabits(); loadChecklist(); loadChild(); wireChild();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
@@ -612,8 +753,24 @@
     inp.onkeydown=e=>{if(e.key==='Enter')commit(); if(e.key==='Escape')renderTodo();}; inp.onblur=commit;
     li.appendChild(inp); inp.focus(); inp.select();
   }
+  let showDone={};
+  try{ showDone=JSON.parse(localStorage.getItem('lifeos_showDone')||'{}'); }catch(e){}
   function renderTodo(){
-    BUCKETS.forEach(b=>{ const ul=el('list-'+b); if(!ul) return; ul.innerHTML=''; colItems(b).forEach(t=>ul.appendChild(taskLi(t))); });
+    BUCKETS.forEach(b=>{
+      const ul=el('list-'+b); if(!ul) return; ul.innerHTML='';
+      const all=colItems(b);
+      const open=all.filter(t=>t.status!=='done');
+      const done=all.filter(t=>t.status==='done');
+      open.forEach(t=>ul.appendChild(taskLi(t)));
+      if(done.length){
+        const show=!!showDone[b];
+        const tog=document.createElement('li'); tog.className='donetoggle';
+        tog.textContent=(show?'▾ ':'▸ ')+done.length+' completed';
+        tog.onclick=()=>{ showDone[b]=!show; try{localStorage.setItem('lifeos_showDone',JSON.stringify(showDone));}catch(e){} renderTodo(); };
+        ul.appendChild(tog);
+        if(show) done.forEach(t=>ul.appendChild(taskLi(t)));
+      }
+    });
   }
   async function updateTask(t,patch){
     Object.assign(t,patch); renderTodo();
@@ -632,6 +789,12 @@
 
   /* ---------- FINANCE ---------- */
   const st=itemId=>statusMap[itemId+'|'+mkey(cur)]||{paid:false,spent:0};
+  const stY=itemId=>statusMap[itemId+'|'+curYear]||{paid:false,spent:0};
+  async function setAnnualPaid(itemId,paid){
+    const k=itemId+'|'+curYear; statusMap[k]={...stY(itemId),paid}; renderFinance();
+    const { error }=await sb.from('finance_status').upsert({item_id:itemId, month:String(curYear), paid, spent:0}, {onConflict:'item_id,month'});
+    if(error) setStatus('Annual save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
   async function setStatusRow(itemId,patch){
     const k=itemId+'|'+mkey(cur); statusMap[k]={...st(itemId),...patch}; renderFinance();
     const { error }=await sb.from('finance_status').upsert({item_id:itemId, month:mkey(cur), paid:statusMap[k].paid, spent:statusMap[k].spent}, {onConflict:'item_id,month'});
@@ -659,6 +822,7 @@
     const income=items.filter(i=>i.kind==='income').sort((a,b)=>a.sort_order-b.sort_order);
     const variable=items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
     el('mMonth').textContent=mlabel(cur);
+    if(el('yYear')) el('yYear').textContent=curYear;
     const curMonthNum=cur.getMonth()+1;
 
     const f=renderPaidList('exp', fixed); const fixedTotal=f.total;
@@ -668,12 +832,12 @@
     el('subsProg').textContent='Paid: '+money(sub.paid)+' of '+money(subsTotal)+' · '+subs.length+' subs';
 
     const annualEl=el('annual'); annualEl.innerHTML=''; let annualYear=0;
-    annual.forEach(it=>{ const s=st(it.id); annualYear+=Number(it.amount);
-      const dueNow=it.due_month===curMonthNum;
+    annual.forEach(it=>{ const s=stY(it.id); annualYear+=Number(it.amount);
+      const dueNow=it.due_month===curMonthNum && curYear===now.getFullYear();
       const dueLbl=it.due_month?MONTHS[it.due_month-1]:'yearly';
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
       li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+' <small style="color:var('+(dueNow?'--warn':'--muted')+')">'+dueLbl+(dueNow?' · due now':'')+'</small></span><span class="amt">'+money(it.amount)+'</span>';
-      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); annualEl.appendChild(li); });
+      li.onclick=()=>setAnnualPaid(it.id, !stY(it.id).paid); annualEl.appendChild(li); });
     const annualMonthly=annualYear/12;
     el('annualProg').textContent='Set-aside: '+money(annualMonthly)+'/mo (annual '+money(annualYear)+'/yr)';
 
@@ -705,6 +869,8 @@
   function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
   if(el('mPrev')) el('mPrev').onclick=()=>shift(-1);
   if(el('mNext')) el('mNext').onclick=()=>shift(1);
+  if(el('yPrev')) el('yPrev').onclick=()=>{ curYear--; renderFinance(); };
+  if(el('yNext')) el('yNext').onclick=()=>{ curYear++; renderFinance(); };
 
   /* ---------- SNAPSHOT (figures from DB) ---------- */
   function renderSnapshot(){
@@ -721,6 +887,13 @@
     el('nwOut').textContent='~'+money(s.totalOut||0);
     el('nwSave').textContent='~'+money(s.saveRate||0);
     el('nwFico').textContent=s.fico||'—';
+  }
+  function renderFidelity(){
+    const f=SNAP.fid; if(!f||!el('fidTotal')) return;
+    el('fidTotal').textContent=money(f.total||0);
+    el('fidGain').textContent=(f.gain>=0?'+':'')+money(f.gain||0);
+    el('fidYtd').textContent=(f.ytd>=0?'+':'')+money(f.ytd||0)+(f.ytdPct!=null?' ('+(f.ytdPct>=0?'+':'')+f.ytdPct+'%)':'');
+    el('fidAccts').textContent=f.accounts||'—';
   }
   function renderGoals(){
     const wrap=el('goalStrip'); if(!wrap) return; const g=SNAP.goals||[];
@@ -774,11 +947,82 @@
     if(error) setStatus('Checklist save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
   }
 
-  /* ---------- REVEAL ---------- */
-  (function(){ let shown=false; const rb=el('revealBtn'); if(!rb) return; rb.onclick=()=>{ shown=!shown;
-    document.querySelectorAll('#nw,.hideable').forEach(e=>e.classList.toggle('hide',!shown));
-    rb.textContent=shown?'Hide numbers':'Reveal numbers'; };
-  })();
+  /* ---------- CHILD / UC TRACKING ---------- */
+  let cCourses=[], cVol=[], cActs=[], childWired=false;
+  const GRADE_PTS={A:4,B:3,C:2,D:1,F:0};
+  async function loadChild(){
+    const [c,v,a]=await Promise.all([
+      sb.from('child_courses').select('*'),
+      sb.from('child_volunteer').select('*'),
+      sb.from('child_activities').select('*')
+    ]);
+    cCourses=(c.data||[]); cVol=(v.data||[]); cActs=(a.data||[]);
+    renderChild();
+  }
+  function renderChild(){
+    const wrap=el('coursesWrap');
+    if(wrap){
+      if(!cCourses.length){ wrap.innerHTML='<div class="note">No courses yet — add freshman &amp; sophomore classes below.</div>'; }
+      else {
+        const order=['Freshman','Sophomore','Junior','Senior']; const byYear={};
+        cCourses.forEach(c=>{(byYear[c.school_year]=byYear[c.school_year]||[]).push(c);});
+        let html='';
+        order.filter(y=>byYear[y]).forEach(y=>{
+          html+='<div class="cyear">'+esc(y)+'</div>';
+          byYear[y].sort((a,b)=>(a.sort_order-b.sort_order)||(a.created_at||'').localeCompare(b.created_at||''));
+          byYear[y].forEach(c=>{ html+='<div class="crow"><span class="g">'+esc(c.course||'(course)')+(c.subject?' <small style="color:var(--muted)">'+esc(c.subject)+'</small>':'')+(c.term?' <small style="color:var(--muted)">· '+esc(c.term)+'</small>':'')+'</span><span class="gr">'+esc(c.grade||'—')+'</span><span class="x" data-del-course="'+c.id+'">✕</span></div>'; });
+        });
+        wrap.innerHTML=html;
+        wrap.querySelectorAll('[data-del-course]').forEach(x=>x.onclick=()=>delChild('child_courses',x.dataset.delCourse,cCourses));
+      }
+    }
+    const vw=el('volWrap'); let vtot=0; cVol.forEach(v=>vtot+=Number(v.hours)||0);
+    if(vw){
+      if(!cVol.length){ vw.innerHTML='<div class="note">No hours logged yet.</div>'; }
+      else {
+        cVol.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+        vw.innerHTML=cVol.map(v=>'<div class="crow"><span class="g">'+esc(v.activity||'')+' <small style="color:var(--muted)">'+esc(v.date||'')+'</small></span><span class="gr">'+(Number(v.hours)||0)+'h</span><span class="x" data-del-vol="'+v.id+'">✕</span></div>').join('');
+        vw.querySelectorAll('[data-del-vol]').forEach(x=>x.onclick=()=>delChild('child_volunteer',x.dataset.delVol,cVol));
+      }
+    }
+    const aw=el('actWrap');
+    if(aw){
+      if(!cActs.length){ aw.innerHTML='<div class="note">No activities yet.</div>'; }
+      else {
+        cActs.sort((a,b)=>(a.sort_order-b.sort_order)||(a.created_at||'').localeCompare(b.created_at||''));
+        aw.innerHTML=cActs.map(a=>'<div class="crow"><span class="g">'+esc(a.name||'')+(a.role?' <small style="color:var(--muted)">'+esc(a.role)+'</small>':'')+'</span><span class="x" data-del-act="'+a.id+'">✕</span></div>').join('');
+        aw.querySelectorAll('[data-del-act]').forEach(x=>x.onclick=()=>delChild('child_activities',x.dataset.delAct,cActs));
+      }
+    }
+    const graded=cCourses.map(c=>GRADE_PTS[(c.grade||'').trim().charAt(0).toUpperCase()]).filter(p=>p!=null);
+    if(el('ucGpa')) el('ucGpa').textContent=graded.length?(graded.reduce((a,b)=>a+b,0)/graded.length).toFixed(2):'—';
+    if(el('ucVol')) el('ucVol').textContent=vtot+'h';
+    if(el('ucCourses')) el('ucCourses').textContent=cCourses.length;
+    if(el('ucActs')) el('ucActs').textContent=cActs.length;
+    if(el('ucVolBar')) el('ucVolBar').style.width=Math.min(100,vtot)+'%';
+  }
+  async function addChild(table,row,arr){
+    const { data, error }=await sb.from(table).insert(row).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) arr.push(data[0]); renderChild();
+  }
+  async function delChild(table,id,arr){
+    const i=arr.findIndex(r=>r.id===id); if(i>=0) arr.splice(i,1); renderChild();
+    const { error }=await sb.from(table).delete().eq('id',id);
+    if(error){ setStatus('Delete failed',true); loadChild(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  function wireChild(){
+    if(childWired) return; childWired=true;
+    if(el('c-add')) el('c-add').onclick=()=>{ const course=el('c-course').value.trim(); if(!course) return;
+      addChild('child_courses',{school_year:el('c-year').value,term:el('c-term').value,subject:el('c-subject').value,course,grade:el('c-grade').value.trim()},cCourses);
+      el('c-course').value=''; el('c-grade').value=''; };
+    if(el('v-add')) el('v-add').onclick=()=>{ const activity=el('v-act').value.trim(); if(!activity) return;
+      addChild('child_volunteer',{date:el('v-date').value||null,activity,hours:parseFloat(el('v-hrs').value)||0},cVol);
+      el('v-act').value=''; el('v-hrs').value=''; };
+    if(el('a-add')) el('a-add').onclick=()=>{ const name=el('a-name').value.trim(); if(!name) return;
+      addChild('child_activities',{name,role:el('a-role').value.trim()},cActs);
+      el('a-name').value=''; el('a-role').value=''; };
+  }
 
   /* ---------- CHARTS (data from DB, built lazily per page) ---------- */
   const charts={};
@@ -790,22 +1034,67 @@
     const ax={grid:{color:gridc},ticks:{font:{size:9}}};
     const C=(id,cfg)=>{ const e=el(id); if(!e||charts[id]) return; charts[id]=new Chart(e,cfg); };
     if(page==='money'){
-      const nw=SNAP.chart_nw, comp=SNAP.chart_comp, off=SNAP.chart_off;
+      const nw=SNAP.chart_nw, comp=SNAP.chart_comp, ob=SNAP.chart_overbudget;
       if(nw) C('cNW',{type:'line',data:{labels:nw.labels,
         datasets:[{data:nw.data,borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:0,borderWidth:2}]},
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(1)+'M'}}}}});
       if(comp) C('cComp',{type:'doughnut',data:{labels:comp.labels,
         datasets:[{data:comp.data,backgroundColor:['#1d9e75','#378add','#ef9f27'],borderWidth:0}]},
         options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+' $'+c.parsed+'K'}}}}});
-      if(off) C('cOff',{type:'bar',data:{labels:off.labels,datasets:off.seg.map(s=>({label:s.label,data:s.data,backgroundColor:s.color,borderWidth:0}))},
-        options:{indexAxis:'y',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.x.toLocaleString()}}},
-          scales:{x:{stacked:true,...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}},y:{stacked:true,...ax}}}});
+      if(ob) C('cOver',{type:'bar',data:{labels:ob.labels,datasets:ob.months.map(m=>({label:m.name,data:m.data,backgroundColor:m.color,borderWidth:0}))},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()+' over'}}},
+          scales:{x:{...ax,ticks:{font:{size:9}}},y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      const nwm=SNAP.chart_nw_monthly;
+      if(nwm) C('cNWm',{type:'line',data:{labels:nwm.labels,
+        datasets:[{data:nwm.data,borderColor:'#378add',backgroundColor:'rgba(55,138,221,.15)',fill:true,tension:.3,pointRadius:2,borderWidth:2}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+      const inc=SNAP.chart_income;
+      if(inc) C('cIncome',{type:'bar',data:{labels:inc.labels,
+        datasets:[{data:inc.data,backgroundColor:['#378add','#378add','#1d9e75'],borderRadius:4,borderWidth:0}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y.toLocaleString()}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      const pl=SNAP.chart_pnl;
+      if(pl) C('cPnl',{type:'bar',data:{labels:pl.labels,datasets:[
+          {type:'bar',label:'Income',data:pl.income,backgroundColor:'#1d9e75',borderWidth:0,order:2},
+          {type:'bar',label:'Spending',data:pl.expense,backgroundColor:'#e24b4a',borderWidth:0,order:2},
+          {type:'line',label:'Net',data:pl.net,borderColor:'#ef9f27',backgroundColor:'#ef9f27',tension:.3,pointRadius:3,borderWidth:2,order:1}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},
+          scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>(v<0?'-$':'$')+Math.abs(v/1000)+'K'}}}}});
     }
     if(page==='realestate'){
       const m=SNAP.chart_mort;
       if(m) C('cMort',{type:'line',data:{labels:m.labels,
         datasets:[{data:m.data,borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.25,pointRadius:0,borderWidth:2}]},
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+      const ps=SNAP.chart_paysplit;
+      if(ps) C('cPaySplit',{type:'doughnut',data:{labels:ps.labels,
+        datasets:[{data:ps.data,backgroundColor:['#e24b4a','#1d9e75','#ef9f27'],borderWidth:0}]},
+        options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'/mo'}}}}});
+      const mb=SNAP.chart_mort_breakdown;
+      if(mb) C('cMortBd',{type:'bar',data:{labels:mb.labels,datasets:[
+          {label:'Interest',data:mb.interest,backgroundColor:'#e24b4a',borderWidth:0},
+          {label:'Principal',data:mb.principal,backgroundColor:'#1d9e75',borderWidth:0}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()}}},
+          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      const eq=SNAP.chart_equity;
+      if(eq) C('cEquity',{type:'doughnut',data:{labels:eq.labels,
+        datasets:[{data:eq.data,backgroundColor:['#1d9e75','#e24b4a'],borderWidth:0}]},
+        options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+(c.parsed/1000).toFixed(2)+'M'}}}}});
+    }
+    if(page==='investing'){
+      const ye=SNAP.chart_fid_ye;
+      if(ye) C('cFidYE',{type:'line',data:{labels:ye.labels,
+        datasets:[{data:ye.data,borderColor:'#378add',backgroundColor:'rgba(55,138,221,.15)',fill:true,tension:.3,pointRadius:2,borderWidth:2,spanGaps:true}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>c.parsed.y==null?'missing':'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+      const fm=SNAP.chart_fid_monthly;
+      if(fm) C('cFidM',{type:'line',data:{labels:fm.labels,
+        datasets:[{data:fm.data,borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:2,borderWidth:2}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+      const fa=SNAP.chart_fid_accounts;
+      if(fa) C('cFidAcc',{type:'doughnut',data:{labels:fa.labels,
+        datasets:[{data:fa.data,backgroundColor:['#378add','#1d9e75','#ef9f27','#a06ee0','#e24b4a'],borderWidth:0}]},
+        options:{cutout:'55%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'K'}}}}});
     }
     Object.values(charts).forEach(c=>{ try{c.resize();}catch(e){} });
   }
