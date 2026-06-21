@@ -96,6 +96,13 @@
   .addrow{display:flex;gap:5px;margin-top:7px;padding-top:7px;border-top:1px solid var(--line)}
   .addrow input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:4px 7px;flex:1;min-width:0}
   .addrow input:focus{outline:none;border-color:var(--accent)}
+  .obs-cols{columns:3;column-gap:16px;margin-top:8px}
+  @media(max-width:820px){.obs-cols{columns:1}}
+  .obs-group{break-inside:avoid;margin-bottom:11px;display:inline-block;width:100%}
+  .obs-area{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--line);padding-bottom:3px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+  .obs-n{background:var(--chip);border-radius:999px;padding:0 7px;font-size:9px}
+  .obs-group li{font-size:11px;padding:2px 0;border-bottom:1px dashed var(--line);line-height:1.3}
+  .obs-group li:last-child{border-bottom:0}
   #gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:100;padding:20px}
   #gate .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 24px;width:100%;max-width:320px;text-align:center}
   #gate h1{font-size:20px;margin:0 0 4px}
@@ -148,28 +155,103 @@
       <div class="progress" style="margin-top:8px">1–3 box sets importance (1 = top) · ◀ ▶ move a task · click text to edit · ✕ delete · box completes. Saved to the database, syncs everywhere.</div>
     </section>
 
-    <!-- MONTHLY EXPENSES -->
-    <section class="card col6">
-      <h2><span>💸 Monthly expenses</span><span class="mnav"><button class="navbtn" id="expPrev">◀</button><b id="expMonth"></b><button class="navbtn" id="expNext">▶</button></span></h2>
-      <div class="subhead">Set bills — check when paid</div>
-      <ul id="exp"></ul>
-      <div class="progress" id="expProg">Paid: $0</div>
-      <div class="subhead">Variable — budget vs spent</div>
-      <ul id="varexp"></ul>
-      <div class="progress" id="varProg">Spent: $0</div>
-      <div class="sumline"><span>Total monthly budget</span><span id="expTotal">$0</span></div>
+    <!-- OBSIDIAN WIKI TODOS — read-only snapshot, refreshed whenever this HTML is regenerated -->
+    <section class="card col12">
+      <h2><span>📓 From Obsidian — open wiki todos</span><span class="sub" style="font-weight:400">read-only snapshot · 2026-06-21 · 42 open</span></h2>
+      <div class="obs-cols">
+        <div class="obs-group"><div class="obs-area">🧒 Child <span class="obs-n">15</span></div><ul>
+          <li>Japan trip this summer (return before 2026-08-19) → Travel</li>
+          <li>Visit at least one college</li>
+          <li>Line up some summer activities</li>
+          <li>Get driver&#x27;s permit / license — once licensed, Owner plans to give Child the 2012 Prius V → Prius-V, Goals</li>
+          <li>Call Dr. DiMundo back (pediatrician) — re-establish care after ~3-yr gap</li>
+          <li>Therapist — find/contact (with psychiatrist search below)</li>
+          <li>Dentist — make appointment</li>
+          <li>Cardiac Dr — follow-up visit</li>
+          <li>Search Aetna member directory (aetna.com) for in-network child/adolescent psychiatrists</li>
+          <li>Call Aetna member services (back of card) to confirm mental health coverage and get referrals</li>
+          <li>Ask Child&#x27;s pediatrician for referral + PHQ-A depression screening (can also prescribe SSRIs while waiting)</li>
+          <li>Check Psychology Today (psychologytoday.com/us/therapists) — filter by Aetna, teen age group</li>
+          <li>Consider telehealth options (Talkiatry, Brightside) — shorter wait times, accept Aetna</li>
+          <li>Book psychiatrist appointment ASAP (wait times can be 1–3 months)</li>
+          <li>Find a therapist (start therapy in parallel with psychiatrist) — both wanted this summer</li>
+        </ul></div>
+        <div class="obs-group"><div class="obs-area">🧾 Taxes <span class="obs-n">5</span></div><ul>
+          <li>W-2 (RAPP)</li>
+          <li>Breakfast-Royale business income/expenses</li>
+          <li>ADU-Rental rental income + expenses</li>
+          <li>Investment 1099s → Investing Fidelity</li>
+          <li>Home / deductions</li>
+        </ul></div>
+        <div class="obs-group"><div class="obs-area">🎯 Goals <span class="obs-n">8</span></div><ul>
+          <li>Find a new job — client-side creative role in LA → Job-Search</li>
+          <li>Spend more time with Child</li>
+          <li>Japan this summer (return before 2026-08-19) → Travel</li>
+          <li>Child to find a psychiatrist + therapist → Child, Health</li>
+          <li>Couples therapy with Girlfriend for a better relationship → Girlfriend</li>
+          <li>+$50K in the bank → from ~$20K today to ~$70K target → Investing Fidelity, Recurring-Pay</li>
+          <li>Stock portfolio up → Investing Fidelity</li>
+          <li>Child gets driver&#x27;s license → Owner gives them the Prius-V (2012 Prius V)</li>
+        </ul></div>
+        <div class="obs-group"><div class="obs-area">🩺 Health <span class="obs-n">3</span></div><ul>
+          <li>Colon test — book colonoscopy via St John&#x27;s Outpatient Gastroenterology referral (overdue, originally from Dr. Gowara ~2024)</li>
+          <li>Doctor — resume check-up with Dr. Gowara (last visit ~2 years ago)</li>
+          <li>Dentist — make an appointment</li>
+        </ul></div>
+        <div class="obs-group"><div class="obs-area">🏢 Property-Manager <span class="obs-n">1</span></div><ul>
+          <li>Look into reinstating proper homeowner&#x27;s insurance</li>
+        </ul></div>
+        <div class="obs-group"><div class="obs-area">🏠 Home <span class="obs-n">9</span></div><ul>
+          <li>Resolve gas past-due balance (~$3,000, on $350/mo plan)</li>
+          <li>Change home insurance — switch from lender-placed to a new Progressive policy (quote in hand)</li>
+          <li>Hire electrician (need to find a vendor — main house) to fix six lights:</li>
+          <li style="margin-left:14px">Bedroom light</li>
+          <li style="margin-left:14px">Back light</li>
+          <li style="margin-left:14px">Back porch light</li>
+          <li style="margin-left:14px">Hallway downlight</li>
+          <li style="margin-left:14px">&quot;Run room&quot; downlight</li>
+          <li style="margin-left:14px">Office downlight</li>
+        </ul></div>
+        <div class="obs-group"><div class="obs-area">💞 Girlfriend <span class="obs-n">1</span></div><ul>
+          <li>Couples therapy — goal to start, for better mutual understanding (next 6 months) → Goals</li>
+        </ul></div>
+      </div>
     </section>
 
-    <!-- MONTHLY INCOME -->
-    <section class="card col6">
-      <h2><span>💵 Monthly income</span><span class="mnav"><button class="navbtn" id="incPrev">◀</button><b id="incMonth"></b><button class="navbtn" id="incNext">▶</button></span></h2>
-      <ul id="inc"></ul>
-      <div class="sumline"><span>Total monthly in</span><span id="incTotal">$0</span></div>
-      <div class="progress" id="incProg">Received: $0</div>
-      <div style="margin-top:14px;padding-top:12px;border-top:2px solid var(--line)">
-        <div class="row"><span>Income</span><span class="v pos" id="sumInc">$0</span></div>
-        <div class="row"><span>Expenses (budget)</span><span class="v" id="sumExp">$0</span></div>
-        <div class="row"><span>Left to save / month</span><span class="v pos" id="sumSave">$0</span></div>
+    <!-- MONTHLY MONEY — income + expenses, one date controls both -->
+    <section class="card col12">
+      <h2><span>💰 Monthly money</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
+      <div class="grid" style="margin-top:4px">
+        <div class="col6">
+          <div class="subhead">💸 Fixed bills — check when paid</div>
+          <ul id="exp"></ul>
+          <div class="progress" id="expProg">Paid: $0</div>
+
+          <div class="subhead">📺 Subscriptions — check when paid</div>
+          <ul id="subs"></ul>
+          <div class="progress" id="subsProg">Paid: $0</div>
+
+          <div class="subhead">📆 Annual expenses — set aside monthly, check when paid</div>
+          <ul id="annual"></ul>
+          <div class="progress" id="annualProg">Set-aside: $0/mo</div>
+
+          <div class="subhead">🛒 Variable — budget vs spent</div>
+          <ul id="varexp"></ul>
+          <div class="progress" id="varProg">Spent: $0</div>
+
+          <div class="sumline"><span>Total monthly budget</span><span id="expTotal">$0</span></div>
+        </div>
+        <div class="col6">
+          <div class="subhead">💵 Income — check when received</div>
+          <ul id="inc"></ul>
+          <div class="sumline"><span>Total monthly in</span><span id="incTotal">$0</span></div>
+          <div class="progress" id="incProg">Received: $0</div>
+          <div style="margin-top:14px;padding-top:12px;border-top:2px solid var(--line)">
+            <div class="row"><span>Income</span><span class="v pos" id="sumInc">$0</span></div>
+            <div class="row"><span>Expenses (budget)</span><span class="v" id="sumExp">$0</span></div>
+            <div class="row"><span>Left to save / month</span><span class="v pos" id="sumSave">$0</span></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -227,7 +309,7 @@
 
   </div>
 
-  <div class="foot">Tasks & finances live in Supabase (project: lifeos) — synced everywhere. Goals, dates & net worth are snapshots updated at the Monday review. Habit pips sync via the database and reset every Monday at 12am.</div>
+  <div class="foot">Tasks & finances live in Supabase (project: lifeos) — synced everywhere. Goals, dates & net worth are snapshots updated at the Monday review. Habit pips sync via the database and reset every Monday at 12am. Obsidian wiki todos are a read-only snapshot, refreshed each time this page is regenerated.</div>
 </div>
 
 <script>
@@ -353,19 +435,43 @@
     const { error }=await sb.from('finance_items').update({amount}).eq('id',itemId);
     if(error) setStatus('Budget save failed',true);
   }
-  function renderFinance(){
-    const fixed=items.filter(i=>i.kind==='fixed_expense').sort((a,b)=>a.sort_order-b.sort_order);
-    const income=items.filter(i=>i.kind==='income').sort((a,b)=>a.sort_order-b.sort_order);
-    const variable=items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
-    el('expMonth').textContent=mlabel(cur); el('incMonth').textContent=mlabel(cur);
-
-    // fixed expenses
-    const exp=el('exp'); exp.innerHTML=''; let paidSum=0, fixedTotal=0;
-    fixed.forEach(it=>{ const s=st(it.id); fixedTotal+=Number(it.amount); if(s.paid) paidSum+=Number(it.amount);
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // render a simple check-when-paid list; returns {total, paid}
+  function renderPaidList(elId, list){
+    const ul=el(elId); ul.innerHTML=''; let total=0, paid=0;
+    list.forEach(it=>{ const s=st(it.id); total+=Number(it.amount); if(s.paid) paid+=Number(it.amount);
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
       li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+'</span><span class="amt">'+money(it.amount)+'</span>';
-      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); exp.appendChild(li); });
-    el('expProg').textContent='Paid: '+money(paidSum)+' of '+money(fixedTotal);
+      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); ul.appendChild(li); });
+    return {total, paid};
+  }
+  function renderFinance(){
+    const fixed=items.filter(i=>i.kind==='fixed_expense').sort((a,b)=>a.sort_order-b.sort_order);
+    const subs=items.filter(i=>i.kind==='subscription').sort((a,b)=>a.sort_order-b.sort_order);
+    const annual=items.filter(i=>i.kind==='annual_expense').sort((a,b)=>a.sort_order-b.sort_order);
+    const income=items.filter(i=>i.kind==='income').sort((a,b)=>a.sort_order-b.sort_order);
+    const variable=items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
+    el('mMonth').textContent=mlabel(cur);
+    const curMonthNum=cur.getMonth()+1;
+
+    // fixed bills
+    const f=renderPaidList('exp', fixed); const fixedTotal=f.total;
+    el('expProg').textContent='Paid: '+money(f.paid)+' of '+money(fixedTotal);
+
+    // subscriptions
+    const sub=renderPaidList('subs', subs); const subsTotal=sub.total;
+    el('subsProg').textContent='Paid: '+money(sub.paid)+' of '+money(subsTotal)+' · '+subs.length+' subs';
+
+    // annual expenses (set aside monthly, billed in due_month)
+    const annualEl=el('annual'); annualEl.innerHTML=''; let annualYear=0;
+    annual.forEach(it=>{ const s=st(it.id); annualYear+=Number(it.amount);
+      const dueNow=it.due_month===curMonthNum;
+      const dueLbl=it.due_month?MONTHS[it.due_month-1]:'yearly';
+      const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
+      li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+' <small style="color:var('+(dueNow?'--warn':'--muted')+')">'+dueLbl+(dueNow?' · due now':'')+'</small></span><span class="amt">'+money(it.amount)+'</span>';
+      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); annualEl.appendChild(li); });
+    const annualMonthly=annualYear/12;
+    el('annualProg').textContent='Set-aside: '+money(annualMonthly)+'/mo (annual '+money(annualYear)+'/yr)';
 
     // variable
     const ve=el('varexp'); ve.innerHTML=''; let budTot=0, spentTot=0;
@@ -380,7 +486,7 @@
       ve.appendChild(li); });
     el('varProg').textContent='Spent: '+money(spentTot)+' of '+money(budTot)+' budget';
 
-    const totalBudget=fixedTotal+budTot;
+    const totalBudget=fixedTotal+subsTotal+annualMonthly+budTot;
     el('expTotal').textContent=money(totalBudget);
 
     // income
@@ -396,8 +502,8 @@
     el('sumSave').textContent=money(incTotal-totalBudget);
   }
   function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
-  ['expPrev','incPrev'].forEach(id=> el(id).onclick=()=>shift(-1));
-  ['expNext','incNext'].forEach(id=> el(id).onclick=()=>shift(1));
+  el('mPrev').onclick=()=>shift(-1);
+  el('mNext').onclick=()=>shift(1);
 
   /* ---------- HABITS (DB, auto-reset Monday 12am local) ---------- */
   // keyed by the Monday of the current local week → a new week shows a clean slate; past weeks are kept as history.
