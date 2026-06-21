@@ -24,6 +24,13 @@
   .sub{color:var(--muted);font-size:10px}
   .authbar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
   .authbar input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:3px 6px;width:120px}
+  /* nav */
+  .tabs{display:flex;gap:3px;flex-wrap:wrap;margin:12px 0 0;border-bottom:1px solid var(--line)}
+  .tabs a{font-size:12px;color:var(--muted);text-decoration:none;padding:8px 13px;border-radius:8px 8px 0 0;border:1px solid transparent;border-bottom:0;position:relative;top:1px;white-space:nowrap}
+  .tabs a:hover{color:var(--text)}
+  .tabs a.active{color:var(--text);background:var(--panel);border-color:var(--line);font-weight:600}
+  .page{display:none}
+  .page.active{display:block}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px 15px 13px}
   .card h2{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 7px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -121,8 +128,6 @@
   .mmsum .cell .val{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:3px}
   .areawrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:4px}
   .areagrp .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:5px}
-  .bucket{padding:0;border:0;background:none}
-  .buckethead{font-size:14px;font-weight:700;letter-spacing:-.2px;color:var(--text);text-transform:none;margin:8px 0 -2px;padding-bottom:6px;border-bottom:2px solid var(--accent);display:block}
   .chk{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:12px;cursor:pointer}
   .chk:last-child{border-bottom:0}
   .chk .box{width:15px;height:15px;border:2px solid var(--muted);border-radius:4px;flex:0 0 auto;display:grid;place-items:center;font-size:9px;color:transparent}
@@ -130,6 +135,7 @@
   .chk .nm{flex:1}
   .chk.done .nm{color:var(--muted);text-decoration:line-through}
   .chk .det{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap}
+  .note{color:var(--muted);font-size:11px;line-height:1.4}
   #gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:100;padding:20px}
   #gate .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 24px;width:100%;max-width:320px;text-align:center}
   #gate h1{font-size:20px;margin:0 0 4px}
@@ -156,15 +162,25 @@
 <div class="wrap">
   <header>
     <div>
-      <h1>🌅 Life OS — Dashboard</h1>
+      <h1>🌅 Life OS</h1>
       <div class="sub">Owner · Culver City · <span id="status">loading…</span></div>
     </div>
     <div class="authbar" id="authbar"></div>
   </header>
 
-  <div class="grid">
+  <nav class="tabs" id="tabs">
+    <a href="#today" data-page="today">🔆 Today</a>
+    <a href="#money" data-page="money">💰 Money</a>
+    <a href="#jobs" data-page="jobs">🔎 Jobs</a>
+    <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
+    <a href="#projects" data-page="projects">🚀 Projects</a>
+    <a href="#child" data-page="child">🧒 Child</a>
+  </nav>
 
-    <!-- TO-DO + HABITS -->
+  <!-- ============================= TODAY ============================= -->
+  <div class="page" id="page-today">
+   <div class="grid">
+    <!-- TO-DO -->
     <section class="card col12">
       <h2>✅ To-do — plan your day</h2>
       <div class="todo-cols">
@@ -178,7 +194,31 @@
       <div class="progress" style="margin-top:8px">1–3 box sets importance (1 = top) · ◀ ▶ move a task · click text to edit · ✕ delete · box completes. Saved to the database, syncs everywhere.</div>
     </section>
 
-    <!-- OBSIDIAN WIKI TODOS — read-only snapshot, refreshed whenever this HTML is regenerated -->
+    <!-- GOALS strip -->
+    <section class="card col6">
+      <h2>🎯 2026 goals</h2>
+      <div id="goalStrip"><div class="note">loading…</div></div>
+    </section>
+
+    <!-- DATES -->
+    <section class="card col6">
+      <h2>📅 Upcoming &amp; recurring <span class="sub" style="font-weight:400">checks sync across devices</span></h2>
+      <div class="chk" data-key="date-school"><span class="box">✓</span><span class="nm">Child — first day of school</span><span class="det">Aug 19</span></div>
+      <div class="chk" data-key="date-japan"><span class="box">✓</span><span class="nm">Japan trip window</span><span class="det">Summer</span></div>
+      <div class="chk" data-key="date-gardener"><span class="box">✓</span><span class="nm">Gardener</span><span class="det">every Wed</span></div>
+      <div class="chk" data-key="date-cleaner"><span class="box">✓</span><span class="nm">House cleaner</span><span class="det">every 2 wks</span></div>
+      <div class="chk" data-key="date-coparent"><span class="box">✓</span><span class="nm">Co-parenting therapy</span><span class="det">2× / mo</span></div>
+      <div class="chk" data-key="date-proptax"><span class="box">✓</span><span class="nm">Property tax</span><span class="det">2× / yr</span></div>
+    </section>
+
+    <!-- WEEKLY CHALLENGE: workout -->
+    <section class="card col12">
+      <h2>🏆 Weekly challenge <span class="sub" style="font-weight:400">resets Monday 12am</span></h2>
+      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+    </section>
+
+    <!-- OBSIDIAN WIKI TODOS -->
     <section class="card col12">
       <details class="collapse">
       <summary><h2 style="border:0;padding:0"><span>📓 From Obsidian — open wiki todos</span> <span class="sub" style="font-weight:400">read-only snapshot · 2026-06-21 · 37 open</span></h2><span class="caret">▶</span></summary>
@@ -206,7 +246,7 @@
           <li>Japan this summer (return before 2026-08-19) → Travel</li>
           <li>Child to find a psychiatrist + therapist → Child, Health</li>
           <li>Couples therapy with Girlfriend for a better relationship → Girlfriend</li>
-          <li>+$50K in the bank → from ~$24.5K today to ~$70K target → Investing Fidelity, Recurring-Pay</li>
+          <li>More saved this year → Investing Fidelity, Recurring-Pay</li>
           <li>Stock portfolio up → Investing Fidelity</li>
           <li>Child gets driver&#x27;s license → Owner gives them the Prius-V (2012 Prius V)</li>
         </ul></div>
@@ -219,7 +259,7 @@
           <li>Look into reinstating proper homeowner&#x27;s insurance</li>
         </ul></div>
         <div class="obs-group"><div class="obs-area">🏠 Home <span class="obs-n">9</span></div><ul>
-          <li>Resolve gas past-due balance (~$3,000, on $350/mo plan)</li>
+          <li>Resolve gas past-due balance (on monthly plan)</li>
           <li>Change home insurance — switch from lender-placed to a new Progressive policy (quote in hand)</li>
           <li>Hire electrician (need to find a vendor — main house) to fix six lights:</li>
           <li style="margin-left:14px">Bedroom light</li>
@@ -235,20 +275,13 @@
       </div>
       </details>
     </section>
+   </div>
+  </div>
 
-    <!-- WEEKLY CHALLENGES (habits, sync via DB, reset Monday 12am) -->
-    <section class="card col12">
-      <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
-      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
-      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
-    </section>
-
-    <!-- ===== MONEY (bucket category) ===== -->
-    <section class="bucket col12"><h2 class="buckethead">💰 Money</h2></section>
-
-    <!-- MONTHLY MONEY — fixed bills + subscriptions + income, one date controls all -->
+  <!-- ============================= MONEY ============================= -->
+  <div class="page" id="page-money">
+   <div class="grid">
+    <!-- MONTHLY MONEY -->
     <section class="card col12">
       <h2><span>🗓️ Monthly</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
       <div class="grid" style="margin-top:6px">
@@ -275,59 +308,54 @@
       </div>
     </section>
 
-    <!-- VARIABLE — its own card, budget vs spent -->
+    <!-- VARIABLE -->
     <section class="card col12">
       <h2>🛒 Variable — budget vs spent</h2>
       <ul id="varexp"></ul>
       <div class="progress" id="varProg">Spent: $0</div>
     </section>
 
-    <!-- ANNUAL — set aside monthly -->
+    <!-- ANNUAL -->
     <section class="card col12">
       <h2>📆 Annual — set aside monthly</h2>
       <ul id="annual"></ul>
       <div class="progress" id="annualProg">Set-aside: $0/mo</div>
     </section>
 
-    <!-- MONEY SNAPSHOT -->
+    <!-- MONEY SNAPSHOT (figures from DB) -->
     <section class="card col12">
       <h2><span>📊 Snapshot</span><button class="btn" id="revealBtn">Reveal numbers</button></h2>
-      <div class="metric"><span id="nw" class="hide">$1.59M</span> <small>total net worth (est., incl. home)</small></div>
+      <div class="metric"><span id="nw" class="hide">•••</span> <small>total net worth (est., incl. home)</small></div>
       <div class="grid" style="margin-top:12px">
         <div class="col6">
-          <div class="row"><span>Bank cash</span><span class="v hideable hide">$24,500</span></div>
-          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v hideable hide">$200,000</span></div>
-          <div class="row"><span>Home equity ($1.8M − $427K)</span><span class="v hideable hide">$1,373,000</span></div>
-          <div class="row"><span>Debts (cards + gas)</span><span class="v neg hideable hide">−$4,500</span></div>
+          <div class="row"><span>Bank cash</span><span class="v hideable hide" id="nwBank">•••</span></div>
+          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v hideable hide" id="nwFid">•••</span></div>
+          <div class="row"><span id="nwEqLbl">Home equity</span><span class="v hideable hide" id="nwEq">•••</span></div>
+          <div class="row"><span>Debts (cards + gas)</span><span class="v neg hideable hide" id="nwDebt">•••</span></div>
         </div>
         <div class="col6">
-          <div class="row"><span>Monthly in</span><span class="v pos">$10,604</span></div>
-          <div class="row"><span>Total out (fixed + living)</span><span class="v">~$5,393</span></div>
-          <div class="row"><span>Save rate / surplus</span><span class="v pos">~$5,211</span></div>
-          <div class="row"><span>FICO</span><span class="v">838</span></div>
+          <div class="row"><span>Monthly in</span><span class="v pos hideable hide" id="nwIn">•••</span></div>
+          <div class="row"><span>Total out (fixed + living)</span><span class="v hideable hide" id="nwOut">•••</span></div>
+          <div class="row"><span>Save rate / surplus</span><span class="v pos hideable hide" id="nwSave">•••</span></div>
+          <div class="row"><span>FICO</span><span class="v hideable hide" id="nwFico">•••</span></div>
         </div>
       </div>
     </section>
 
-    <!-- FINANCE SNAPSHOTS — merged dashboard (compact) -->
+    <!-- FINANCE CHARTS (data from DB) -->
     <section class="card col12">
       <h2>📊 Finance snapshots</h2>
       <div class="grid" style="margin-top:8px">
-        <div class="col4"><div class="subhead">Net worth (est.) — $1.6M</div><div style="position:relative;height:128px"><canvas id="cNW" role="img" aria-label="Net worth trend to 1.6 million"></canvas></div></div>
-        <div class="col4"><div class="subhead">What it's made of</div><div style="position:relative;height:128px"><canvas id="cComp" role="img" aria-label="Net worth composition, mostly home equity"></canvas></div></div>
-        <div class="col4"><div class="subhead">Mortgage — 3.5%, $427K</div><div style="position:relative;height:128px"><canvas id="cMort" role="img" aria-label="Mortgage paydown"></canvas></div></div>
+        <div class="col6"><div class="subhead">Net worth (est.)</div><div style="position:relative;height:128px"><canvas id="cNW" role="img" aria-label="Net worth trend"></canvas></div></div>
+        <div class="col6"><div class="subhead">What it's made of</div><div style="position:relative;height:128px"><canvas id="cComp" role="img" aria-label="Net worth composition"></canvas></div></div>
       </div>
       <div class="subhead" style="margin-top:14px">🚩 Biggest offenders — H1 2026, by subcategory</div>
-      <div style="position:relative;height:210px"><canvas id="cOff" role="img" aria-label="Top spending categories broken into subcategories"></canvas></div>
-      <p class="sub" style="margin-top:8px"><b>Real Estate</b> = 4 Todd Beach renovation checks (capital): 1420 $1,500, 1421 $2,000, 110 $1,500, 111 $570.82 = <b>$5,571</b> (110/111 from main ...3326). <b>Home Repair &amp; Maintenance</b> = Home Depot $791 + Lowe's $1,351 = $2,142, out of Shopping (IKEA stays). Shopping now $6,837.</p>
+      <div style="position:relative;height:210px"><canvas id="cOff" role="img" aria-label="Top spending categories"></canvas></div>
     </section>
 
-    <!-- ===== TAXES (bucket category) ===== -->
-    <section class="bucket col12"><h2 class="buckethead">🧾 Taxes</h2></section>
-
-    <!-- TAXES 2026 — DB-backed checkboxes (from Obsidian) -->
-    <section class="card col12">
-      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync across devices</span></h2>
+    <!-- TAXES gather -->
+    <section class="card col6">
+      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
       <div class="chk" data-key="tax-2026-w2"><span class="box">✓</span><span class="nm">W-2 (RAPP)</span></div>
       <div class="chk" data-key="tax-2026-breakfast"><span class="box">✓</span><span class="nm">Breakfast-Royale business income/expenses</span></div>
       <div class="chk" data-key="tax-2026-adu"><span class="box">✓</span><span class="nm">ADU-Rental rental income + expenses</span></div>
@@ -335,55 +363,144 @@
       <div class="chk" data-key="tax-2026-home"><span class="box">✓</span><span class="nm">Home / deductions</span></div>
     </section>
 
-    <!-- GOALS -->
+    <!-- DOCUMENTS TO GATHER (mirrors the vault upkeep checklist) -->
     <section class="card col6">
-      <h2>🎯 2026 goals</h2>
-      <div class="goal"><div class="top"><span>+$50K in the bank ($20K → $70K)</span><span>29% · ~$5.4K/mo</span></div><div class="bar"><i style="width:29%"></i></div></div>
-      <div class="goal"><div class="top"><span>New job — client-side creative, LA</span><span>applying</span></div><div class="bar"><i style="width:25%"></i></div></div>
-      <div class="goal"><div class="top"><span>Japan trip with Child</span><span>planning</span></div><div class="bar"><i style="width:35%"></i></div></div>
-      <div class="goal"><div class="top"><span>Child: psychiatrist + therapist</span><span>searching</span></div><div class="bar"><i style="width:15%"></i></div></div>
-      <div class="goal"><div class="top"><span>Couples therapy w/ Girlfriend</span><span>to start</span></div><div class="bar"><i style="width:10%"></i></div></div>
-      <div class="goal"><div class="top"><span>Child license → hand over Prius</span><span>permit this summer</span></div><div class="bar"><i style="width:20%"></i></div></div>
+      <h2>📥 Documents to gather <span class="sub" style="font-weight:400">monthly · ties to vault upkeep list</span></h2>
+      <div class="note" style="margin-bottom:6px">Drop in <b>0-Inbox</b>, then re-run ingest. Source of truth: <b>LifeOS-Upkeep-Checklist</b> in the vault.</div>
+      <div class="chk" data-key="doc-bofa3326"><span class="box">✓</span><span class="nm">BofA ...3326 statement</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="doc-bofa4394"><span class="box">✓</span><span class="nm">BofA ...4394 statement</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="doc-bofasav"><span class="box">✓</span><span class="nm">BofA savings ...1246</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">monthly</span></div>
+      <div class="chk" data-key="doc-utopia"><span class="box">✓</span><span class="nm">Utopia owner statement (ADU)</span><span class="det">monthly</span></div>
     </section>
-
-    <!-- DATES -->
-    <section class="card col6">
-      <h2>📅 Upcoming &amp; recurring <span class="sub" style="font-weight:400">checks sync across devices</span></h2>
-      <div class="chk" data-key="date-school"><span class="box">✓</span><span class="nm">Child — first day of school</span><span class="det">Aug 19</span></div>
-      <div class="chk" data-key="date-japan"><span class="box">✓</span><span class="nm">Japan trip window</span><span class="det">Summer</span></div>
-      <div class="chk" data-key="date-gardener"><span class="box">✓</span><span class="nm">Gardener</span><span class="det">every Wed</span></div>
-      <div class="chk" data-key="date-cleaner"><span class="box">✓</span><span class="nm">House cleaner</span><span class="det">every 2 wks</span></div>
-      <div class="chk" data-key="date-gas"><span class="box">✓</span><span class="nm">Gas payment plan</span><span class="det">$350 / mo</span></div>
-      <div class="chk" data-key="date-coparent"><span class="box">✓</span><span class="nm">Co-parenting therapy</span><span class="det">2× / mo</span></div>
-      <div class="chk" data-key="date-proptax"><span class="box">✓</span><span class="nm">Property tax</span><span class="det">2× / yr</span></div>
-    </section>
-
-    <!-- AREAS (all areas / topics from the vault Index.md) -->
-    <section class="card col12">
-      <h2>🗂️ Areas — map of everything <span class="sub" style="font-weight:400">from the vault Index</span></h2>
-      <div class="areawrap">
-        <div class="areagrp"><div class="lbl">🧭 Areas</div>
-          <span class="chip">Goals &amp; Routine</span><span class="chip">Family</span><span class="chip">Child</span><span class="chip">Dog</span><span class="chip">Career</span><span class="chip">RAPP</span><span class="chip">Job-Search</span><span class="chip">Gyip-com</span><span class="chip">Relationship</span><span class="chip">Girlfriend</span><span class="chip">Content</span><span class="chip">TikTok-YouTube</span><span class="chip">Travel-Channel</span><span class="chip">Pokémon Channel</span><span class="chip">Health</span><span class="chip">Travel</span>
-        </div>
-        <div class="areagrp"><div class="lbl">🚀 Projects</div>
-          <span class="chip">Agent-Dashboard</span><span class="chip">Web-Projects</span><span class="chip">Gyip-com</span><span class="chip">Woodworking</span><span class="chip">Breakfast-Royale (archived)</span>
-        </div>
-        <div class="areagrp"><div class="lbl">🏠 Property &amp; assets</div>
-          <span class="chip">Home</span><span class="chip">ADU-Rental</span><span class="chip">Van-E150</span><span class="chip">Prius-V</span>
-        </div>
-        <div class="areagrp"><div class="lbl">💰 Finances</div>
-          <span class="chip">Investing Fidelity</span><span class="chip">Taxes</span><span class="chip">Subscriptions</span><span class="chip">Recurring-Pay</span>
-        </div>
-        <div class="areagrp"><div class="lbl">👥 People</div>
-          <span class="chip">Renter</span><span class="chip">Property-Manager</span><span class="chip">Gardener</span><span class="chip">House-Cleaner</span>
-        </div>
-      </div>
-      <p class="sub" style="margin-top:12px">Notes &amp; context live in the Obsidian vault (the brain).</p>
-    </section>
-
+   </div>
   </div>
 
-  <div class="foot">Tasks & finances live in Supabase (project: lifeos) — synced everywhere. Goals, dates & net worth are snapshots updated at the Monday review. Habit pips sync via the database and reset every Monday at 12am. Obsidian wiki todos are a read-only snapshot, refreshed each time this page is regenerated.</div>
+  <!-- ============================= JOBS ============================= -->
+  <div class="page" id="page-jobs">
+   <div class="grid">
+    <section class="card col6">
+      <h2>🔎 Job search pipeline <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="job-resume"><span class="box">✓</span><span class="nm">Resume up to date</span></div>
+      <div class="chk" data-key="job-targets"><span class="box">✓</span><span class="nm">Target company list refreshed</span></div>
+      <div class="chk" data-key="job-portfolio"><span class="box">✓</span><span class="nm">Portfolio / site current (gyip.com)</span></div>
+      <div class="chk" data-key="job-apps"><span class="box">✓</span><span class="nm">Applications out this week</span></div>
+      <div class="chk" data-key="job-followups"><span class="box">✓</span><span class="nm">Follow-ups sent</span></div>
+      <div class="chk" data-key="job-interviews"><span class="box">✓</span><span class="nm">Interviews scheduled</span></div>
+    </section>
+
+    <section class="card col6">
+      <h2>🏆 Weekly challenge <span class="sub" style="font-weight:400">resets Monday 12am</span></h2>
+      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+      <div class="note" style="margin-top:12px">Goal: <b>client-side creative role in LA</b>. A daily job-search task runs automatically and feeds candidates → review them in the vault <b>Job-Search</b> note. Resume + applications live in the <b>Job Apply</b> folder.</div>
+    </section>
+
+    <section class="card col12">
+      <h2>🗂️ Career notes</h2>
+      <div class="areawrap">
+        <div class="areagrp"><div class="lbl">📍 Where things live</div>
+          <span class="chip">Job-Search (vault)</span><span class="chip">RAPP (current)</span><span class="chip">Gyip-com (portfolio)</span><span class="chip">resume.pdf</span><span class="chip">Job Apply folder</span>
+        </div>
+      </div>
+    </section>
+   </div>
+  </div>
+
+  <!-- ============================= REAL ESTATE ============================= -->
+  <div class="page" id="page-realestate">
+   <div class="grid">
+    <section class="card col6">
+      <h2>🏠 Properties &amp; assets</h2>
+      <div class="areawrap">
+        <div class="areagrp"><div class="lbl">🏡 Real estate</div>
+          <span class="chip">Home (main)</span><span class="chip">ADU-Rental (12708)</span><span class="chip">Mortgage</span><span class="chip">Property-Tax</span>
+        </div>
+        <div class="areagrp"><div class="lbl">🚗 Vehicles</div>
+          <span class="chip">Van-E150</span><span class="chip">Prius-V (→ Child)</span>
+        </div>
+        <div class="areagrp"><div class="lbl">👥 People</div>
+          <span class="chip">Renter</span><span class="chip">Property-Manager</span>
+        </div>
+      </div>
+      <div class="note" style="margin-top:10px">Details &amp; documents live in the Obsidian vault under Property &amp; <code>Private/Property/</code>.</div>
+    </section>
+
+    <section class="card col6">
+      <h2>📉 Mortgage paydown</h2>
+      <div style="position:relative;height:150px"><canvas id="cMort" role="img" aria-label="Mortgage paydown"></canvas></div>
+      <div class="note" style="margin-top:8px">Estimate until a current lender statement + appraisal confirm the balance.</div>
+    </section>
+
+    <section class="card col12">
+      <h2>✅ Property to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="prop-insurance"><span class="box">✓</span><span class="nm">Switch home insurance → Progressive (quote in hand)</span></div>
+      <div class="chk" data-key="prop-gas"><span class="box">✓</span><span class="nm">Resolve gas past-due (on monthly plan)</span></div>
+      <div class="chk" data-key="prop-electrician"><span class="box">✓</span><span class="nm">Hire electrician — six lights (main house)</span></div>
+      <div class="chk" data-key="prop-appraisal"><span class="box">✓</span><span class="nm">Get home appraisal / market estimate</span></div>
+      <div class="chk" data-key="prop-mortstmt"><span class="box">✓</span><span class="nm">Pull current mortgage statement (balance)</span></div>
+      <div class="chk" data-key="prop-utopia"><span class="box">✓</span><span class="nm">Get Utopia owner statements 2025 / 2026</span></div>
+    </section>
+   </div>
+  </div>
+
+  <!-- ============================= PROJECTS ============================= -->
+  <div class="page" id="page-projects">
+   <div class="grid">
+    <section class="card col12">
+      <h2>🚀 Projects</h2>
+      <div class="areawrap">
+        <div class="areagrp"><div class="lbl">💻 Build</div>
+          <span class="chip">Agent-Dashboard</span><span class="chip">Gyip-com</span><span class="chip">Web-Projects</span>
+        </div>
+        <div class="areagrp"><div class="lbl">🎬 Content</div>
+          <span class="chip">TikTok-YouTube</span><span class="chip">Travel-Channel</span><span class="chip">Pokémon Channel</span>
+        </div>
+        <div class="areagrp"><div class="lbl">🪚 Hands-on</div>
+          <span class="chip">Woodworking</span><span class="chip">Breakfast-Royale (archived)</span>
+        </div>
+      </div>
+      <div class="note" style="margin-top:10px">Project notes &amp; context live in the Obsidian vault under Projects / Content.</div>
+    </section>
+
+    <section class="card col12">
+      <h2>✅ Project to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="proj-lifeos"><span class="box">✓</span><span class="nm">LifeOS dashboard — multipage</span></div>
+      <div class="chk" data-key="proj-site"><span class="box">✓</span><span class="nm">gyip.com portfolio refresh</span></div>
+      <div class="chk" data-key="proj-content"><span class="box">✓</span><span class="nm">Plan next content batch</span></div>
+    </section>
+   </div>
+  </div>
+
+  <!-- ============================= CHILD ============================= -->
+  <div class="page" id="page-child">
+   <div class="grid">
+    <section class="card col6">
+      <h2>🩺 Health to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="child-psych"><span class="box">✓</span><span class="nm">Book psychiatrist (Aetna, 1–3 mo wait)</span></div>
+      <div class="chk" data-key="child-therapist"><span class="box">✓</span><span class="nm">Find a therapist (start in parallel)</span></div>
+      <div class="chk" data-key="child-pediatrician"><span class="box">✓</span><span class="nm">Call Dr. DiMundo (pediatrician)</span></div>
+      <div class="chk" data-key="child-cardiac"><span class="box">✓</span><span class="nm">Cardiac Dr — follow-up visit</span></div>
+      <div class="chk" data-key="child-dentist"><span class="box">✓</span><span class="nm">Dentist — make appointment</span></div>
+    </section>
+
+    <section class="card col6">
+      <h2>📅 Milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="child-permit"><span class="box">✓</span><span class="nm">Driver's permit → license</span><span class="det">summer</span></div>
+      <div class="chk" data-key="child-prius"><span class="box">✓</span><span class="nm">Hand over Prius-V once licensed</span></div>
+      <div class="chk" data-key="child-college"><span class="box">✓</span><span class="nm">Visit at least one college</span></div>
+      <div class="chk" data-key="child-japan"><span class="box">✓</span><span class="nm">Japan trip (return before Aug 19)</span><span class="det">summer</span></div>
+      <div class="chk" data-key="child-summer"><span class="box">✓</span><span class="nm">Line up summer activities</span></div>
+    </section>
+
+    <section class="card col12">
+      <h2 class="note" style="text-transform:none;letter-spacing:0;font-size:11px">Full Child notes (health history, school, custody context) live in the Obsidian vault — kept in <code>Private/</code>, not on this hosted page.</h2>
+    </section>
+   </div>
+  </div>
+
+  <div class="foot">Tasks, finances, habits, checklists &amp; snapshot figures live in Supabase (project: lifeos) — synced everywhere, visible only after sign-in. The 📓 From Obsidian list is a read-only snapshot, refreshed each time this page is regenerated.</div>
 </div>
 
 <script>
@@ -392,6 +509,7 @@
   const sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const BUCKETS=['today','week','backlog'];
   const money=n=>'$'+Math.round(n).toLocaleString();
+  const moneyK=n=>'$'+Math.round(n/1000)+'K';
   const el=id=>document.getElementById(id);
   const setStatus=(m,e)=>{const s=el('status'); s.textContent=m; s.style.color=e?'var(--bad)':'var(--muted)';};
 
@@ -399,7 +517,17 @@
   const mkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
   const mlabel=d=>d.toLocaleDateString(undefined,{month:'long',year:'numeric'});
 
-  let tasks=[], items=[], statusMap={};
+  let tasks=[], items=[], statusMap={}, SNAP={};
+
+  /* ---------- ROUTING ---------- */
+  const PAGES=['today','money','jobs','realestate','projects','child'];
+  function showPage(p){
+    if(!PAGES.includes(p)) p='today';
+    PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
+    document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('active', a.dataset.page===p));
+    buildCharts(p);
+  }
+  window.addEventListener('hashchange',()=>showPage((location.hash||'#today').slice(1)));
 
   /* ---------- AUTH ---------- */
   function renderAuth(user){
@@ -425,6 +553,7 @@
     if(session && session.user){
       document.body.classList.add('authed');
       renderAuth(session.user);
+      showPage((location.hash||'#today').slice(1));
       load();
     } else {
       setupGate();
@@ -434,15 +563,19 @@
   /* ---------- LOAD ---------- */
   async function load(){
     setStatus('loading…');
-    const [t, fi, fs] = await Promise.all([
+    const [t, fi, fs, sn] = await Promise.all([
       sb.from('tasks').select('*'),
       sb.from('finance_items').select('*'),
-      sb.from('finance_status').select('*')
+      sb.from('finance_status').select('*'),
+      sb.from('snapshots').select('*')
     ]);
-    if(t.error||fi.error||fs.error){ setStatus('DB error: '+((t.error||fi.error||fs.error).message), true); return; }
-    tasks=t.data||[]; items=fi.data||[]; statusMap={};
+    if(t.error||fi.error||fs.error||sn.error){ setStatus('DB error: '+((t.error||fi.error||fs.error||sn.error).message), true); return; }
+    tasks=t.data||[]; items=fi.data||[]; statusMap={}; SNAP={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
-    renderTodo(); renderFinance(); loadHabits(); loadChecklist();
+    (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
+    renderTodo(); renderFinance(); renderSnapshot(); renderGoals();
+    loadHabits(); loadChecklist();
+    buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
 
@@ -480,7 +613,7 @@
     li.appendChild(inp); inp.focus(); inp.select();
   }
   function renderTodo(){
-    BUCKETS.forEach(b=>{ const ul=el('list-'+b); ul.innerHTML=''; colItems(b).forEach(t=>ul.appendChild(taskLi(t))); });
+    BUCKETS.forEach(b=>{ const ul=el('list-'+b); if(!ul) return; ul.innerHTML=''; colItems(b).forEach(t=>ul.appendChild(taskLi(t))); });
   }
   async function updateTask(t,patch){
     Object.assign(t,patch); renderTodo();
@@ -495,7 +628,7 @@
     if(error){ setStatus('Add failed: '+error.message,true); return; }
     if(data&&data[0]) tasks.push(data[0]); renderTodo();
   }
-  BUCKETS.forEach(b=> el('add-'+b).addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(b,'add-'+b); }));
+  BUCKETS.forEach(b=>{ const a=el('add-'+b); if(a) a.addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(b,'add-'+b); }); });
 
   /* ---------- FINANCE ---------- */
   const st=itemId=>statusMap[itemId+'|'+mkey(cur)]||{paid:false,spent:0};
@@ -510,9 +643,8 @@
     if(error) setStatus('Budget save failed',true);
   }
   const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  // render a simple check-when-paid list; returns {total, paid}
   function renderPaidList(elId, list){
-    const ul=el(elId); ul.innerHTML=''; let total=0, paid=0;
+    const ul=el(elId); if(!ul) return {total:0,paid:0}; ul.innerHTML=''; let total=0, paid=0;
     list.forEach(it=>{ const s=st(it.id); total+=Number(it.amount); if(s.paid) paid+=Number(it.amount);
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
       li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+'</span><span class="amt">'+money(it.amount)+'</span>';
@@ -520,6 +652,7 @@
     return {total, paid};
   }
   function renderFinance(){
+    if(!el('exp')) return;
     const fixed=items.filter(i=>i.kind==='fixed_expense').sort((a,b)=>a.sort_order-b.sort_order);
     const subs=items.filter(i=>i.kind==='subscription').sort((a,b)=>a.sort_order-b.sort_order);
     const annual=items.filter(i=>i.kind==='annual_expense').sort((a,b)=>a.sort_order-b.sort_order);
@@ -528,15 +661,12 @@
     el('mMonth').textContent=mlabel(cur);
     const curMonthNum=cur.getMonth()+1;
 
-    // fixed bills
     const f=renderPaidList('exp', fixed); const fixedTotal=f.total;
     el('expProg').textContent='Paid: '+money(f.paid)+' of '+money(fixedTotal);
 
-    // subscriptions
     const sub=renderPaidList('subs', subs); const subsTotal=sub.total;
     el('subsProg').textContent='Paid: '+money(sub.paid)+' of '+money(subsTotal)+' · '+subs.length+' subs';
 
-    // annual expenses (set aside monthly, billed in due_month)
     const annualEl=el('annual'); annualEl.innerHTML=''; let annualYear=0;
     annual.forEach(it=>{ const s=st(it.id); annualYear+=Number(it.amount);
       const dueNow=it.due_month===curMonthNum;
@@ -547,7 +677,6 @@
     const annualMonthly=annualYear/12;
     el('annualProg').textContent='Set-aside: '+money(annualMonthly)+'/mo (annual '+money(annualYear)+'/yr)';
 
-    // variable
     const ve=el('varexp'); ve.innerHTML=''; let budTot=0, spentTot=0;
     variable.forEach(it=>{ const s=st(it.id); const b=Number(it.amount)||0, sp=Number(s.spent)||0; budTot+=b; spentTot+=sp;
       const li=document.createElement('li'); li.className='varwrap';
@@ -564,7 +693,6 @@
     const totalBudget=fixedTotal+subsTotal+annualMonthly+budTot;
     el('expTotal').textContent=money(totalBudget);
 
-    // income
     const incEl=el('inc'); incEl.innerHTML=''; let recSum=0, incTotal=0;
     income.forEach(it=>{ const s=st(it.id); incTotal+=Number(it.amount); if(s.paid) recSum+=Number(it.amount);
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
@@ -575,11 +703,33 @@
     el('sumSave').textContent=money(incTotal-totalBudget);
   }
   function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
-  el('mPrev').onclick=()=>shift(-1);
-  el('mNext').onclick=()=>shift(1);
+  if(el('mPrev')) el('mPrev').onclick=()=>shift(-1);
+  if(el('mNext')) el('mNext').onclick=()=>shift(1);
 
-  /* ---------- HABITS (DB, auto-reset Monday 12am local) ---------- */
-  // keyed by the Monday of the current local week → a new week shows a clean slate; past weeks are kept as history.
+  /* ---------- SNAPSHOT (figures from DB) ---------- */
+  function renderSnapshot(){
+    const s=SNAP.snapshot; if(!s) return;
+    const equity=(s.homeValue||0)-(s.mortgage||0);
+    const nw=(s.bankCash||0)+(s.fidelity||0)+equity-(s.debts||0);
+    el('nw').textContent='$'+(nw/1e6).toFixed(2)+'M';
+    el('nwBank').textContent=money(s.bankCash||0);
+    el('nwFid').textContent=money(s.fidelity||0);
+    el('nwEqLbl').textContent='Home equity ('+moneyK(s.homeValue)+' − '+moneyK(s.mortgage)+')';
+    el('nwEq').textContent=money(equity);
+    el('nwDebt').textContent='−'+money(s.debts||0);
+    el('nwIn').textContent=money(s.monthlyIn||0);
+    el('nwOut').textContent='~'+money(s.totalOut||0);
+    el('nwSave').textContent='~'+money(s.saveRate||0);
+    el('nwFico').textContent=s.fico||'—';
+  }
+  function renderGoals(){
+    const wrap=el('goalStrip'); if(!wrap) return; const g=SNAP.goals||[];
+    if(!g.length){ wrap.innerHTML='<div class="note">No goals set.</div>'; return; }
+    wrap.innerHTML=g.map(x=>'<div class="goal"><div class="top"><span>'+esc(x.label)+'</span><span>'+esc(x.note||'')+'</span></div><div class="bar"><i style="width:'+(x.pct||0)+'%"></i></div></div>').join('');
+  }
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  /* ---------- HABITS ---------- */
   function weekMonday(d){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); const dow=(x.getDay()+6)%7; x.setDate(x.getDate()-dow); return x; }
   const wkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   let habitSlots={};
@@ -603,7 +753,7 @@
     if(error) setStatus('Habit save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
   }
 
-  /* ---------- CHECKLISTS (Taxes + Upcoming/recurring) — DB-backed, sync across devices ---------- */
+  /* ---------- CHECKLISTS ---------- */
   let checkMap={};
   async function loadChecklist(){
     const { data, error }=await sb.from('checklist_status').select('*');
@@ -625,49 +775,42 @@
   }
 
   /* ---------- REVEAL ---------- */
-  (function(){ let shown=false; el('revealBtn').onclick=()=>{ shown=!shown;
+  (function(){ let shown=false; const rb=el('revealBtn'); if(!rb) return; rb.onclick=()=>{ shown=!shown;
     document.querySelectorAll('#nw,.hideable').forEach(e=>e.classList.toggle('hide',!shown));
-    el('revealBtn').textContent=shown?'Hide numbers':'Reveal numbers'; };
+    rb.textContent=shown?'Hide numbers':'Reveal numbers'; };
   })();
 
-  boot();
-</script>
-<script>
-  (function(){
-    if(!window.Chart) return;
+  /* ---------- CHARTS (data from DB, built lazily per page) ---------- */
+  const charts={};
+  function buildCharts(page){
+    if(!window.Chart || !Object.keys(SNAP).length) return;
     Chart.defaults.font.size=10; Chart.defaults.plugins.legend.display=false;
     Chart.defaults.maintainAspectRatio=false; Chart.defaults.responsive=true;
     const gridc='rgba(127,127,127,.15)';
     const ax={grid:{color:gridc},ticks:{font:{size:9}}};
-    const C=(id,cfg)=>{const e=document.getElementById(id); if(e) new Chart(e,cfg);};
-    C('cNW',{type:'line',data:{labels:['18','21','22','23','25','26'],
-      datasets:[{data:[1014,1350,1642,1521,1631,1619],borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:0,borderWidth:2}]},
-      options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(1)+'M'}}}}});
-    C('cComp',{type:'doughnut',data:{labels:['Home equity','Investments','Cash'],
-      datasets:[{data:[1373,200,24.5],backgroundColor:['#1d9e75','#378add','#ef9f27'],borderWidth:0}]},
-      options:{cutout:'58%',plugins:{tooltip:{callbacks:{label:c=>c.label+' $'+c.parsed+'K'}}}}});
-    C('cMort',{type:'line',data:{labels:['23','24','25','26'],
-      datasets:[{data:[447,442,436,427],borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.25,pointRadius:0,borderWidth:2}]},
-      options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
-    const off={labels:['Shopping $6.8K','Travel $5.9K','Dining $5.8K','Real Estate $5.6K','Home Repair $2.1K'],
-      seg:[
-        {label:'Amazon',color:'#378add',data:[3443,0,0,0,0]},
-        {label:'Other retail',color:'#85b7eb',data:[3394,0,0,0,0]},
-        {label:'Lodging',color:'#1d9e75',data:[0,3005,0,0,0]},
-        {label:'Tours/activities',color:'#5dcaa5',data:[0,1608,0,0,0]},
-        {label:'Air',color:'#9fe1cb',data:[0,845,0,0,0]},
-        {label:'Rail/transit',color:'#d7f0e6',data:[0,429,0,0,0]},
-        {label:'Restaurants',color:'#ba7517',data:[0,0,4491,0,0]},
-        {label:'Fast-casual',color:'#ef9f27',data:[0,0,826,0,0]},
-        {label:'Work café/delivery',color:'#fac775',data:[0,0,461,0,0]},
-        {label:'Reno checks (Todd Beach)',color:'#534ab7',data:[0,0,0,5571,0]},
-        {label:'Home Depot',color:'#993c1d',data:[0,0,0,0,791]},
-        {label:"Lowe's",color:'#d85a30',data:[0,0,0,0,1351]}
-      ]};
-    C('cOff',{type:'bar',data:{labels:off.labels,datasets:off.seg.map(s=>({label:s.label,data:s.data,backgroundColor:s.color,borderWidth:0}))},
-      options:{indexAxis:'y',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.x.toLocaleString()}}},
-        scales:{x:{stacked:true,...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}},y:{stacked:true,...ax}}}});
-  })();
+    const C=(id,cfg)=>{ const e=el(id); if(!e||charts[id]) return; charts[id]=new Chart(e,cfg); };
+    if(page==='money'){
+      const nw=SNAP.chart_nw, comp=SNAP.chart_comp, off=SNAP.chart_off;
+      if(nw) C('cNW',{type:'line',data:{labels:nw.labels,
+        datasets:[{data:nw.data,borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:0,borderWidth:2}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(1)+'M'}}}}});
+      if(comp) C('cComp',{type:'doughnut',data:{labels:comp.labels,
+        datasets:[{data:comp.data,backgroundColor:['#1d9e75','#378add','#ef9f27'],borderWidth:0}]},
+        options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+' $'+c.parsed+'K'}}}}});
+      if(off) C('cOff',{type:'bar',data:{labels:off.labels,datasets:off.seg.map(s=>({label:s.label,data:s.data,backgroundColor:s.color,borderWidth:0}))},
+        options:{indexAxis:'y',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.x.toLocaleString()}}},
+          scales:{x:{stacked:true,...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}},y:{stacked:true,...ax}}}});
+    }
+    if(page==='realestate'){
+      const m=SNAP.chart_mort;
+      if(m) C('cMort',{type:'line',data:{labels:m.labels,
+        datasets:[{data:m.data,borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.25,pointRadius:0,borderWidth:2}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+    }
+    Object.values(charts).forEach(c=>{ try{c.resize();}catch(e){} });
+  }
+
+  boot();
 </script>
 </body>
 </html>
