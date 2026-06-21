@@ -83,6 +83,8 @@
   .bar{height:6px;background:var(--panel2);border-radius:5px;overflow:hidden}
   .bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--good))}
   .chip{display:inline-block;background:var(--chip);color:var(--muted);border-radius:20px;padding:2px 8px;font-size:9px;margin:2px 3px 0 0}
+  a.chip{text-decoration:none;color:var(--accent);font-weight:600;cursor:pointer}
+  a.chip:hover{filter:brightness(1.1);text-decoration:underline}
   .date{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px}
   .date:last-child{border-bottom:0}
   .date b{font-variant-numeric:tabular-nums}
@@ -484,6 +486,9 @@
     <section class="card col12">
       <h2>🗂️ Career notes</h2>
       <div class="areawrap">
+        <div class="areagrp"><div class="lbl">🔗 Links</div>
+          <a class="chip" href="https://gyip.com" target="_blank" rel="noopener">🌐 Website (gyip.com)</a><a class="chip" href="https://www.linkedin.com/in/gyipla" target="_blank" rel="noopener">in LinkedIn</a><a class="chip" href="https://gyip.com/resume.html" target="_blank" rel="noopener">📄 Resume</a>
+        </div>
         <div class="areagrp"><div class="lbl">📍 Where things live</div>
           <span class="chip">Job-Search (vault)</span><span class="chip">RAPP (current)</span><span class="chip">Gyip-com (portfolio)</span><span class="chip">resume.pdf</span><span class="chip">Job Apply folder</span>
         </div>
@@ -632,10 +637,14 @@
           <span class="chip">TikTok-YouTube</span><span class="chip">Travel-Channel</span><span class="chip">Pokémon Channel</span>
         </div>
         <div class="areagrp"><div class="lbl">🪚 Hands-on</div>
-          <span class="chip">Woodworking</span><span class="chip">Breakfast-Royale (archived)</span>
+          <span class="chip">Woodworking</span><span class="chip">Breakfast Royale (card game)</span>
         </div>
       </div>
-      <div class="note" style="margin-top:10px">Project notes &amp; context live in the Obsidian vault under Projects / Content.</div>
+      <div class="note" style="margin-top:10px">
+        <b>Breakfast Royale</b> 🍳 — card/board game designed &amp; built with Child; Midjourney art; trademark "Roguelike Games". <b>Archived ~2024</b> — off Amazon, copies at home, no income.<br>
+        <b>Woodworking</b> 🪚 — builds with Girlfriend; current: her shelf. Past: Van-E150 base cabinet, shelving, bed/couch.<br>
+        Full notes &amp; context live in the Obsidian vault under Projects / Content.
+      </div>
     </section>
 
     <section class="card col12">
