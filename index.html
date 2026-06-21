@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life OS — Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#2a2f3a;
+    --text:#e7eaf0; --muted:#9aa3b2; --accent:#6ea8fe; --good:#4cc38a;
+    --warn:#f0a14b; --bad:#e5707e; --chip:#222836;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f4f6fa; --panel:#ffffff; --panel2:#f0f3f8; --line:#e2e7ef;
+      --text:#1b2330; --muted:#5d6877; --accent:#2f6bff; --chip:#eef2f8; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:12px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:14px 12px 40px}
+  header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;justify-content:space-between;margin-bottom:4px}
+  h1{font-size:19px;margin:0;letter-spacing:-.3px}
+  .sub{color:var(--muted);font-size:10px}
+  .authbar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
+  .authbar input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:3px 6px;width:120px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin-top:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 11px 9px}
+  .card h2{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:0 0 7px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .col4{grid-column:span 4}.col6{grid-column:span 6}.col8{grid-column:span 8}.col12{grid-column:span 12}
+  @media(max-width:820px){.col4,.col6,.col8{grid-column:span 12}}
+  ul{list-style:none;margin:0;padding:0}
+  .task{display:flex;gap:6px;align-items:flex-start;padding:3px 0;border-bottom:1px dashed var(--line)}
+  .task:last-child{border-bottom:0}
+  .task .box{width:14px;height:14px;border:2px solid var(--accent);border-radius:4px;flex:0 0 auto;margin-top:1px;display:grid;place-items:center;font-size:9px;color:transparent;cursor:pointer}
+  .task.done .box{background:var(--accent);color:#fff}
+  .task.done .label{color:var(--muted);text-decoration:line-through}
+  .label{flex:1;cursor:pointer}
+  .label small{display:block;color:var(--muted);font-size:9px;text-decoration:none}
+  .bud{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px;cursor:pointer}
+  .bud:last-child{border-bottom:0}
+  .bud .box{width:14px;height:14px;border:2px solid var(--muted);border-radius:4px;flex:0 0 auto;display:grid;place-items:center;font-size:8px;color:transparent}
+  .bud.paid .box{background:var(--good);border-color:var(--good);color:#fff}
+  .bud .nm{flex:1}
+  .bud.paid .nm{color:var(--muted);text-decoration:line-through}
+  .bud .amt{font-variant-numeric:tabular-nums;font-weight:600}
+  .sumline{display:flex;justify-content:space-between;padding:6px 0 2px;margin-top:4px;border-top:2px solid var(--line);font-weight:700;font-size:11px}
+  .progress{font-size:9px;color:var(--muted);margin-top:3px}
+  .btn{background:var(--chip);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:3px 8px;font-size:9px;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .mnav{display:flex;align-items:center;gap:6px;font-weight:400}
+  .navbtn{background:var(--chip);border:1px solid var(--line);border-radius:6px;color:var(--text);cursor:pointer;padding:2px 6px;font-size:11px}
+  .navbtn:hover{border-color:var(--accent)}
+  .mnav b{min-width:96px;text-align:center;font-variant-numeric:tabular-nums;font-size:11px}
+  .subhead{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;margin:14px 0 4px}
+  .var{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .var:last-child{border-bottom:0}
+  .var .nm{flex:1}
+  .var .vio{display:flex;gap:6px}
+  .var input{width:62px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:3px 6px;text-align:right}
+  .var input:focus{outline:none;border-color:var(--accent)}
+  .var .vrem{width:80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:12px}
+  .over{color:var(--bad)} .under{color:var(--good)}
+  .habit{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .habit:last-child{border-bottom:0}
+  .pips{display:flex;gap:5px}
+  .pip{width:17px;height:17px;border-radius:50%;border:2px solid var(--accent);cursor:pointer;display:grid;place-items:center;font-size:9px;color:transparent}
+  .pip.on{background:var(--accent);color:#fff}
+  .goal{margin:6px 0}
+  .goal .top{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;gap:8px}
+  .goal .top span:last-child{color:var(--muted);font-size:9px;white-space:nowrap}
+  .bar{height:6px;background:var(--panel2);border-radius:5px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--good))}
+  .chip{display:inline-block;background:var(--chip);color:var(--muted);border-radius:20px;padding:2px 8px;font-size:9px;margin:2px 3px 0 0}
+  .date{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px}
+  .date:last-child{border-bottom:0}
+  .date b{font-variant-numeric:tabular-nums}
+  .row{display:flex;justify-content:space-between;gap:10px;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px}
+  .row:last-child{border-bottom:0}
+  .row .v{font-variant-numeric:tabular-nums;font-weight:600}
+  .pos{color:var(--good)} .neg{color:var(--bad)}
+  .metric{font-size:22px;font-weight:700;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+  .metric small{font-size:10px;color:var(--muted);font-weight:500}
+  .hide{filter:blur(9px);user-select:none;transition:filter .15s}
+  .foot{color:var(--muted);font-size:9px;margin-top:16px;text-align:center}
+  .todo-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+  @media(max-width:820px){.todo-cols{grid-template-columns:1fr}}
+  .colhead{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;margin-bottom:2px;padding-bottom:4px;border-bottom:2px solid var(--line)}
+  .actions{display:flex;gap:1px;align-items:center;opacity:.4;transition:opacity .12s;flex:0 0 auto}
+  .task:hover .actions{opacity:1}
+  .mini{background:none;border:0;color:var(--muted);cursor:pointer;font-size:10px;line-height:1;padding:2px 3px;border-radius:5px}
+  .mini:hover{background:var(--chip);color:var(--text)}
+  .pri{width:24px;flex:0 0 auto;background:var(--panel2);border:1px solid var(--line);border-radius:5px;color:var(--text);font:inherit;font-size:10px;text-align:center;padding:1px 0;appearance:textfield}
+  .pri::-webkit-outer-spin-button,.pri::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .pri:focus{outline:none;border-color:var(--accent)}
+  .editinput{flex:1;background:var(--panel2);border:1px solid var(--accent);border-radius:5px;color:var(--text);font:inherit;padding:2px 5px}
+  .addrow{display:flex;gap:5px;margin-top:7px;padding-top:7px;border-top:1px solid var(--line)}
+  .addrow input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:4px 7px;flex:1;min-width:0}
+  .addrow input:focus{outline:none;border-color:var(--accent)}
+  #gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:100;padding:20px}
+  #gate .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 24px;width:100%;max-width:320px;text-align:center}
+  #gate h1{font-size:20px;margin:0 0 4px}
+  #gate p{color:var(--muted);font-size:11px;margin:0 0 18px}
+  #gate input{display:block;width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);font:inherit;font-size:14px;padding:9px 11px;margin-bottom:10px}
+  #gate input:focus{outline:none;border-color:var(--accent)}
+  #gate button{width:100%;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px;font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+  #gate .err{color:var(--bad);font-size:11px;min-height:14px;margin-top:8px}
+  body.authed #gate{display:none}
+  body:not(.authed) .wrap{display:none}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="box">
+    <h1>🌅 Life OS</h1>
+    <p>Sign in to continue</p>
+    <input id="g-email" type="email" placeholder="email" autocomplete="username">
+    <input id="g-pw" type="password" placeholder="password" autocomplete="current-password">
+    <button id="g-btn">Sign in</button>
+    <div class="err" id="g-err"></div>
+  </div>
+</div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>🌅 Life OS — Dashboard</h1>
+      <div class="sub">Owner · Culver City · <span id="status">loading…</span></div>
+    </div>
+    <div class="authbar" id="authbar"></div>
+  </header>
+
+  <div class="grid">
+
+    <!-- TO-DO + HABITS -->
+    <section class="card col12">
+      <h2>✅ To-do — plan your day</h2>
+      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+      <div class="todo-cols">
+        <div><div class="colhead">🔆 To-do today</div><ul id="list-today"></ul>
+          <div class="addrow"><input id="add-today" placeholder="Add to Today…" autocomplete="off"></div></div>
+        <div><div class="colhead">🗓️ To-do this week</div><ul id="list-week"></ul>
+          <div class="addrow"><input id="add-week" placeholder="Add to this week…" autocomplete="off"></div></div>
+        <div><div class="colhead">📋 To-do (backlog)</div><ul id="list-backlog"></ul>
+          <div class="addrow"><input id="add-backlog" placeholder="Add to backlog…" autocomplete="off"></div></div>
+      </div>
+      <div class="progress" style="margin-top:8px">1–3 box sets importance (1 = top) · ◀ ▶ move a task · click text to edit · ✕ delete · box completes. Saved to the database, syncs everywhere.</div>
+    </section>
+
+    <!-- MONTHLY EXPENSES -->
+    <section class="card col6">
+      <h2><span>💸 Monthly expenses</span><span class="mnav"><button class="navbtn" id="expPrev">◀</button><b id="expMonth"></b><button class="navbtn" id="expNext">▶</button></span></h2>
+      <div class="subhead">Set bills — check when paid</div>
+      <ul id="exp"></ul>
+      <div class="progress" id="expProg">Paid: $0</div>
+      <div class="subhead">Variable — budget vs spent</div>
+      <ul id="varexp"></ul>
+      <div class="progress" id="varProg">Spent: $0</div>
+      <div class="sumline"><span>Total monthly budget</span><span id="expTotal">$0</span></div>
+    </section>
+
+    <!-- MONTHLY INCOME -->
+    <section class="card col6">
+      <h2><span>💵 Monthly income</span><span class="mnav"><button class="navbtn" id="incPrev">◀</button><b id="incMonth"></b><button class="navbtn" id="incNext">▶</button></span></h2>
+      <ul id="inc"></ul>
+      <div class="sumline"><span>Total monthly in</span><span id="incTotal">$0</span></div>
+      <div class="progress" id="incProg">Received: $0</div>
+      <div style="margin-top:14px;padding-top:12px;border-top:2px solid var(--line)">
+        <div class="row"><span>Income</span><span class="v pos" id="sumInc">$0</span></div>
+        <div class="row"><span>Expenses (budget)</span><span class="v" id="sumExp">$0</span></div>
+        <div class="row"><span>Left to save / month</span><span class="v pos" id="sumSave">$0</span></div>
+      </div>
+    </section>
+
+    <!-- GOALS -->
+    <section class="card col6">
+      <h2>🎯 2026 goals</h2>
+      <div class="goal"><div class="top"><span>+$50K in the bank ($20K → $70K)</span><span>29% · ~$5.4K/mo</span></div><div class="bar"><i style="width:29%"></i></div></div>
+      <div class="goal"><div class="top"><span>New job — client-side creative, LA</span><span>applying</span></div><div class="bar"><i style="width:25%"></i></div></div>
+      <div class="goal"><div class="top"><span>Japan trip with Child</span><span>planning</span></div><div class="bar"><i style="width:35%"></i></div></div>
+      <div class="goal"><div class="top"><span>Child: psychiatrist + therapist</span><span>searching</span></div><div class="bar"><i style="width:15%"></i></div></div>
+      <div class="goal"><div class="top"><span>Couples therapy w/ Girlfriend</span><span>to start</span></div><div class="bar"><i style="width:10%"></i></div></div>
+      <div class="goal"><div class="top"><span>Child license → hand over Prius</span><span>permit this summer</span></div><div class="bar"><i style="width:20%"></i></div></div>
+    </section>
+
+    <!-- DATES -->
+    <section class="card col6">
+      <h2>📅 Upcoming &amp; recurring</h2>
+      <div class="date"><span>Child — first day of school</span><b>Aug 19</b></div>
+      <div class="date"><span>Japan trip window</span><b>Summer</b></div>
+      <div class="date"><span>Gardener</span><b>every Wed</b></div>
+      <div class="date"><span>House cleaner</span><b>every 2 wks</b></div>
+      <div class="date"><span>Gas payment plan</span><b>$350 / mo</b></div>
+      <div class="date"><span>Co-parenting therapy</span><b>2× / mo</b></div>
+      <div class="date"><span>Property tax</span><b>2× / yr</b></div>
+    </section>
+
+    <!-- MONEY SNAPSHOT -->
+    <section class="card col8">
+      <h2><span>💰 Money snapshot</span><button class="btn" id="revealBtn">Reveal numbers</button></h2>
+      <div class="metric"><span id="nw" class="hide">$1.18M</span> <small>total net worth</small></div>
+      <div class="grid" style="margin-top:12px">
+        <div class="col6">
+          <div class="row"><span>Bank savings</span><span class="v hideable hide">$20,000</span></div>
+          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v hideable hide">$160,000</span></div>
+          <div class="row"><span>Home equity ($1.5M − $500K)</span><span class="v hideable hide">$1,000,000</span></div>
+          <div class="row"><span>Debts (cards + gas)</span><span class="v neg hideable hide">−$4,500</span></div>
+        </div>
+        <div class="col6">
+          <div class="row"><span>Monthly in</span><span class="v pos">$10,604</span></div>
+          <div class="row"><span>Total out (fixed + living)</span><span class="v">~$5,182</span></div>
+          <div class="row"><span>Save rate / surplus</span><span class="v pos">~$5,422</span></div>
+          <div class="row"><span>FICO</span><span class="v">838</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AREAS -->
+    <section class="card col4">
+      <h2>🗂️ Areas</h2>
+      <div>
+        <span class="chip">Goals</span><span class="chip">Career</span><span class="chip">Job Search</span><span class="chip">Child</span><span class="chip">Health</span><span class="chip">Girlfriend</span><span class="chip">Home</span><span class="chip">ADU Rental</span><span class="chip">Investing</span><span class="chip">Subscriptions</span><span class="chip">Travel</span><span class="chip">Woodworking</span>
+      </div>
+      <p class="sub" style="margin-top:12px">Notes & context live in the Obsidian vault (the brain).</p>
+    </section>
+
+  </div>
+
+  <div class="foot">Tasks & finances live in Supabase (project: lifeos) — synced everywhere. Goals, dates & net worth are snapshots updated at the Monday review. Habit pips sync via the database and reset every Monday at 12am.</div>
+</div>
+
+<script>
+  const SUPABASE_URL='https://chdfupqkxlcarygopmof.supabase.co';
+  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoZGZ1cHFreGxjYXJ5Z29wbW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODY3NzQsImV4cCI6MjA5NzU2Mjc3NH0.D2nU9h0FYS-wBNKWNd_MQio2hVx9sv4tsSfFzP-MuLU';
+  const sb=window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const BUCKETS=['today','week','backlog'];
+  const money=n=>'$'+Math.round(n).toLocaleString();
+  const el=id=>document.getElementById(id);
+  const setStatus=(m,e)=>{const s=el('status'); s.textContent=m; s.style.color=e?'var(--bad)':'var(--muted)';};
+
+  let now=new Date(), cur=new Date(now.getFullYear(), now.getMonth(), 1);
+  const mkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  const mlabel=d=>d.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+
+  let tasks=[], items=[], statusMap={};
+
+  /* ---------- AUTH ---------- */
+  function renderAuth(user){
+    const bar=el('authbar'); bar.innerHTML='<span>🔓 '+user.email+'</span>';
+    const b=document.createElement('button'); b.className='btn'; b.textContent='Sign out';
+    b.onclick=async()=>{ await sb.auth.signOut(); location.reload(); };
+    bar.appendChild(b);
+  }
+  function setupGate(){
+    const go=async()=>{
+      const email=el('g-email').value.trim(), password=el('g-pw').value;
+      el('g-err').textContent='';
+      const { error }=await sb.auth.signInWithPassword({email,password});
+      if(error){ el('g-err').textContent=error.message; } else location.reload();
+    };
+    el('g-btn').onclick=go;
+    el('g-pw').addEventListener('keydown',e=>{ if(e.key==='Enter') go(); });
+    el('g-email').addEventListener('keydown',e=>{ if(e.key==='Enter') el('g-pw').focus(); });
+    el('g-email').focus();
+  }
+  async function boot(){
+    const { data:{ session } }=await sb.auth.getSession();
+    if(session && session.user){
+      document.body.classList.add('authed');
+      renderAuth(session.user);
+      load();
+    } else {
+      setupGate();
+    }
+  }
+
+  /* ---------- LOAD ---------- */
+  async function load(){
+    setStatus('loading…');
+    const [t, fi, fs] = await Promise.all([
+      sb.from('tasks').select('*'),
+      sb.from('finance_items').select('*'),
+      sb.from('finance_status').select('*')
+    ]);
+    if(t.error||fi.error||fs.error){ setStatus('DB error: '+((t.error||fi.error||fs.error).message), true); return; }
+    tasks=t.data||[]; items=fi.data||[]; statusMap={};
+    (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
+    renderTodo(); renderFinance(); loadHabits();
+    setStatus('synced '+new Date().toLocaleTimeString());
+  }
+
+  /* ---------- TO-DO ---------- */
+  function colItems(b){
+    return tasks.filter(t=>t.bucket===b).sort((a,c)=>{
+      if((a.status==='done')!==(c.status==='done')) return a.status==='done'?1:-1;
+      const pa=a.priority||99, pc=c.priority||99; if(pa!==pc) return pa-pc;
+      return (a.created_at||'').localeCompare(c.created_at||'');
+    });
+  }
+  function taskLi(t){
+    const li=document.createElement('li'); li.className='task'+(t.status==='done'?' done':'');
+    const box=document.createElement('span'); box.className='box'; box.textContent='✓';
+    box.onclick=()=>updateTask(t,{status:t.status==='done'?'open':'done'});
+    const label=document.createElement('span'); label.className='label'; label.textContent=t.title;
+    if(t.area){const s=document.createElement('small'); s.textContent=t.area; label.appendChild(s);}
+    label.title='Click to edit'; label.onclick=()=>editTask(li,t);
+    const pri=document.createElement('input'); pri.type='number'; pri.min=1; pri.max=3; pri.className='pri';
+    pri.placeholder='–'; pri.value=t.priority?t.priority:''; pri.title='Importance 1–3 (1 = top)';
+    pri.onclick=e=>e.stopPropagation();
+    pri.onchange=()=>{let v=parseInt(pri.value,10); updateTask(t,{priority:isNaN(v)?0:Math.max(1,Math.min(3,v))});};
+    const i=BUCKETS.indexOf(t.bucket);
+    const act=document.createElement('span'); act.className='actions';
+    const mk=(s,ti,fn)=>{const b=document.createElement('button');b.className='mini';b.textContent=s;b.title=ti;b.onclick=e=>{e.stopPropagation();fn();};return b;};
+    if(i>0) act.appendChild(mk('◀','Move left',()=>updateTask(t,{bucket:BUCKETS[i-1]})));
+    if(i<2) act.appendChild(mk('▶','Move right',()=>updateTask(t,{bucket:BUCKETS[i+1]})));
+    act.appendChild(mk('✕','Delete',()=>delTask(t)));
+    li.append(box,label,pri,act); return li;
+  }
+  function editTask(li,t){
+    li.innerHTML=''; const inp=document.createElement('input'); inp.className='editinput'; inp.value=t.title;
+    const commit=()=>{const v=inp.value.trim(); if(v&&v!==t.title) updateTask(t,{title:v}); else renderTodo();};
+    inp.onkeydown=e=>{if(e.key==='Enter')commit(); if(e.key==='Escape')renderTodo();}; inp.onblur=commit;
+    li.appendChild(inp); inp.focus(); inp.select();
+  }
+  function renderTodo(){
+    BUCKETS.forEach(b=>{ const ul=el('list-'+b); ul.innerHTML=''; colItems(b).forEach(t=>ul.appendChild(taskLi(t))); });
+  }
+  async function updateTask(t,patch){
+    Object.assign(t,patch); renderTodo();
+    const { error }=await sb.from('tasks').update(patch).eq('id',t.id);
+    if(error){ setStatus('Save failed: '+error.message,true); load(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function delTask(t){ tasks=tasks.filter(x=>x.id!==t.id); renderTodo();
+    const { error }=await sb.from('tasks').delete().eq('id',t.id); if(error){ setStatus('Delete failed',true); load(); } }
+  async function addTask(bucket,inputId){
+    const inp=el(inputId); const title=inp.value.trim(); if(!title) return; inp.value='';
+    const { data, error }=await sb.from('tasks').insert({title,bucket}).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) tasks.push(data[0]); renderTodo();
+  }
+  BUCKETS.forEach(b=> el('add-'+b).addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(b,'add-'+b); }));
+
+  /* ---------- FINANCE ---------- */
+  const st=itemId=>statusMap[itemId+'|'+mkey(cur)]||{paid:false,spent:0};
+  async function setStatusRow(itemId,patch){
+    const k=itemId+'|'+mkey(cur); statusMap[k]={...st(itemId),...patch}; renderFinance();
+    const { error }=await sb.from('finance_status').upsert({item_id:itemId, month:mkey(cur), paid:statusMap[k].paid, spent:statusMap[k].spent}, {onConflict:'item_id,month'});
+    if(error) setStatus('Finance save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function setBudget(itemId,amount){
+    const it=items.find(x=>x.id===itemId); if(it) it.amount=amount; renderFinance();
+    const { error }=await sb.from('finance_items').update({amount}).eq('id',itemId);
+    if(error) setStatus('Budget save failed',true);
+  }
+  function renderFinance(){
+    const fixed=items.filter(i=>i.kind==='fixed_expense').sort((a,b)=>a.sort_order-b.sort_order);
+    const income=items.filter(i=>i.kind==='income').sort((a,b)=>a.sort_order-b.sort_order);
+    const variable=items.filter(i=>i.kind==='variable').sort((a,b)=>a.sort_order-b.sort_order);
+    el('expMonth').textContent=mlabel(cur); el('incMonth').textContent=mlabel(cur);
+
+    // fixed expenses
+    const exp=el('exp'); exp.innerHTML=''; let paidSum=0, fixedTotal=0;
+    fixed.forEach(it=>{ const s=st(it.id); fixedTotal+=Number(it.amount); if(s.paid) paidSum+=Number(it.amount);
+      const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
+      li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+'</span><span class="amt">'+money(it.amount)+'</span>';
+      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); exp.appendChild(li); });
+    el('expProg').textContent='Paid: '+money(paidSum)+' of '+money(fixedTotal);
+
+    // variable
+    const ve=el('varexp'); ve.innerHTML=''; let budTot=0, spentTot=0;
+    variable.forEach(it=>{ const s=st(it.id); const b=Number(it.amount)||0, sp=Number(s.spent)||0; budTot+=b; spentTot+=sp;
+      const li=document.createElement('li'); li.className='var';
+      const rem=b-sp; const remTxt= rem<0 ? '-$'+Math.abs(rem).toLocaleString()+' over' : '$'+rem.toLocaleString()+' left';
+      li.innerHTML='<span class="nm">'+it.name+'</span><span class="vio"><input class="vb" type="number" min="0" step="10" title="budget"><input class="vs" type="number" min="0" step="10" placeholder="spent" title="spent this month"></span><span class="vrem '+(rem<0?'over':'under')+'">'+remTxt+'</span>';
+      const vb=li.querySelector('.vb'), vs=li.querySelector('.vs');
+      vb.value=b; vs.value=(s.spent!=null&&statusMap[it.id+'|'+mkey(cur)]?sp:'');
+      vb.onchange=e=>setBudget(it.id, Math.max(0,+e.target.value||0));
+      vs.onchange=e=>setStatusRow(it.id,{spent:Math.max(0,+e.target.value||0)});
+      ve.appendChild(li); });
+    el('varProg').textContent='Spent: '+money(spentTot)+' of '+money(budTot)+' budget';
+
+    const totalBudget=fixedTotal+budTot;
+    el('expTotal').textContent=money(totalBudget);
+
+    // income
+    const incEl=el('inc'); incEl.innerHTML=''; let recSum=0, incTotal=0;
+    income.forEach(it=>{ const s=st(it.id); incTotal+=Number(it.amount); if(s.paid) recSum+=Number(it.amount);
+      const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
+      li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+'</span><span class="amt">'+money(it.amount)+'</span>';
+      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); incEl.appendChild(li); });
+    el('incTotal').textContent=money(incTotal);
+    el('incProg').textContent='Received: '+money(recSum)+' of '+money(incTotal);
+    el('sumInc').textContent=money(incTotal);
+    el('sumExp').textContent=money(totalBudget);
+    el('sumSave').textContent=money(incTotal-totalBudget);
+  }
+  function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
+  ['expPrev','incPrev'].forEach(id=> el(id).onclick=()=>shift(-1));
+  ['expNext','incNext'].forEach(id=> el(id).onclick=()=>shift(1));
+
+  /* ---------- HABITS (DB, auto-reset Monday 12am local) ---------- */
+  // keyed by the Monday of the current local week → a new week shows a clean slate; past weeks are kept as history.
+  function weekMonday(d){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); const dow=(x.getDay()+6)%7; x.setDate(x.getDate()-dow); return x; }
+  const wkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  let habitSlots={};
+  async function loadHabits(){
+    const wk=wkey(weekMonday(new Date()));
+    const { data, error }=await sb.from('habit_status').select('*').eq('week',wk);
+    habitSlots={};
+    if(!error) (data||[]).forEach(r=>{ habitSlots[r.habit]=Array.isArray(r.slots)?r.slots:[false,false,false]; });
+    renderHabits();
+  }
+  function renderHabits(){
+    document.querySelectorAll('.pips').forEach(g=>{ const key=g.dataset.habit; const slots=habitSlots[key]||[false,false,false];
+      [...g.children].forEach((p,i)=>{ p.classList.toggle('on', !!slots[i]); p.onclick=()=>toggleHabit(key,i); });
+    });
+  }
+  async function toggleHabit(habit,i){
+    const wk=wkey(weekMonday(new Date()));
+    const slots=(habitSlots[habit]||[false,false,false]).slice(); slots[i]=!slots[i];
+    habitSlots[habit]=slots; renderHabits();
+    const { error }=await sb.from('habit_status').upsert({habit,week:wk,slots},{onConflict:'habit,week'});
+    if(error) setStatus('Habit save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+
+  /* ---------- REVEAL ---------- */
+  (function(){ let shown=false; el('revealBtn').onclick=()=>{ shown=!shown;
+    document.querySelectorAll('#nw,.hideable').forEach(e=>e.classList.toggle('hide',!shown));
+    el('revealBtn').textContent=shown?'Hide numbers':'Reveal numbers'; };
+  })();
+
+  boot();
+</script>
+</body>
+</html>
