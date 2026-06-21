@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Life OS — Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   :root{
     --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --line:#2a2f3a;
@@ -205,7 +206,7 @@
           <li>Japan this summer (return before 2026-08-19) → Travel</li>
           <li>Child to find a psychiatrist + therapist → Child, Health</li>
           <li>Couples therapy with Girlfriend for a better relationship → Girlfriend</li>
-          <li>+$50K in the bank → from ~$20K today to ~$70K target → Investing Fidelity, Recurring-Pay</li>
+          <li>+$50K in the bank → from ~$24.5K today to ~$70K target → Investing Fidelity, Recurring-Pay</li>
           <li>Stock portfolio up → Investing Fidelity</li>
           <li>Child gets driver&#x27;s license → Owner gives them the Prius-V (2012 Prius V)</li>
         </ul></div>
@@ -291,21 +292,34 @@
     <!-- MONEY SNAPSHOT -->
     <section class="card col12">
       <h2><span>📊 Snapshot</span><button class="btn" id="revealBtn">Reveal numbers</button></h2>
-      <div class="metric"><span id="nw" class="hide">$1.18M</span> <small>total net worth</small></div>
+      <div class="metric"><span id="nw" class="hide">$1.59M</span> <small>total net worth (est., incl. home)</small></div>
       <div class="grid" style="margin-top:12px">
         <div class="col6">
-          <div class="row"><span>Bank savings</span><span class="v hideable hide">$20,000</span></div>
-          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v hideable hide">$160,000</span></div>
-          <div class="row"><span>Home equity ($1.5M − $500K)</span><span class="v hideable hide">$1,000,000</span></div>
+          <div class="row"><span>Bank cash</span><span class="v hideable hide">$24,500</span></div>
+          <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v hideable hide">$200,000</span></div>
+          <div class="row"><span>Home equity ($1.8M − $427K)</span><span class="v hideable hide">$1,373,000</span></div>
           <div class="row"><span>Debts (cards + gas)</span><span class="v neg hideable hide">−$4,500</span></div>
         </div>
         <div class="col6">
           <div class="row"><span>Monthly in</span><span class="v pos">$10,604</span></div>
-          <div class="row"><span>Total out (fixed + living)</span><span class="v">~$5,382</span></div>
-          <div class="row"><span>Save rate / surplus</span><span class="v pos">~$5,222</span></div>
+          <div class="row"><span>Total out (fixed + living)</span><span class="v">~$5,393</span></div>
+          <div class="row"><span>Save rate / surplus</span><span class="v pos">~$5,211</span></div>
           <div class="row"><span>FICO</span><span class="v">838</span></div>
         </div>
       </div>
+    </section>
+
+    <!-- FINANCE SNAPSHOTS — merged dashboard (compact) -->
+    <section class="card col12">
+      <h2>📊 Finance snapshots</h2>
+      <div class="grid" style="margin-top:8px">
+        <div class="col4"><div class="subhead">Net worth (est.) — $1.6M</div><div style="position:relative;height:128px"><canvas id="cNW" role="img" aria-label="Net worth trend to 1.6 million"></canvas></div></div>
+        <div class="col4"><div class="subhead">What it's made of</div><div style="position:relative;height:128px"><canvas id="cComp" role="img" aria-label="Net worth composition, mostly home equity"></canvas></div></div>
+        <div class="col4"><div class="subhead">Mortgage — 3.5%, $427K</div><div style="position:relative;height:128px"><canvas id="cMort" role="img" aria-label="Mortgage paydown"></canvas></div></div>
+      </div>
+      <div class="subhead" style="margin-top:14px">🚩 Biggest offenders — H1 2026, by subcategory</div>
+      <div style="position:relative;height:210px"><canvas id="cOff" role="img" aria-label="Top spending categories broken into subcategories"></canvas></div>
+      <p class="sub" style="margin-top:8px"><b>Real Estate</b> = 4 Todd Beach renovation checks (capital): 1420 $1,500, 1421 $2,000, 110 $1,500, 111 $570.82 = <b>$5,571</b> (110/111 from main ...3326). <b>Home Repair &amp; Maintenance</b> = Home Depot $791 + Lowe's $1,351 = $2,142, out of Shopping (IKEA stays). Shopping now $6,837.</p>
     </section>
 
     <!-- ===== TAXES (bucket category) ===== -->
@@ -617,6 +631,43 @@
   })();
 
   boot();
+</script>
+<script>
+  (function(){
+    if(!window.Chart) return;
+    Chart.defaults.font.size=10; Chart.defaults.plugins.legend.display=false;
+    Chart.defaults.maintainAspectRatio=false; Chart.defaults.responsive=true;
+    const gridc='rgba(127,127,127,.15)';
+    const ax={grid:{color:gridc},ticks:{font:{size:9}}};
+    const C=(id,cfg)=>{const e=document.getElementById(id); if(e) new Chart(e,cfg);};
+    C('cNW',{type:'line',data:{labels:['18','21','22','23','25','26'],
+      datasets:[{data:[1014,1350,1642,1521,1631,1619],borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:0,borderWidth:2}]},
+      options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(1)+'M'}}}}});
+    C('cComp',{type:'doughnut',data:{labels:['Home equity','Investments','Cash'],
+      datasets:[{data:[1373,200,24.5],backgroundColor:['#1d9e75','#378add','#ef9f27'],borderWidth:0}]},
+      options:{cutout:'58%',plugins:{tooltip:{callbacks:{label:c=>c.label+' $'+c.parsed+'K'}}}}});
+    C('cMort',{type:'line',data:{labels:['23','24','25','26'],
+      datasets:[{data:[447,442,436,427],borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.25,pointRadius:0,borderWidth:2}]},
+      options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+    const off={labels:['Shopping $6.8K','Travel $5.9K','Dining $5.8K','Real Estate $5.6K','Home Repair $2.1K'],
+      seg:[
+        {label:'Amazon',color:'#378add',data:[3443,0,0,0,0]},
+        {label:'Other retail',color:'#85b7eb',data:[3394,0,0,0,0]},
+        {label:'Lodging',color:'#1d9e75',data:[0,3005,0,0,0]},
+        {label:'Tours/activities',color:'#5dcaa5',data:[0,1608,0,0,0]},
+        {label:'Air',color:'#9fe1cb',data:[0,845,0,0,0]},
+        {label:'Rail/transit',color:'#d7f0e6',data:[0,429,0,0,0]},
+        {label:'Restaurants',color:'#ba7517',data:[0,0,4491,0,0]},
+        {label:'Fast-casual',color:'#ef9f27',data:[0,0,826,0,0]},
+        {label:'Work café/delivery',color:'#fac775',data:[0,0,461,0,0]},
+        {label:'Reno checks (Todd Beach)',color:'#534ab7',data:[0,0,0,5571,0]},
+        {label:'Home Depot',color:'#993c1d',data:[0,0,0,0,791]},
+        {label:"Lowe's",color:'#d85a30',data:[0,0,0,0,1351]}
+      ]};
+    C('cOff',{type:'bar',data:{labels:off.labels,datasets:off.seg.map(s=>({label:s.label,data:s.data,backgroundColor:s.color,borderWidth:0}))},
+      options:{indexAxis:'y',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.x.toLocaleString()}}},
+        scales:{x:{stacked:true,...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}},y:{stacked:true,...ax}}}});
+  })();
 </script>
 </body>
 </html>
