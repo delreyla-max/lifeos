@@ -120,6 +120,15 @@
   .mmsum .cell .val{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:3px}
   .areawrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:4px}
   .areagrp .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:5px}
+  .bucket{padding:0;border:0;background:none}
+  .buckethead{font-size:14px;font-weight:700;letter-spacing:-.2px;color:var(--text);text-transform:none;margin:8px 0 -2px;padding-bottom:6px;border-bottom:2px solid var(--accent);display:block}
+  .chk{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:12px;cursor:pointer}
+  .chk:last-child{border-bottom:0}
+  .chk .box{width:15px;height:15px;border:2px solid var(--muted);border-radius:4px;flex:0 0 auto;display:grid;place-items:center;font-size:9px;color:transparent}
+  .chk.done .box{background:var(--good);border-color:var(--good);color:#fff}
+  .chk .nm{flex:1}
+  .chk.done .nm{color:var(--muted);text-decoration:line-through}
+  .chk .det{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap}
   #gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:100;padding:20px}
   #gate .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:26px 24px;width:100%;max-width:320px;text-align:center}
   #gate h1{font-size:20px;margin:0 0 4px}
@@ -168,19 +177,10 @@
       <div class="progress" style="margin-top:8px">1–3 box sets importance (1 = top) · ◀ ▶ move a task · click text to edit · ✕ delete · box completes. Saved to the database, syncs everywhere.</div>
     </section>
 
-    <!-- WEEKLY CHALLENGES (habits, sync via DB, reset Monday 12am) -->
-    <section class="card col12">
-      <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
-      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
-      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
-    </section>
-
     <!-- OBSIDIAN WIKI TODOS — read-only snapshot, refreshed whenever this HTML is regenerated -->
     <section class="card col12">
       <details class="collapse">
-      <summary><h2 style="border:0;padding:0"><span>📓 From Obsidian — open wiki todos</span> <span class="sub" style="font-weight:400">read-only snapshot · 2026-06-21 · 42 open</span></h2><span class="caret">▶</span></summary>
+      <summary><h2 style="border:0;padding:0"><span>📓 From Obsidian — open wiki todos</span> <span class="sub" style="font-weight:400">read-only snapshot · 2026-06-21 · 37 open</span></h2><span class="caret">▶</span></summary>
       <div class="obs-cols">
         <div class="obs-group"><div class="obs-area">🧒 Child <span class="obs-n">15</span></div><ul>
           <li>Japan trip this summer (return before 2026-08-19) → Travel</li>
@@ -198,13 +198,6 @@
           <li>Consider telehealth options (Talkiatry, Brightside) — shorter wait times, accept Aetna</li>
           <li>Book psychiatrist appointment ASAP (wait times can be 1–3 months)</li>
           <li>Find a therapist (start therapy in parallel with psychiatrist) — both wanted this summer</li>
-        </ul></div>
-        <div class="obs-group"><div class="obs-area">🧾 Taxes <span class="obs-n">5</span></div><ul>
-          <li>W-2 (RAPP)</li>
-          <li>Breakfast-Royale business income/expenses</li>
-          <li>ADU-Rental rental income + expenses</li>
-          <li>Investment 1099s → Investing Fidelity</li>
-          <li>Home / deductions</li>
         </ul></div>
         <div class="obs-group"><div class="obs-area">🎯 Goals <span class="obs-n">8</span></div><ul>
           <li>Find a new job — client-side creative role in LA → Job-Search</li>
@@ -242,18 +235,26 @@
       </details>
     </section>
 
-    <!-- MONTHLY MONEY — income + expenses, one date controls both -->
+    <!-- WEEKLY CHALLENGES (habits, sync via DB, reset Monday 12am) -->
     <section class="card col12">
-      <h2><span>💰 Monthly money</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
+      <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
+      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+    </section>
+
+    <!-- ===== MONEY (bucket category) ===== -->
+    <section class="bucket col12"><h2 class="buckethead">💰 Money</h2></section>
+
+    <!-- MONTHLY MONEY — fixed bills + subscriptions + income, one date controls all -->
+    <section class="card col12">
+      <h2><span>🗓️ Monthly</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
       <div class="grid" style="margin-top:6px">
         <div class="col4">
           <div class="subhead">💸 Fixed bills — check when paid</div>
           <ul id="exp"></ul>
           <div class="progress" id="expProg">Paid: $0</div>
-
-          <div class="subhead">🛒 Variable — budget vs spent</div>
-          <ul id="varexp"></ul>
-          <div class="progress" id="varProg">Spent: $0</div>
         </div>
         <div class="col4">
           <div class="subhead">📺 Subscriptions — check when paid</div>
@@ -264,10 +265,6 @@
           <div class="subhead">💵 Income — check when received</div>
           <ul id="inc"></ul>
           <div class="progress" id="incProg">Received: $0</div>
-
-          <div class="subhead">📆 Annual — set aside monthly</div>
-          <ul id="annual"></ul>
-          <div class="progress" id="annualProg">Set-aside: $0/mo</div>
         </div>
       </div>
       <div class="mmsum">
@@ -277,9 +274,23 @@
       </div>
     </section>
 
-    <!-- MONEY SNAPSHOT (kept directly under Monthly money — related) -->
+    <!-- VARIABLE — its own card, budget vs spent -->
     <section class="card col12">
-      <h2><span>💰 Money snapshot</span><button class="btn" id="revealBtn">Reveal numbers</button></h2>
+      <h2>🛒 Variable — budget vs spent</h2>
+      <ul id="varexp"></ul>
+      <div class="progress" id="varProg">Spent: $0</div>
+    </section>
+
+    <!-- ANNUAL — set aside monthly -->
+    <section class="card col12">
+      <h2>📆 Annual — set aside monthly</h2>
+      <ul id="annual"></ul>
+      <div class="progress" id="annualProg">Set-aside: $0/mo</div>
+    </section>
+
+    <!-- MONEY SNAPSHOT -->
+    <section class="card col12">
+      <h2><span>📊 Snapshot</span><button class="btn" id="revealBtn">Reveal numbers</button></h2>
       <div class="metric"><span id="nw" class="hide">$1.18M</span> <small>total net worth</small></div>
       <div class="grid" style="margin-top:12px">
         <div class="col6">
@@ -297,6 +308,19 @@
       </div>
     </section>
 
+    <!-- ===== TAXES (bucket category) ===== -->
+    <section class="bucket col12"><h2 class="buckethead">🧾 Taxes</h2></section>
+
+    <!-- TAXES 2026 — DB-backed checkboxes (from Obsidian) -->
+    <section class="card col12">
+      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync across devices</span></h2>
+      <div class="chk" data-key="tax-2026-w2"><span class="box">✓</span><span class="nm">W-2 (RAPP)</span></div>
+      <div class="chk" data-key="tax-2026-breakfast"><span class="box">✓</span><span class="nm">Breakfast-Royale business income/expenses</span></div>
+      <div class="chk" data-key="tax-2026-adu"><span class="box">✓</span><span class="nm">ADU-Rental rental income + expenses</span></div>
+      <div class="chk" data-key="tax-2026-1099"><span class="box">✓</span><span class="nm">Investment 1099s → Investing Fidelity</span></div>
+      <div class="chk" data-key="tax-2026-home"><span class="box">✓</span><span class="nm">Home / deductions</span></div>
+    </section>
+
     <!-- GOALS -->
     <section class="card col6">
       <h2>🎯 2026 goals</h2>
@@ -310,14 +334,14 @@
 
     <!-- DATES -->
     <section class="card col6">
-      <h2>📅 Upcoming &amp; recurring</h2>
-      <div class="date"><span>Child — first day of school</span><b>Aug 19</b></div>
-      <div class="date"><span>Japan trip window</span><b>Summer</b></div>
-      <div class="date"><span>Gardener</span><b>every Wed</b></div>
-      <div class="date"><span>House cleaner</span><b>every 2 wks</b></div>
-      <div class="date"><span>Gas payment plan</span><b>$350 / mo</b></div>
-      <div class="date"><span>Co-parenting therapy</span><b>2× / mo</b></div>
-      <div class="date"><span>Property tax</span><b>2× / yr</b></div>
+      <h2>📅 Upcoming &amp; recurring <span class="sub" style="font-weight:400">checks sync across devices</span></h2>
+      <div class="chk" data-key="date-school"><span class="box">✓</span><span class="nm">Child — first day of school</span><span class="det">Aug 19</span></div>
+      <div class="chk" data-key="date-japan"><span class="box">✓</span><span class="nm">Japan trip window</span><span class="det">Summer</span></div>
+      <div class="chk" data-key="date-gardener"><span class="box">✓</span><span class="nm">Gardener</span><span class="det">every Wed</span></div>
+      <div class="chk" data-key="date-cleaner"><span class="box">✓</span><span class="nm">House cleaner</span><span class="det">every 2 wks</span></div>
+      <div class="chk" data-key="date-gas"><span class="box">✓</span><span class="nm">Gas payment plan</span><span class="det">$350 / mo</span></div>
+      <div class="chk" data-key="date-coparent"><span class="box">✓</span><span class="nm">Co-parenting therapy</span><span class="det">2× / mo</span></div>
+      <div class="chk" data-key="date-proptax"><span class="box">✓</span><span class="nm">Property tax</span><span class="det">2× / yr</span></div>
     </section>
 
     <!-- AREAS (all areas / topics from the vault Index.md) -->
@@ -404,7 +428,7 @@
     if(t.error||fi.error||fs.error){ setStatus('DB error: '+((t.error||fi.error||fs.error).message), true); return; }
     tasks=t.data||[]; items=fi.data||[]; statusMap={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
-    renderTodo(); renderFinance(); loadHabits();
+    renderTodo(); renderFinance(); loadHabits(); loadChecklist();
     setStatus('synced '+new Date().toLocaleTimeString());
   }
 
@@ -563,6 +587,27 @@
     habitSlots[habit]=slots; renderHabits();
     const { error }=await sb.from('habit_status').upsert({habit,week:wk,slots},{onConflict:'habit,week'});
     if(error) setStatus('Habit save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+
+  /* ---------- CHECKLISTS (Taxes + Upcoming/recurring) — DB-backed, sync across devices ---------- */
+  let checkMap={};
+  async function loadChecklist(){
+    const { data, error }=await sb.from('checklist_status').select('*');
+    checkMap={};
+    if(!error) (data||[]).forEach(r=>{ checkMap[r.item_key]=!!r.done; });
+    renderChecklist();
+  }
+  function renderChecklist(){
+    document.querySelectorAll('.chk[data-key]').forEach(row=>{
+      const key=row.dataset.key; const done=!!checkMap[key];
+      row.classList.toggle('done', done);
+      row.onclick=()=>toggleCheck(key);
+    });
+  }
+  async function toggleCheck(key){
+    const done=!checkMap[key]; checkMap[key]=done; renderChecklist();
+    const { error }=await sb.from('checklist_status').upsert({item_key:key, done, updated_at:new Date().toISOString()},{onConflict:'item_key'});
+    if(error) setStatus('Checklist save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
   }
 
   /* ---------- REVEAL ---------- */
