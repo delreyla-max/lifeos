@@ -68,6 +68,7 @@
   .var .nm{flex:1}
   .var .vio{display:flex;gap:6px}
   .var input{width:62px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:3px 6px;text-align:right}
+  .var .vspent{width:66px;display:inline-block;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:12px;padding:3px 0}
   .var input:focus{outline:none;border-color:var(--accent)}
   .var .vrem{width:80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:12px}
   .over{color:var(--bad)} .under{color:var(--good)}
@@ -296,6 +297,14 @@
   <!-- ============================= MONEY ============================= -->
   <div class="page" id="page-money">
    <div class="grid">
+    <!-- 0 ▸ MONTHLY SPENT vs BUDGET (most important — above the goal) -->
+    <section class="card col12">
+      <h2>📅 Monthly — spent vs budget (2026)</h2>
+      <div class="subhead" style="margin-top:4px">How much you spent each month vs your budget — the clearest read on how much you save toward the goal</div>
+      <div style="position:relative;height:210px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
+      <div class="note" id="budActNote" style="margin-top:8px"></div>
+    </section>
+
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
     <section class="card col8">
       <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
@@ -374,7 +383,7 @@
     </section>
 
     <section class="card col6">
-      <h2>🛒 Variable — budget vs spent</h2>
+      <h2>🛒 Variable — set budget <span class="sub" style="font-weight:400">spent auto-fills on statement ingest</span></h2>
       <ul id="varexp"></ul>
       <div class="progress" id="varProg">Spent: $0</div>
     </section>
@@ -795,7 +804,7 @@
     tasks=t.data||[]; items=fi.data||[]; statusMap={}; SNAP={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
-    renderTodo(); renderFinance(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
+    renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
     loadHabits(); loadChecklist(); loadChild(); wireChild();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
@@ -922,18 +931,21 @@
     const annualMonthly=annualYear/12;
     el('annualProg').textContent='Set-aside: '+money(annualMonthly)+'/mo (annual '+money(annualYear)+'/yr)';
 
-    const ve=el('varexp'); ve.innerHTML=''; let budTot=0, spentTot=0;
-    variable.forEach(it=>{ const s=st(it.id); const b=Number(it.amount)||0, sp=Number(s.spent)||0; budTot+=b; spentTot+=sp;
+    const ve=el('varexp'); ve.innerHTML=''; let budTot=0, spentTot=0, haveAny=false;
+    variable.forEach(it=>{ const s=st(it.id); const has=!!statusMap[it.id+'|'+mkey(cur)] && s.spent!=null;
+      const b=Number(it.amount)||0, sp=Number(s.spent)||0; budTot+=b; if(has){ spentTot+=sp; haveAny=true; }
       const li=document.createElement('li'); li.className='varwrap';
-      const rem=b-sp; const remTxt= rem<0 ? '-$'+Math.abs(rem).toLocaleString()+' over' : '$'+rem.toLocaleString()+' left';
-      const pct=b>0?Math.min(100,Math.round(sp/b*100)):0;
-      li.innerHTML='<div class="var"><span class="nm">'+it.name+'</span><span class="vio"><input class="vb" type="number" min="0" step="10" title="budget"><input class="vs" type="number" min="0" step="10" placeholder="spent" title="spent this month"></span><span class="vrem '+(rem<0?'over':'under')+'">'+remTxt+'</span></div><div class="vbar"><i style="width:'+pct+'%'+(sp>b?';background:var(--bad)':'')+'"></i></div>';
-      const vb=li.querySelector('.vb'), vs=li.querySelector('.vs');
-      vb.value=b; vs.value=(s.spent!=null&&statusMap[it.id+'|'+mkey(cur)]?sp:'');
+      const rem=b-sp; const remTxt= !has ? '—' : (rem<0 ? '-$'+Math.abs(rem).toLocaleString()+' over' : '$'+rem.toLocaleString()+' left');
+      const pct=(has&&b>0)?Math.min(100,Math.round(sp/b*100)):0;
+      const spentCell= has ? money(sp) : '<span style="color:var(--muted)">—</span>';
+      li.innerHTML='<div class="var"><span class="nm">'+it.name+'</span><span class="vio"><input class="vb" type="number" min="0" step="10" title="monthly budget"><span class="vspent" title="spent — filled automatically when bank statements are ingested">'+spentCell+'</span></span><span class="vrem '+(rem<0?'over':'under')+'">'+remTxt+'</span></div><div class="vbar"><i style="width:'+pct+'%'+(sp>b?';background:var(--bad)':'')+'"></i></div>';
+      const vb=li.querySelector('.vb');
+      vb.value=b;
       vb.onchange=e=>setBudget(it.id, Math.max(0,+e.target.value||0));
-      vs.onchange=e=>setStatusRow(it.id,{spent:Math.max(0,+e.target.value||0)});
       ve.appendChild(li); });
-    el('varProg').textContent='Spent: '+money(spentTot)+' of '+money(budTot)+' budget';
+    el('varProg').textContent= haveAny
+      ? ('Spent '+money(spentTot)+' of '+money(budTot)+' budget · '+(budTot-spentTot>=0?money(budTot-spentTot)+' under':money(spentTot-budTot)+' over'))
+      : ('Budget '+money(budTot)+'/mo · spent fills from ingested statements');
 
     const totalBudget=fixedTotal+subsTotal+annualMonthly+budTot;
     el('expTotal').textContent=money(totalBudget);
@@ -968,6 +980,14 @@
     el('nwOut').textContent='~'+money(s.totalOut||0);
     el('nwSave').textContent='~'+money(s.saveRate||0);
     el('nwFico').textContent=s.fico||'—';
+  }
+  function renderBudgetActual(){
+    const c=SNAP.chart_budget_actual; if(!c||!el('budActNote')) return;
+    let over=0,n=0; (c.actual||[]).forEach((a,i)=>{ if(a!=null){ over+=a-c.budget[i]; n++; } });
+    const avgB=c.budget.reduce((x,y)=>x+y,0)/c.budget.length;
+    el('budActNote').innerHTML='Budget ≈ <b>'+money(avgB)+'/mo</b>. Across '+n+' months you\'re '+
+      (over>=0?'<b style="color:var(--bad)">'+money(over)+' over</b>':'<b style="color:var(--good)">'+money(-over)+' under</b>')+
+      ' budget — the spikes are lumpy one-offs (Mar property tax, Apr Europe trip + reno). Green months beat budget and feed the +$50K goal; red months eat into it.';
   }
   function renderGoalBank(){
     const g=SNAP.goal_bank; if(!g||!el('gbBar')) return;
@@ -1160,6 +1180,13 @@
       if(inc) C('cIncome',{type:'bar',data:{labels:inc.labels,
         datasets:[{data:inc.data,backgroundColor:['#378add','#378add','#1d9e75'],borderRadius:4,borderWidth:0}]},
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y.toLocaleString()}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      const ba=SNAP.chart_budget_actual;
+      if(ba) C('cBudAct',{type:'bar',data:{labels:ba.labels,datasets:[
+          {type:'bar',label:'Spent',data:ba.actual,backgroundColor:ba.actual.map((a,i)=>a>ba.budget[i]?'#e24b4a':'#1d9e75'),borderWidth:0,order:2},
+          {type:'line',label:'Budget',data:ba.budget,borderColor:'#ef9f27',borderDash:[6,4],fill:false,pointRadius:0,borderWidth:2,order:1}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y; if(c.dataset.label==='Budget') return 'Budget: $'+v.toLocaleString(); const o=v-ba.budget[c.dataIndex]; return 'Spent: $'+v.toLocaleString()+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')';}}}},
+          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
       const gp=SNAP.chart_goalproj;
       if(gp) C('cGoalProj',{type:'line',data:{labels:gp.labels,datasets:[
           {label:'Needed',data:gp.need,borderColor:'#1d9e75',borderDash:[5,4],fill:false,tension:0,pointRadius:0,borderWidth:2},
