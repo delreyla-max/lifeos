@@ -122,6 +122,20 @@
   .bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--good))}
   .chip{display:inline-block;background:var(--chip);color:var(--muted);border-radius:20px;padding:2px 8px;font-size:9px;margin:2px 3px 0 0}
   a.chip{text-decoration:none;color:var(--accent);font-weight:600;cursor:pointer}
+  /* per-page custom links bar */
+  .pagelinks{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:12px 0 2px;padding:7px 12px;background:var(--glass);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow-sm);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
+  .pagelinks .pl-label{font-family:var(--mono);font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-right:2px}
+  .pagelinks a.pl-link{display:inline-flex;align-items:center;gap:6px;background:var(--chip);color:var(--accent);text-decoration:none;font-size:11px;font-weight:600;border-radius:20px;padding:4px 10px;border:1px solid var(--line);transition:background .15s,color .15s}
+  .pagelinks a.pl-link:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .pagelinks .pl-del{font-size:10px;color:var(--muted);cursor:pointer;opacity:.7}
+  .pagelinks a.pl-link:hover .pl-del{color:#fff;opacity:1}
+  .pagelinks .pl-add{display:flex;gap:4px;align-items:center;margin-left:auto}
+  .pagelinks .pl-add input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;font-size:11px;padding:3px 7px}
+  .pagelinks .pl-add input:focus{outline:none;border-color:var(--accent)}
+  .pagelinks .pl-add input.pl-lbl{width:84px}
+  .pagelinks .pl-add input.pl-url{width:128px}
+  .pagelinks .pl-add button{background:var(--accent);color:#fff;border:0;border-radius:999px;width:22px;height:22px;font-size:15px;line-height:1;cursor:pointer;flex:0 0 auto;transition:filter .15s}
+  .pagelinks .pl-add button:hover{filter:brightness(1.08)}
   a.chip:hover{filter:brightness(1.1);text-decoration:underline}
   /* Spend vs Budget page */
   .sp-tbl{width:100%;border-collapse:collapse;font-size:11px}
@@ -1137,7 +1151,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo();
+    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
@@ -1514,6 +1528,53 @@
     if(el('a-add')) el('a-add').onclick=()=>{ const name=el('a-name').value.trim(); if(!name) return;
       addChild('child_activities',{name,role:el('a-role').value.trim()},cActs);
       el('a-name').value=''; el('a-role').value=''; };
+  }
+
+  /* ---------- PER-PAGE CUSTOM LINKS ---------- */
+  let pageLinks=[];
+  async function loadPageLinks(){
+    const { data, error }=await sb.from('page_links').select('*');
+    if(error){ setStatus('Links load failed: '+error.message,true); return; }
+    pageLinks=data||[]; renderPageLinks();
+  }
+  function plContainer(page){
+    const pg=el('page-'+page); if(!pg) return null;
+    let bar=pg.querySelector(':scope > .pagelinks');
+    if(!bar){ bar=document.createElement('div'); bar.className='pagelinks'; pg.insertBefore(bar, pg.firstChild); }
+    return bar;
+  }
+  function renderPageLinks(){
+    PAGES.forEach(page=>{
+      const bar=plContainer(page); if(!bar) return;
+      const links=pageLinks.filter(l=>l.page===page)
+        .sort((a,b)=>(a.sort_order-b.sort_order)||(a.created_at||'').localeCompare(b.created_at||''));
+      let html='<span class="pl-label">🔗 Links</span>';
+      html+=links.map(l=>'<a class="pl-link" href="'+esc(l.url)+'" target="_blank" rel="noopener">'+esc(l.label||l.url)+'<span class="pl-del" data-del-link="'+l.id+'" title="Remove link">✕</span></a>').join('');
+      html+='<span class="pl-add"><input class="pl-lbl" placeholder="Label" data-pl-lbl="'+page+'" autocomplete="off"><input class="pl-url" placeholder="https://…" data-pl-url="'+page+'" autocomplete="off"><button data-pl-add="'+page+'" title="Add link">+</button></span>';
+      bar.innerHTML=html;
+      bar.querySelectorAll('[data-del-link]').forEach(x=>x.onclick=e=>{ e.preventDefault(); e.stopPropagation(); delPageLink(x.dataset.delLink); });
+      bar.querySelector('[data-pl-add]').onclick=()=>addPageLink(page);
+      bar.querySelector('[data-pl-url="'+page+'"]').addEventListener('keydown',e=>{ if(e.key==='Enter') addPageLink(page); });
+      bar.querySelector('[data-pl-lbl="'+page+'"]').addEventListener('keydown',e=>{ if(e.key==='Enter') bar.querySelector('[data-pl-url="'+page+'"]').focus(); });
+    });
+  }
+  async function addPageLink(page){
+    const bar=plContainer(page); if(!bar) return;
+    const lbl=bar.querySelector('[data-pl-lbl="'+page+'"]').value.trim();
+    let url=bar.querySelector('[data-pl-url="'+page+'"]').value.trim();
+    if(!url) return;
+    if(!/^https?:\/\//i.test(url)) url='https://'+url;
+    const row={page,label:lbl||url,url,sort_order:pageLinks.filter(l=>l.page===page).length};
+    const { data, error }=await sb.from('page_links').insert(row).select();
+    if(error){ setStatus('Add link failed: '+error.message,true); return; }
+    if(data&&data[0]) pageLinks.push(data[0]);
+    renderPageLinks();
+    setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function delPageLink(id){
+    const i=pageLinks.findIndex(l=>l.id===id); if(i>=0) pageLinks.splice(i,1); renderPageLinks();
+    const { error }=await sb.from('page_links').delete().eq('id',id);
+    if(error){ setStatus('Delete link failed',true); loadPageLinks(); } else setStatus('saved '+new Date().toLocaleTimeString());
   }
 
   /* ---------- JOB APPLICATIONS LOG ---------- */
