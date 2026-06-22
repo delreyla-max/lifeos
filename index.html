@@ -178,6 +178,18 @@
   #page-today .todo-cols>div:first-child .colhead{color:var(--accent);border-bottom-color:var(--accent)}
   #page-today .chk .det{background:var(--chip);color:var(--muted);padding:1px 7px;border-radius:20px;font-size:9px;text-transform:uppercase;letter-spacing:.4px}
   #page-today .habit{padding:7px 0}
+  /* ── Projects page — workshop rack: each card is a venture bay (category · status), rail lit for working projects ── */
+  #page-projects .card{box-shadow:inset 3px 0 0 var(--accent)}
+  #page-projects .card.retired{box-shadow:inset 3px 0 0 var(--line);opacity:.85}
+  #page-projects .card h2{font-size:15px;text-transform:none;letter-spacing:-.2px;color:var(--text);font-weight:600;margin:1px 0 6px;display:flex;align-items:center;gap:8px}
+  #page-projects .proj-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+  #page-projects .proj-cat{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  #page-projects .pstat{display:inline-flex;align-items:center;gap:5px;font-family:var(--display);font-size:9px;text-transform:uppercase;letter-spacing:.6px;font-weight:600;padding:2px 9px;border-radius:20px;background:var(--chip)}
+  #page-projects .pstat::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  #page-projects .pstat.live{color:var(--good)}
+  #page-projects .pstat.active{color:var(--accent)}
+  #page-projects .pstat.retired{color:var(--muted)}
+  #page-projects .ptasks{margin-top:11px;padding-top:5px;border-top:1px solid var(--line)}
   @media(max-width:820px){
     #page-today .todo-cols>div+div{border-left:0;border-top:1px solid var(--line);padding-top:10px;margin-top:6px}
     #page-today .todo-cols>div:first-child{border-radius:7px 7px 0 0;box-shadow:inset 0 3px 0 var(--accent)}
@@ -687,9 +699,13 @@
     </section>
 
     <section class="card col6">
-      <h2>📉 Mortgage paydown</h2>
-      <div style="position:relative;height:150px"><canvas id="cMort" role="img" aria-label="Mortgage principal balance by year"></canvas></div>
-      <div class="note" style="margin-top:8px">Truist · 3.5% fixed · $1,911/mo · ~$427K principal (Jun 2026) on a ~$1.8M home. Balance is exact from statements; home value still an estimate.</div>
+      <h2>✅ Property to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="prop-insurance"><span class="box">✓</span><span class="nm">Switch home insurance → Progressive (quote in hand)</span></div>
+      <div class="chk" data-key="prop-gas"><span class="box">✓</span><span class="nm">Resolve gas past-due (on monthly plan)</span></div>
+      <div class="chk" data-key="prop-electrician"><span class="box">✓</span><span class="nm">Hire electrician — six lights (main house)</span></div>
+      <div class="chk" data-key="prop-appraisal"><span class="box">✓</span><span class="nm">Get home appraisal / market estimate</span></div>
+      <div class="chk" data-key="prop-mortstmt"><span class="box">✓</span><span class="nm">Pull current mortgage statement (balance)</span></div>
+      <div class="note" style="margin-top:8px">🏘️ Rental ops, P&amp;L, repairs &amp; documents now live on the <b>ADU Rental</b> page.</div>
     </section>
 
     <!-- MORTGAGE DETAIL (data from DB) -->
@@ -704,13 +720,9 @@
     </section>
 
     <section class="card col12">
-      <h2>✅ Property to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="prop-insurance"><span class="box">✓</span><span class="nm">Switch home insurance → Progressive (quote in hand)</span></div>
-      <div class="chk" data-key="prop-gas"><span class="box">✓</span><span class="nm">Resolve gas past-due (on monthly plan)</span></div>
-      <div class="chk" data-key="prop-electrician"><span class="box">✓</span><span class="nm">Hire electrician — six lights (main house)</span></div>
-      <div class="chk" data-key="prop-appraisal"><span class="box">✓</span><span class="nm">Get home appraisal / market estimate</span></div>
-      <div class="chk" data-key="prop-mortstmt"><span class="box">✓</span><span class="nm">Pull current mortgage statement (balance)</span></div>
-      <div class="note" style="margin-top:8px">🏘️ Rental ops, P&amp;L, repairs &amp; documents now live on the <b>ADU Rental</b> page.</div>
+      <h2>📉 Mortgage paydown</h2>
+      <div style="position:relative;height:150px"><canvas id="cMort" role="img" aria-label="Mortgage principal balance by year"></canvas></div>
+      <div class="note" style="margin-top:8px">Truist · 3.5% fixed · $1,911/mo · ~$427K principal (Jun 2026) on a ~$1.8M home. Balance is exact from statements; home value still an estimate.</div>
     </section>
    </div>
   </div>
@@ -730,12 +742,12 @@
       <div class="note" style="margin-top:10px">Tenant <b id="aduTenant">—</b> · managed by <b id="aduPm">—</b> · month-to-month, rent raised to $2,652 in Jan 2026. The <b>net owner draw</b> (not gross rent) is what feeds Personal Finance cash flow — it's already counted there; this page is the operating view. Detail: vault <b>ADU-Rental</b>, <b>Rental-Ledger</b>.</div>
     </section>
     <section class="card col4">
-      <h2>🔑 Lease &amp; tenant</h2>
-      <div class="row"><span>Unit</span><span class="v">12708 (rear ADU)</span></div>
-      <div class="row"><span>Rent</span><span class="v">$2,652/mo</span></div>
-      <div class="row"><span>Lease</span><span class="v">Month-to-month</span></div>
-      <div class="row"><span>Mgmt fee</span><span class="v">8% + $25 evict</span></div>
-      <div class="row"><span>Owner pays</span><span class="v">Water + trash</span></div>
+      <h2>✅ Open issues &amp; to-dos <span class="sub" style="font-weight:400">checks sync · routed to Utopia</span></h2>
+      <div class="chk" data-key="adu-rats"><span class="box">✓</span><span class="nm">① Rat exterminator</span><span class="det">priority</span></div>
+      <div class="chk" data-key="adu-fence"><span class="box">✓</span><span class="nm">② Fence cover repair</span></div>
+      <div class="chk" data-key="adu-tree"><span class="box">✓</span><span class="nm">③ Tree removal</span></div>
+      <div class="chk" data-key="adu-rent-review"><span class="box">✓</span><span class="nm">Review rent vs market (next increase)</span></div>
+      <div class="chk" data-key="adu-insurance"><span class="box">✓</span><span class="nm">Reinstate proper landlord/home insurance</span></div>
     </section>
 
     <!-- Charts -->
@@ -765,31 +777,14 @@
       <div class="note" style="margin-top:6px">2026 repairs ≈ $1,023 YTD. Authoritative annual breakdown in vault <b>Rental-Ledger</b>.</div>
     </section>
 
-    <!-- Open issues -->
+    <!-- Lease & tenant -->
     <section class="card col6">
-      <h2>✅ Open issues &amp; to-dos <span class="sub" style="font-weight:400">checks sync · routed to Utopia</span></h2>
-      <div class="chk" data-key="adu-rats"><span class="box">✓</span><span class="nm">① Rat exterminator</span><span class="det">priority</span></div>
-      <div class="chk" data-key="adu-fence"><span class="box">✓</span><span class="nm">② Fence cover repair</span></div>
-      <div class="chk" data-key="adu-tree"><span class="box">✓</span><span class="nm">③ Tree removal</span></div>
-      <div class="chk" data-key="adu-rent-review"><span class="box">✓</span><span class="nm">Review rent vs market (next increase)</span></div>
-      <div class="chk" data-key="adu-insurance"><span class="box">✓</span><span class="nm">Reinstate proper landlord/home insurance</span></div>
-    </section>
-
-    <!-- Documents -->
-    <section class="card col12">
-      <h2>📥 Documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → re-run ingest</span></h2>
-      <div class="grid" style="margin-top:4px">
-        <div class="col6">
-          <div class="chk" data-key="adu-doc-stmt"><span class="box">✓</span><span class="nm">Utopia monthly owner statement</span><span class="det">monthly</span></div>
-          <div class="chk" data-key="adu-doc-annual"><span class="box">✓</span><span class="nm">Utopia annual cash-flow statement</span><span class="det">yearly</span></div>
-          <div class="chk" data-key="adu-doc-lease"><span class="box">✓</span><span class="nm">Lease / renewal agreement</span></div>
-        </div>
-        <div class="col6">
-          <div class="chk" data-key="adu-doc-sched-e"><span class="box">✓</span><span class="nm">Schedule E figures (rental taxes)</span><span class="det">yearly</span></div>
-          <div class="chk" data-key="adu-doc-1099"><span class="box">✓</span><span class="nm">Insurance / property-tax share</span></div>
-          <div class="chk" data-key="adu-doc-repairs"><span class="box">✓</span><span class="nm">Repair invoices / vendor bills</span></div>
-        </div>
-      </div>
+      <h2>🔑 Lease &amp; tenant</h2>
+      <div class="row"><span>Unit</span><span class="v">12708 (rear ADU)</span></div>
+      <div class="row"><span>Rent</span><span class="v">$2,652/mo</span></div>
+      <div class="row"><span>Lease</span><span class="v">Month-to-month</span></div>
+      <div class="row"><span>Mgmt fee</span><span class="v">8% + $25 evict</span></div>
+      <div class="row"><span>Owner pays</span><span class="v">Water + trash</span></div>
     </section>
    </div>
   </div>
@@ -800,9 +795,10 @@
 
     <!-- ── Agent-Dashboard ── -->
     <section class="card col6">
+      <div class="proj-top"><span class="proj-cat">Build · dev</span><span class="pstat live">Live</span></div>
       <h2>🖥️ Agent-Dashboard</h2>
       <div class="note">Agent-manager dashboard + LifeOS. Repo <code>agent-dashboard</code> / <code>lifeos</code>, served under gyip.com. Multipage, login-gated, Supabase-backed.</div>
-      <div style="margin-top:8px">
+      <div class="ptasks">
         <div class="chk" data-key="proj-lifeos"><span class="box">✓</span><span class="nm">LifeOS dashboard — multipage</span></div>
         <div class="chk" data-key="proj-dash-deploy"><span class="box">✓</span><span class="nm">Deploy latest to gyip.com/lifeos</span></div>
       </div>
@@ -810,15 +806,17 @@
 
     <!-- ── gyip.com ── -->
     <section class="card col6">
+      <div class="proj-top"><span class="proj-cat">Build · portfolio</span><span class="pstat live">Live</span></div>
       <h2>🌐 gyip.com</h2>
       <div class="note">Portfolio site. Repo <code>delreyla-max.github.io</code>, custom domain gyip.com.</div>
-      <div style="margin-top:8px">
+      <div class="ptasks">
         <div class="chk" data-key="proj-site"><span class="box">✓</span><span class="nm">Portfolio refresh</span></div>
       </div>
     </section>
 
     <!-- ── Social Media ── -->
     <section class="card col12">
+      <div class="proj-top"><span class="proj-cat">Content · channels</span><span class="pstat active">Active</span></div>
       <h2>🎬 Social Media <span class="sub" style="font-weight:400">· all content channels</span></h2>
       <div class="note">Umbrella for every content channel. Each channel below tracks its own to-dos.</div>
 
@@ -834,25 +832,28 @@
 
     <!-- ── Woodworking ── -->
     <section class="card col6">
+      <div class="proj-top"><span class="proj-cat">Maker · physical</span><span class="pstat active">Active</span></div>
       <h2>🪚 Woodworking</h2>
       <div class="note">Builds with Girlfriend. Past: Van-E150 base cabinet, shelving, bed/couch.</div>
-      <div style="margin-top:8px">
+      <div class="ptasks">
         <div class="chk" data-key="proj-wood-shelves"><span class="box">✓</span><span class="nm">Make shelves for girlfriend</span></div>
       </div>
     </section>
 
     <!-- ── Yips Products ── -->
     <section class="card col6">
+      <div class="proj-top"><span class="proj-cat">Commerce · Amazon</span><span class="pstat live">Live</span></div>
       <h2>📦 Yips Products</h2>
       <div class="note">Products sold on Amazon under the <b>Yips Products</b> brand.</div>
-      <div style="margin-top:8px">
+      <div class="ptasks">
         <div class="chk" data-key="proj-yips-listings"><span class="box">✓</span><span class="nm">Review Amazon listings &amp; inventory</span></div>
       </div>
     </section>
 
     <!-- ── Breakfast Royale (retired) ── -->
-    <section class="card col12">
-      <h2>🍳 Breakfast Royale <span class="sub" style="font-weight:400">· retired</span></h2>
+    <section class="card col12 retired">
+      <div class="proj-top"><span class="proj-cat">Game · 2024</span><span class="pstat retired">Retired</span></div>
+      <h2>🍳 Breakfast Royale</h2>
       <div class="note">Card game I created and printed in <b>2024</b> — built the website and marketing materials, then sold it on Amazon. <b>Retired</b>: off Amazon, copies at home, no active income.</div>
     </section>
 
@@ -862,6 +863,38 @@
   <!-- ============================= CHILD ============================= -->
   <div class="page" id="page-child">
    <div class="grid">
+    <!-- HEALTH -->
+    <section class="card col6">
+      <h2>🩺 Health to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="child-psych"><span class="box">✓</span><span class="nm">Book psychiatrist (Aetna, 1–3 mo wait)</span></div>
+      <div class="chk" data-key="child-therapist"><span class="box">✓</span><span class="nm">Find a therapist (start in parallel)</span></div>
+      <div class="chk" data-key="child-pediatrician"><span class="box">✓</span><span class="nm">Call Dr. DiMundo (pediatrician)</span></div>
+      <div class="chk" data-key="child-cardiac"><span class="box">✓</span><span class="nm">Cardiac Dr — follow-up visit</span></div>
+      <div class="chk" data-key="child-dentist"><span class="box">✓</span><span class="nm">Dentist — make appointment</span></div>
+    </section>
+
+    <!-- MILESTONES -->
+    <section class="card col6">
+      <h2>📅 Milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="child-permit"><span class="box">✓</span><span class="nm">Driver's permit → license</span><span class="det">summer</span></div>
+      <div class="chk" data-key="child-prius"><span class="box">✓</span><span class="nm">Hand over Prius-V once licensed</span></div>
+      <div class="chk" data-key="child-college"><span class="box">✓</span><span class="nm">Visit at least one college</span></div>
+      <div class="chk" data-key="child-japan"><span class="box">✓</span><span class="nm">Japan trip (return before Aug 19)</span><span class="det">summer</span></div>
+      <div class="chk" data-key="child-summer"><span class="box">✓</span><span class="nm">Line up summer activities</span></div>
+    </section>
+
+    <!-- UC MILESTONES -->
+    <section class="card col12">
+      <h2>✅ UC prep milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <div class="chk" data-key="uc-ag-plan"><span class="box">✓</span><span class="nm">Map a 4-year a–g course plan with the counselor</span></div>
+      <div class="chk" data-key="uc-volunteer"><span class="box">✓</span><span class="nm">Log community-service hours regularly (goal 100)</span></div>
+      <div class="chk" data-key="uc-activities"><span class="box">✓</span><span class="nm">Build the activities/awards list (UC allows 20)</span></div>
+      <div class="chk" data-key="uc-test"><span class="box">✓</span><span class="nm">Decide on SAT/ACT</span><span class="det">UC test-blind</span></div>
+      <div class="chk" data-key="uc-campuses"><span class="box">✓</span><span class="nm">Shortlist target UC campuses</span></div>
+      <div class="chk" data-key="uc-piq"><span class="box">✓</span><span class="nm">Draft Personal Insight Questions (senior fall)</span></div>
+      <div class="chk" data-key="uc-deadline"><span class="box">✓</span><span class="nm">UC application</span><span class="det">opens Aug 1 · due Nov 30 (sr)</span></div>
+    </section>
+
     <!-- UC PREP SNAPSHOT -->
     <section class="card col12">
       <h2>🎓 UC prep snapshot</h2>
@@ -911,38 +944,6 @@
         <input id="a-role" placeholder="Role" style="max-width:120px">
         <button class="btn" id="a-add">Add</button>
       </div>
-    </section>
-
-    <!-- UC MILESTONES -->
-    <section class="card col12">
-      <h2>✅ UC prep milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="uc-ag-plan"><span class="box">✓</span><span class="nm">Map a 4-year a–g course plan with the counselor</span></div>
-      <div class="chk" data-key="uc-volunteer"><span class="box">✓</span><span class="nm">Log community-service hours regularly (goal 100)</span></div>
-      <div class="chk" data-key="uc-activities"><span class="box">✓</span><span class="nm">Build the activities/awards list (UC allows 20)</span></div>
-      <div class="chk" data-key="uc-test"><span class="box">✓</span><span class="nm">Decide on SAT/ACT</span><span class="det">UC test-blind</span></div>
-      <div class="chk" data-key="uc-campuses"><span class="box">✓</span><span class="nm">Shortlist target UC campuses</span></div>
-      <div class="chk" data-key="uc-piq"><span class="box">✓</span><span class="nm">Draft Personal Insight Questions (senior fall)</span></div>
-      <div class="chk" data-key="uc-deadline"><span class="box">✓</span><span class="nm">UC application</span><span class="det">opens Aug 1 · due Nov 30 (sr)</span></div>
-    </section>
-
-    <!-- HEALTH -->
-    <section class="card col6">
-      <h2>🩺 Health to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="child-psych"><span class="box">✓</span><span class="nm">Book psychiatrist (Aetna, 1–3 mo wait)</span></div>
-      <div class="chk" data-key="child-therapist"><span class="box">✓</span><span class="nm">Find a therapist (start in parallel)</span></div>
-      <div class="chk" data-key="child-pediatrician"><span class="box">✓</span><span class="nm">Call Dr. DiMundo (pediatrician)</span></div>
-      <div class="chk" data-key="child-cardiac"><span class="box">✓</span><span class="nm">Cardiac Dr — follow-up visit</span></div>
-      <div class="chk" data-key="child-dentist"><span class="box">✓</span><span class="nm">Dentist — make appointment</span></div>
-    </section>
-
-    <!-- MILESTONES -->
-    <section class="card col6">
-      <h2>📅 Milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="child-permit"><span class="box">✓</span><span class="nm">Driver's permit → license</span><span class="det">summer</span></div>
-      <div class="chk" data-key="child-prius"><span class="box">✓</span><span class="nm">Hand over Prius-V once licensed</span></div>
-      <div class="chk" data-key="child-college"><span class="box">✓</span><span class="nm">Visit at least one college</span></div>
-      <div class="chk" data-key="child-japan"><span class="box">✓</span><span class="nm">Japan trip (return before Aug 19)</span><span class="det">summer</span></div>
-      <div class="chk" data-key="child-summer"><span class="box">✓</span><span class="nm">Line up summer activities</span></div>
     </section>
 
     <section class="card col12">
