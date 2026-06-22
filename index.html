@@ -133,6 +133,23 @@
   .pos{color:var(--good)} .neg{color:var(--bad)}
   .metric{font-family:var(--mono);font-size:21px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:8px}
   .metric small{font-family:var(--body);font-size:10px;color:var(--muted);font-weight:500}
+  /* holdings table (stock-analysis card) */
+  .hold-scroll{overflow-x:auto;margin-top:8px}
+  .hold-tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:560px}
+  .hold-tbl th{font-family:var(--display);font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;text-align:right;padding:5px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .hold-tbl th:first-child,.hold-tbl td:first-child{text-align:left}
+  .hold-tbl td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .hold-tbl tbody tr:last-child td{border-bottom:0}
+  .hold-tbl tbody tr:hover td{background:var(--chip)}
+  .hold-tbl .tot td{border-top:2px solid var(--line);font-weight:700;color:var(--text)}
+  .hold-tbl .tk{font-family:var(--mono);font-weight:700;color:var(--text)}
+  .hold-tbl .nmsub{display:block;font-family:var(--body);font-size:9px;color:var(--muted);font-weight:400;letter-spacing:0}
+  .read{font-size:9px;padding:2px 8px;border-radius:20px;white-space:nowrap;font-weight:600}
+  .read.fair{background:rgba(110,168,254,.14);color:#8fb6f5}
+  .read.value{background:rgba(69,201,140,.16);color:var(--good)}
+  .read.prem{background:rgba(232,137,58,.18);color:var(--warn)}
+  .read.exp{background:rgba(240,106,133,.16);color:var(--bad)}
+  .read.spec{background:var(--chip);color:var(--muted)}
   .hide{filter:blur(9px);user-select:none;transition:filter .15s}
   .foot{color:var(--muted);font-size:9px;margin-top:16px;text-align:center}
   .todo-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
@@ -372,7 +389,7 @@
       </div>
       <div class="grid" style="margin-top:10px">
         <div class="col12">
-          <div class="subhead">📈 Path to +$50K — needed vs current pace</div>
+          <div class="subhead">📈 Path to +$50K — shaded band is the projected shortfall vs the pace you need</div>
           <div style="position:relative;height:150px"><canvas id="cGoalProj" role="img" aria-label="Cumulative savings needed versus current pace to reach plus fifty thousand by December"></canvas></div>
         </div>
       </div>
@@ -497,6 +514,40 @@
         <div class="col6"><div class="subhead">By account (retail May + 401k Jun)</div><div style="position:relative;height:150px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account including the Omnicom 401k"></canvas></div></div>
       </div>
       <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → $138K (2021) → dip to $82K (2022) → $204K (2024) → $200K now; up ~$15K YTD (largest positions NVIDIA &amp; Alphabet, Roth). The year-end &amp; monthly lines are retail-only; the Omnicom 401(k) (~$72K) appears in the by-account ring.</div>
+    </section>
+
+    <!-- HOLDINGS — stock-analysis card -->
+    <section class="card col12">
+      <h2>🧮 Holdings — stock analysis <span class="sub" style="font-weight:400">· equities · positions May stmt · metrics live Jun 22 2026</span></h2>
+      <div class="hold-scroll">
+      <table class="hold-tbl">
+        <thead>
+          <tr>
+            <th>Holding</th><th>Shares</th><th>Mkt value</th><th>Wt*</th>
+            <th>Unreal G/L</th><th>P/E ttm·fwd</th><th>Px now</th><th>Read</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="tk">NVDA</span><span class="nmsub">NVIDIA · Roth</span></td><td>100</td><td>$21,114</td><td>21.0%</td><td class="pos">+22.4%</td><td>32.3 · 23.4</td><td>$210</td><td><span class="read fair">Fair</span></td></tr>
+          <tr><td><span class="tk">NFLX</span><span class="nmsub">Netflix · Indiv + Roth</span></td><td>200</td><td>$17,204</td><td>17.1%</td><td class="neg">−14.7%</td><td>25.0 · —</td><td>$77</td><td><span class="read value">Cheap vs hist</span></td></tr>
+          <tr><td><span class="tk">GOOGL</span><span class="nmsub">Alphabet · Roth</span></td><td>40.1</td><td>$15,258</td><td>15.1%</td><td class="pos">+82.1%</td><td>27.5 · 25.8</td><td>$364</td><td><span class="read fair">Fair</span></td></tr>
+          <tr><td><span class="tk">MSFT</span><span class="nmsub">Microsoft · Roth</span></td><td>25</td><td>$11,256</td><td>11.2%</td><td class="pos">+12.9%</td><td>24.0 · 19.5</td><td>$379</td><td><span class="read fair">Fair</span></td></tr>
+          <tr><td><span class="tk">AAPL</span><span class="nmsub">Apple · Roth</span></td><td>30</td><td>$9,362</td><td>9.3%</td><td class="pos">+57.6%</td><td>35.0 · 30.9</td><td>$299</td><td><span class="read prem">Premium</span></td></tr>
+          <tr><td><span class="tk">AMZN</span><span class="nmsub">Amazon · Roth</span></td><td>30</td><td>$8,119</td><td>8.1%</td><td class="pos">+23.7%</td><td>30.0 · 27.4</td><td>$238</td><td><span class="read fair">Fair</span></td></tr>
+          <tr><td><span class="tk">AMC</span><span class="nmsub">AMC Entmt · Indiv</span></td><td>3,000</td><td>$5,190</td><td>5.2%</td><td class="pos">+44.4%</td><td>neg</td><td>$2.83</td><td><span class="read spec">Speculative</span></td></tr>
+          <tr><td><span class="tk">PLTR</span><span class="nmsub">Palantir · Indiv</span></td><td>25</td><td>$3,914</td><td>3.9%</td><td class="pos">+26.7%</td><td>136 · 92</td><td>$135</td><td><span class="read exp">Expensive</span></td></tr>
+          <tr><td><span class="tk">BYDDY</span><span class="nmsub">BYD ADR · Indiv</span></td><td>300</td><td>$3,477</td><td>3.5%</td><td class="neg">−13.3%</td><td>22.3 · 20.7</td><td>$10.40</td><td><span class="read fair">Fair</span></td></tr>
+          <tr><td><span class="tk">TSLA</span><span class="nmsub">Tesla · Roth</span></td><td>7</td><td>$3,051</td><td>3.0%</td><td class="pos">+32.2%</td><td>334 · 206</td><td>$400</td><td><span class="read exp">Expensive</span></td></tr>
+          <tr><td><span class="tk">ALLO</span><span class="nmsub">Allogene · Indiv</span></td><td>1,300</td><td>$2,821</td><td>2.8%</td><td class="pos">+5.0%</td><td>neg</td><td>$2.01</td><td><span class="read spec">Speculative</span></td></tr>
+          <tr class="tot"><td>Equities</td><td>—</td><td>$100,765</td><td>100%</td><td class="pos">+$15.8K</td><td>—</td><td>—</td><td>50% of retail</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note" style="margin-top:9px">
+        <b>How to read:</b> positions, cost basis &amp; unrealized G/L are from your <b>May Fidelity statement</b>; P/E and "Px now" are <b>live as of Jun 22 2026</b> (web). *Weight = share of the equity sleeve (~$101K), which is ~50% of the $199.8K retail portfolio. "Read" is the stock-analysis framework's valuation posture (TTM/forward P/E vs history &amp; peers) — <b>not</b> buy/sell advice.<br>
+        <b>Takeaways:</b> concentrated in mega-cap tech (NVDA + NFLX + GOOGL ≈ 53% of equities). Megacaps screen <i>fair</i> on forward P/E (NVDA 23×, MSFT 20×, GOOGL 26×); <b>TSLA (206× fwd)</b> and <b>PLTR (92× fwd)</b> are the priciest by far; <b>NFLX</b> is cheap vs its own history (25×) but trading near its 52-wk low; <b>AMC</b> and <b>ALLO</b> are unprofitable, speculative positions.<br>
+        Not shown (not single stocks): Contrafund <b>FCNTX</b> $25.4K, HSA Contrafund-K $7.6K + T. Rowe Blue Chip $2.2K, 529 target-date $16.8K, plus ~$47K cash/money-market.
+      </div>
     </section>
 
     <!-- INVESTING TO-DOS -->
@@ -1486,12 +1537,25 @@
           plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y; if(c.dataset.label==='Budget') return 'Budget: $'+v.toLocaleString(); const o=v-ba.budget[c.dataIndex]; return 'Spent: $'+v.toLocaleString()+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')';}}}},
           scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
       const gp=SNAP.chart_goalproj;
-      if(gp) C('cGoalProj',{type:'line',data:{labels:gp.labels,datasets:[
-          {label:'Needed',data:gp.need,borderColor:'#1d9e75',borderDash:[5,4],fill:false,tension:0,pointRadius:0,borderWidth:2},
-          {label:'Current pace',data:gp.pace,borderColor:'#ef9f27',backgroundColor:'rgba(240,161,75,.14)',fill:true,tension:.2,pointRadius:0,borderWidth:2}
+      if(gp){
+        const N=gp.labels.length;
+        const target=(gp.need&&gp.need[N-1])||50000;               // +$50K finish line
+        let curIdx=0; gp.pace.forEach((v,i)=>{ if(v!=null) curIdx=i; }); // last filled pace pt = "now"
+        const tgtLine=gp.labels.map(()=>target);                    // flat reference at +$50K
+        const goalDot=gp.labels.map((_,i)=>i===N-1?target:null);    // anchor at Dec
+        const nowDot =gp.labels.map((_,i)=>i===curIdx?gp.pace[curIdx]:null);
+        C('cGoalProj',{type:'line',data:{labels:gp.labels,datasets:[
+          // hero: the SHORTFALL — pace shaded up to the Needed line in coral
+          {label:'At current pace',data:gp.pace,borderColor:'#f4b13d',backgroundColor:'rgba(240,106,133,.18)',fill:3,tension:.2,pointRadius:0,borderWidth:2.5,order:2},
+          {label:'Now',data:nowDot,borderColor:'#f4b13d',backgroundColor:'#f4b13d',pointRadius:5,pointHoverRadius:6,showLine:false,order:0},
+          {label:'Goal · Dec',data:goalDot,borderColor:'#0c0e12',backgroundColor:'#45c98c',pointRadius:7,pointHoverRadius:8,pointBorderWidth:2,showLine:false,order:0},
+          {label:'Needed',data:gp.need,borderColor:'#45c98c',borderDash:[5,4],fill:false,tension:0,pointRadius:0,borderWidth:2,order:3},
+          {label:'Target +$50K',data:tgtLine,borderColor:'rgba(69,201,140,.40)',borderDash:[2,3],fill:false,pointRadius:0,borderWidth:1,order:4}
         ]},
-        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': +$'+(c.parsed.y/1000).toFixed(0)+'K'}}},
-          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'+$'+(v/1000)+'K'}}}}});
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9},filter:i=>['At current pace','Needed','Goal · Dec'].includes(i.text)}},
+          tooltip:{filter:c=>c.parsed.y!=null,callbacks:{label:c=>c.dataset.label+': +$'+(c.parsed.y/1000).toFixed(1)+'K'}}},
+          scales:{x:ax,y:{...ax,beginAtZero:true,suggestedMax:target*1.05,ticks:{font:{size:9},callback:v=>'+$'+(v/1000)+'K'}}}}});
+      }
 
       // --- Tax-return charts (static history from Private/Tax Returns) ---
       const TXY=['2010','2011','2012','2013','2018','2019','2020','2021','2022','2023'];
