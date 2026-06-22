@@ -71,6 +71,17 @@
   .bud .nm{flex:1}
   .bud.paid .nm{color:var(--muted);text-decoration:line-through}
   .bud .amt{font-variant-numeric:tabular-nums;font-weight:600}
+  .bud .enm{flex:1;min-width:0;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--text);font:inherit;padding:2px 5px}
+  .bud .enm:hover{border-color:var(--line)}
+  .bud .enm:focus{outline:none;border-color:var(--accent);background:var(--panel2)}
+  .bud.paid .enm{color:var(--muted);text-decoration:line-through}
+  .bud .eamt{flex:0 0 auto;width:60px;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--text);font:inherit;font-weight:600;text-align:right;padding:2px 4px;font-variant-numeric:tabular-nums}
+  .bud .eamt:hover{border-color:var(--line)}
+  .bud .eamt:focus{outline:none;border-color:var(--accent);background:var(--panel2)}
+  .bud .del{flex:0 0 auto;width:18px;height:18px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;line-height:1;border-radius:4px;opacity:.4;padding:0}
+  .bud .del:hover{opacity:1;color:var(--bad);background:var(--chip)}
+  .bud .box{cursor:pointer}
+  li.bud{cursor:default}
   .sumline{display:flex;justify-content:space-between;padding:6px 0 2px;margin-top:4px;border-top:2px solid var(--line);font-weight:700;font-size:11px}
   .progress{font-size:9px;color:var(--muted);margin-top:3px}
   .btn{background:var(--chip);color:var(--text);border:1px solid var(--line);border-radius:7px;padding:3px 8px;font-size:9px;cursor:pointer}
@@ -523,7 +534,8 @@
    <div class="grid">
     <!-- FIDELITY SNAPSHOT -->
     <section class="card col12">
-      <h2>📈 Investing — Fidelity <span class="sub" style="font-weight:400">6 accounts · figures from DB</span></h2>
+      <h2><span>📈 Investing — Fidelity <span class="sub" style="font-weight:400">6 accounts · figures from DB</span></span>
+        <a href="https://www.fidelity.com/" target="_blank" rel="noopener" style="padding:7px 13px;font-size:12px;font-weight:600;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;white-space:nowrap">Open Fidelity.com ↗</a></h2>
       <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
         <div class="cell"><div class="lbl">All accounts (Fidelity.com, Jun 21)</div><div class="val" id="fidAll">•••</div></div>
         <div class="cell"><div class="lbl">Retail portfolio (5 acct, May stmt)</div><div class="val" id="fidTotal">•••</div></div>
@@ -618,6 +630,19 @@
     </section>
 
     <section class="card col12">
+      <h2><span>🗒️ Applications log <span class="sub" style="font-weight:400">· <b id="appsCount">0</b> logged · syncs everywhere</span></span></h2>
+      <div id="appsWrap"><div class="note">loading…</div></div>
+      <div class="addrow" style="flex-wrap:wrap">
+        <input id="ja-date" type="date" class="cinput">
+        <input id="ja-company" placeholder="Company" style="flex:2;min-width:130px" autocomplete="off">
+        <input id="ja-role" placeholder="Role / title" style="flex:1;min-width:110px" autocomplete="off">
+        <input id="ja-notes" placeholder="Notes (optional)" style="flex:2;min-width:130px" autocomplete="off">
+        <button class="btn" id="ja-add">Add</button>
+      </div>
+      <div class="note" style="margin-top:6px">A personal record of what you applied for — company, role, date &amp; notes. Saved to your dashboard, so it shows on every device. Click ✕ to remove an entry.</div>
+    </section>
+
+    <section class="card col12">
       <h2>🗂️ Career notes</h2>
       <div class="areawrap">
         <div class="areagrp"><div class="lbl">🔗 Links</div>
@@ -683,10 +708,17 @@
     <!-- Monthly budget checklist (moved from Personal Finance) -->
     <section class="card col12">
       <h2><span>🗓️ Monthly budget — check off as paid</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
+      <div class="note" style="margin-top:2px">Tap the box to mark <b>paid this month</b>. Editing a name or amount, adding, or removing an item updates <b>every month</b> (it's the bill itself that changes, not just this month).</div>
       <div class="grid" style="margin-top:6px">
-        <div class="col4"><div class="subhead">💸 Fixed bills</div><ul id="exp"></ul><div class="progress" id="expProg">Paid: $0</div></div>
-        <div class="col4"><div class="subhead">📺 Subscriptions</div><ul id="subs"></ul><div class="progress" id="subsProg">Paid: $0</div></div>
-        <div class="col4"><div class="subhead">💵 Income</div><ul id="inc"></ul><div class="progress" id="incProg">Received: $0</div></div>
+        <div class="col4"><div class="subhead">💸 Fixed bills</div><ul id="exp"></ul>
+          <div class="addrow"><input id="addExpNm" placeholder="Add fixed bill…" autocomplete="off"><input id="addExpAmt" type="number" min="0" step="1" placeholder="$" style="flex:0 0 64px"><button class="btn" id="addExpBtn">Add</button></div>
+          <div class="progress" id="expProg">Paid: $0</div></div>
+        <div class="col4"><div class="subhead">📺 Subscriptions</div><ul id="subs"></ul>
+          <div class="addrow"><input id="addSubNm" placeholder="Add subscription…" autocomplete="off"><input id="addSubAmt" type="number" min="0" step="1" placeholder="$" style="flex:0 0 64px"><button class="btn" id="addSubBtn">Add</button></div>
+          <div class="progress" id="subsProg">Paid: $0</div></div>
+        <div class="col4"><div class="subhead">💵 Income</div><ul id="inc"></ul>
+          <div class="addrow"><input id="addIncNm" placeholder="Add income source…" autocomplete="off"><input id="addIncAmt" type="number" min="0" step="1" placeholder="$" style="flex:0 0 64px"><button class="btn" id="addIncBtn">Add</button></div>
+          <div class="progress" id="incProg">Received: $0</div></div>
       </div>
     </section>
    </div>
@@ -1042,7 +1074,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadChild(); wireChild();
+    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
@@ -1132,13 +1164,39 @@
     const { error }=await sb.from('finance_items').update({amount}).eq('id',itemId);
     if(error) setStatus('Budget save failed',true);
   }
+  async function updateFinanceItem(id, patch){
+    const it=items.find(x=>x.id===id); if(it) Object.assign(it, patch); renderFinance();
+    const { error }=await sb.from('finance_items').update(patch).eq('id',id);
+    if(error) setStatus('Save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function delFinanceItem(id){
+    items=items.filter(x=>x.id!==id); renderFinance();
+    const { error }=await sb.from('finance_items').delete().eq('id',id);
+    if(error){ setStatus('Delete failed: '+error.message,true); load(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function addFinanceItem(kind, nmId, amtId){
+    const nmEl=el(nmId), amtEl=el(amtId); const name=(nmEl.value||'').trim(); if(!name) return;
+    const amount=Math.max(0,+amtEl.value||0);
+    const sort_order=Math.max(0,...items.filter(i=>i.kind===kind).map(i=>Number(i.sort_order)||0))+1;
+    const { data, error }=await sb.from('finance_items').insert({kind,name,amount,sort_order}).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) items.push(data[0]);
+    nmEl.value=''; amtEl.value=''; renderFinance(); setStatus('saved '+new Date().toLocaleTimeString());
+  }
   const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function renderPaidList(elId, list){
     const ul=el(elId); if(!ul) return {total:0,paid:0}; ul.innerHTML=''; let total=0, paid=0;
     list.forEach(it=>{ const s=st(it.id); total+=Number(it.amount); if(s.paid) paid+=Number(it.amount);
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
-      li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+'</span><span class="amt">'+money(it.amount)+'</span>';
-      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); ul.appendChild(li); });
+      const box=document.createElement('span'); box.className='box'; box.textContent='✓'; box.title='Mark paid this month';
+      box.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid});
+      const nm=document.createElement('input'); nm.className='enm'; nm.value=it.name; nm.title='Edit name — applies to every month';
+      nm.onchange=()=>updateFinanceItem(it.id,{name:nm.value.trim()||it.name});
+      const amt=document.createElement('input'); amt.className='eamt'; amt.type='number'; amt.min=0; amt.step='1'; amt.value=Number(it.amount); amt.title='Edit amount — applies to every month';
+      amt.onchange=()=>updateFinanceItem(it.id,{amount:Math.max(0,+amt.value||0)});
+      const del=document.createElement('button'); del.className='del'; del.textContent='✕'; del.title='Remove from every month';
+      del.onclick=()=>{ if(confirm('Remove “'+it.name+'” from the budget? It will be removed from every month.')) delFinanceItem(it.id); };
+      li.append(box,nm,amt,del); ul.appendChild(li); });
     return {total, paid};
   }
   function renderFinance(){
@@ -1190,14 +1248,10 @@
     const totalBudget=fixedTotal+subsTotal+annualMonthly+budTot;
     el('expTotal').textContent=money(totalBudget);
 
-    const incEl=el('inc'); incEl.innerHTML=''; let recSum=0, incTotal=0;
-    income.forEach(it=>{ const s=st(it.id); incTotal+=Number(it.amount); if(s.paid) recSum+=Number(it.amount);
-      const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
-      li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+'</span><span class="amt">'+money(it.amount)+'</span>';
-      li.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid}); incEl.appendChild(li); });
-    el('incTotal').textContent=money(incTotal);
-    el('incProg').textContent='Received: '+money(recSum)+' of '+money(incTotal);
-    el('sumSave').textContent=money(incTotal-totalBudget);
+    const incRes=renderPaidList('inc', income);
+    el('incTotal').textContent=money(incRes.total);
+    el('incProg').textContent='Received: '+money(incRes.paid)+' of '+money(incRes.total);
+    el('sumSave').textContent=money(incRes.total-totalBudget);
   }
   function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
   if(el('mPrev')) el('mPrev').onclick=()=>shift(-1);
@@ -1206,6 +1260,11 @@
   if(el('mNext2')) el('mNext2').onclick=()=>shift(1);
   if(el('yPrev')) el('yPrev').onclick=()=>{ curYear--; renderFinance(); };
   if(el('yNext')) el('yNext').onclick=()=>{ curYear++; renderFinance(); };
+  [['addExpBtn','fixed_expense','addExpNm','addExpAmt'],['addSubBtn','subscription','addSubNm','addSubAmt'],['addIncBtn','income','addIncNm','addIncAmt']].forEach(([btn,kind,nmId,amtId])=>{
+    if(el(btn)) el(btn).onclick=()=>addFinanceItem(kind,nmId,amtId);
+    if(el(amtId)) el(amtId).addEventListener('keydown',e=>{ if(e.key==='Enter') addFinanceItem(kind,nmId,amtId); });
+    if(el(nmId)) el(nmId).addEventListener('keydown',e=>{ if(e.key==='Enter') el(amtId)?el(amtId).focus():addFinanceItem(kind,nmId,amtId); });
+  });
 
   /* ---------- SNAPSHOT (figures from DB) ---------- */
   function renderSnapshot(){
@@ -1392,6 +1451,40 @@
     if(el('a-add')) el('a-add').onclick=()=>{ const name=el('a-name').value.trim(); if(!name) return;
       addChild('child_activities',{name,role:el('a-role').value.trim()},cActs);
       el('a-name').value=''; el('a-role').value=''; };
+  }
+
+  /* ---------- JOB APPLICATIONS LOG ---------- */
+  let cApps=[], appsWired=false;
+  async function loadApps(){
+    const { data, error }=await sb.from('job_applications').select('*');
+    cApps = error ? [] : (data||[]); renderApps();
+  }
+  function renderApps(){
+    const w=el('appsWrap'); if(!w) return;
+    if(el('appsCount')) el('appsCount').textContent=cApps.length;
+    if(!cApps.length){ w.innerHTML='<div class="note">No applications logged yet — add one below.</div>'; return; }
+    cApps.sort((a,b)=>(b.applied_on||'').localeCompare(a.applied_on||''));
+    w.innerHTML=cApps.map(a=>'<div class="crow"><span class="g">'+esc(a.company||'')+(a.role?' <small style="color:var(--muted)">'+esc(a.role)+'</small>':'')+(a.notes?'<br><small style="color:var(--muted)">'+esc(a.notes)+'</small>':'')+'</span><span class="gr">'+esc(a.applied_on||'')+'</span><span class="x" data-del-app="'+a.id+'">✕</span></div>').join('');
+    w.querySelectorAll('[data-del-app]').forEach(x=>x.onclick=()=>delApp(x.dataset.delApp));
+  }
+  async function addApp(){
+    const company=(el('ja-company').value||'').trim(); if(!company){ el('ja-company').focus(); return; }
+    const row={ company, role:(el('ja-role').value||'').trim()||null, applied_on:el('ja-date').value||new Date().toISOString().slice(0,10), notes:(el('ja-notes').value||'').trim()||null };
+    const { data, error }=await sb.from('job_applications').insert(row).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) cApps.push(data[0]);
+    el('ja-company').value=''; el('ja-role').value=''; el('ja-notes').value=''; renderApps(); setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function delApp(id){
+    cApps=cApps.filter(r=>r.id!==id); renderApps();
+    const { error }=await sb.from('job_applications').delete().eq('id',id);
+    if(error){ setStatus('Delete failed',true); loadApps(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  function wireApps(){
+    if(appsWired) return; appsWired=true;
+    if(el('ja-date')) el('ja-date').value=new Date().toISOString().slice(0,10);
+    if(el('ja-add')) el('ja-add').onclick=addApp;
+    ['ja-company','ja-role','ja-notes'].forEach(id=>{ if(el(id)) el(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addApp(); }); });
   }
 
   /* ---------- CHARTS (data from DB, built lazily per page) ---------- */
