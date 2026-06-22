@@ -214,14 +214,14 @@
 
   <nav class="tabs" id="tabs">
     <a href="#today" data-page="today">🔆 Today</a>
-    <a href="#money" data-page="money">💰 Personal Finance</a>
     <a href="#spend" data-page="spend">📊 Monthly Finance</a>
-    <a href="#investing" data-page="investing">📈 Investing</a>
-    <a href="#jobs" data-page="jobs">🔎 Career</a>
-    <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
     <a href="#adu" data-page="adu">🏘️ ADU Rental</a>
+    <a href="#money" data-page="money">💰 Personal Finance</a>
+    <a href="#investing" data-page="investing">📈 Investing</a>
     <a href="#projects" data-page="projects">🚀 Projects</a>
     <a href="#child" data-page="child">🧒 Child</a>
+    <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
+    <a href="#jobs" data-page="jobs">🔎 Career</a>
   </nav>
 
   <!-- ============================= TODAY ============================= -->
@@ -239,33 +239,6 @@
           <div class="addrow"><input id="add-backlog" placeholder="Add to backlog…" autocomplete="off"></div></div>
       </div>
       <div class="progress" style="margin-top:8px">1–3 box sets importance (1 = top) · ◀ ▶ move a task · click text to edit · ✕ delete · box completes. Saved to the database, syncs everywhere.</div>
-    </section>
-
-    <!-- GOALS strip -->
-    <section class="card col6">
-      <h2>🎯 2026 goals</h2>
-      <div id="goalStrip"><div class="note">loading…</div></div>
-    </section>
-
-    <!-- MONTHLY DOCUMENTS TO UPLOAD (aggregated from all pages) -->
-    <section class="card col6">
-      <h2>📥 Monthly documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → ingest · checks sync</span></h2>
-      <div class="chk" data-key="doc-bofa3326"><span class="box">✓</span><span class="nm">BofA ...3326 statement</span><span class="det">finance</span></div>
-      <div class="chk" data-key="doc-bofa4394"><span class="box">✓</span><span class="nm">BofA ...4394 statement</span><span class="det">finance</span></div>
-      <div class="chk" data-key="doc-bofasav"><span class="box">✓</span><span class="nm">BofA savings ...1246</span><span class="det">finance</span></div>
-      <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">finance</span></div>
-      <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">investing</span></div>
-      <div class="chk" data-key="inv-401k-snap"><span class="box">✓</span><span class="nm">Fidelity.com "All accounts" screenshot (401k)</span><span class="det">investing</span></div>
-      <div class="chk" data-key="adu-doc-stmt"><span class="box">✓</span><span class="nm">Utopia owner statement (ADU)</span><span class="det">rental</span></div>
-    </section>
-
-    <!-- WEEKLY CHALLENGES -->
-    <section class="card col12">
-      <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
-      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
-      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
-        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
     </section>
 
     <!-- OBSIDIAN WIKI TODOS -->
@@ -325,6 +298,32 @@
       </div>
       </details>
     </section>
+
+    <!-- GOALS strip -->
+    <section class="card col6">
+      <h2>🎯 2026 goals</h2>
+      <div id="goalStrip"><div class="note">loading…</div></div>
+    </section>
+
+    <!-- MONTHLY DOCUMENTS TO UPLOAD (aggregated from all pages) -->
+    <section class="card col6">
+      <h2>📥 Monthly documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → ingest · checks sync</span></h2>
+      <div class="chk" data-key="doc-bofa3326"><span class="box">✓</span><span class="nm">BofA statement (all accounts — one combined PDF)</span><span class="det">finance</span></div>
+      <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">finance</span></div>
+      <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">investing</span></div>
+      <div class="chk" data-key="inv-401k-snap"><span class="box">✓</span><span class="nm">Fidelity.com "All accounts" screenshot (401k)</span><span class="det">investing</span></div>
+      <div class="chk" data-key="adu-doc-stmt"><span class="box">✓</span><span class="nm">Utopia owner statement (ADU)</span><span class="det">rental</span></div>
+    </section>
+
+    <!-- WEEKLY CHALLENGES -->
+    <section class="card col12">
+      <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
+      <div class="habit"><span><b>Workout</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="workout"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+      <div class="habit"><span><b>Job apply</b> <small style="color:var(--muted)">3× / week</small></span>
+        <span class="pips" data-habit="apply"><span class="pip">✓</span><span class="pip">✓</span><span class="pip">✓</span></span></div>
+    </section>
+
    </div>
   </div>
 
@@ -344,13 +343,9 @@
         <div class="cell"><div class="lbl">Projected added by Dec</div><div class="val" id="gbProj">•••</div></div>
       </div>
       <div class="grid" style="margin-top:10px">
-        <div class="col6">
+        <div class="col12">
           <div class="subhead">📈 Path to +$50K — needed vs current pace</div>
           <div style="position:relative;height:150px"><canvas id="cGoalProj" role="img" aria-label="Cumulative savings needed versus current pace to reach plus fifty thousand by December"></canvas></div>
-        </div>
-        <div class="col6">
-          <div class="subhead">🩹 Where it's leaking — over budget (Apr–Jun)</div>
-          <div style="position:relative;height:150px"><canvas id="cOver" role="img" aria-label="Amount over budget by category, last three months"></canvas></div>
         </div>
       </div>
       <div class="note" id="gbLeaks" style="margin-top:10px"></div>
@@ -383,12 +378,8 @@
       <h2>💎 Net worth — by year</h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cNW" role="img" aria-label="Net worth trend by year"></canvas></div>
     </section>
-    <section class="card col4">
-      <h2>📅 Net worth — 2026 by month</h2>
-      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cNWm" role="img" aria-label="Tracked net worth by month in 2026"></canvas></div>
-    </section>
-    <section class="card col4">
-      <h2>💵 Income — by year</h2>
+    <section class="card col6">
+      <h2>💵 Income — by year <span class="sub" style="font-weight:400">· total income per tax returns</span></h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncome" role="img" aria-label="Annual income on record"></canvas></div>
     </section>
 
@@ -408,16 +399,6 @@
       <div class="chk" data-key="tax-2026-home"><span class="box">✓</span><span class="nm">Home / deductions</span></div>
     </section>
 
-    <!-- DOCUMENTS TO GATHER (mirrors the vault upkeep checklist) -->
-    <section class="card col6">
-      <h2>📥 Documents to gather <span class="sub" style="font-weight:400">monthly · ties to vault upkeep list</span></h2>
-      <div class="note" style="margin-bottom:6px">Drop in <b>0-Inbox</b>, then re-run ingest. Source of truth: <b>LifeOS-Upkeep-Checklist</b> in the vault.</div>
-      <div class="chk" data-key="doc-bofa3326"><span class="box">✓</span><span class="nm">BofA ...3326 statement</span><span class="det">monthly</span></div>
-      <div class="chk" data-key="doc-bofa4394"><span class="box">✓</span><span class="nm">BofA ...4394 statement</span><span class="det">monthly</span></div>
-      <div class="chk" data-key="doc-bofasav"><span class="box">✓</span><span class="nm">BofA savings ...1246</span><span class="det">monthly</span></div>
-      <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">monthly</span></div>
-      <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">monthly</span></div>
-    </section>
    </div>
   </div>
 
@@ -448,14 +429,6 @@
     </section>
 
     <!-- INVESTING TO-DOS -->
-    <section class="card col12">
-      <h2>✅ Investing to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="inv-june-stmt"><span class="box">✓</span><span class="nm">Drop monthly Fidelity statement in 0-Inbox</span><span class="det">monthly</span></div>
-      <div class="chk" data-key="inv-401k-snap"><span class="box">✓</span><span class="nm">Grab Fidelity.com "All accounts" screenshot for the 401(k) balance</span><span class="det">monthly · off-statement</span></div>
-      <div class="chk" data-key="inv-2021"><span class="box">✓</span><span class="nm">Find 2021 year-end report (gap in history)</span></div>
-      <div class="chk" data-key="inv-1099"><span class="box">✓</span><span class="nm">File 1099 / 5498 / 5498-SA when they arrive → Taxes</span></div>
-      <div class="chk" data-key="inv-rebalance"><span class="box">✓</span><span class="nm">Review allocation / rebalance</span></div>
-    </section>
    </div>
   </div>
 
@@ -823,7 +796,7 @@
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','money','spend','investing','jobs','realestate','adu','projects','child'];
+  const PAGES=['today','spend','adu','money','investing','projects','child','realestate','jobs'];
   function showPage(p){
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
@@ -1243,9 +1216,9 @@
     {name:"Shopping/Retail", bud:800, byMonth:[[["Amazon", 173.36], ["Old Navy Us 3497", 127.32], ["Cooling & Heating R", 79.0], ["The Jolly Oyster", 66.23], ["Triangle Gaming", 65.55], ["Cellfix", 44.2], ["Target", 1.72]], [["Amazon", 88.61], ["Kreung La", 60.5], ["Rockenwagner Bakery", 17.54]], [["Amazon", 648.94], ["Daiso - Sawtelle", 49.86]], [["Amazon", 1294.25], ["Harbor Freight Tools 57", 221.48], ["Uniqlo", 191.93], ["Bikerowave", 122.7], ["Foot Locker Italy Srl Firenze Ita", 110.06]], [["Amazon", 992.2], ["68160 4962 Spe", 62.37], ["69640 5430 Spe", 48.83], ["Ikea Culver City", 36.7], ["Provecho Calimex Ll", 27.32]], [["Amazon", 245.18], ["Nike", 138.44], ["Target", 49.94], ["Uniqlo", 44.19], ["Sunny Blue Culver C", 32.45], ["Rei Marina D Ray", 29.58], ["Ume Palms", 13.7]]]},
     {name:"Property Tax", bud:800, byMonth:[[], [], [["LA County property tax", 4810.98]], [], [], []]},
     {name:"Utilities/Home", bud:500, byMonth:[[["Att* Bill Payment", 170.98], ["Spectrum 855-707-7328", 90.0], ["Spectrum (internet)", 41.25]], [["Att* Bill Payment", 170.84], ["Spectrum (internet)", 41.25]], [["LADWP (water/power)", 714.06], ["SoCalGas", 350.0], ["Att* Bill Payment", 170.86], ["Spectrum (internet)", 41.25]], [["At&T Mobility Epay", 333.34], ["Spectrum (internet)", 41.25]], [["SoCalGas", 1350.0], ["At&T Mobility Epay", 169.89], ["Spectrum (internet)", 41.25]], []]},
-    {name:"Groceries", bud:450, byMonth:[[["Trader Joe’s", 220.59], ["Northgate Market", 208.61], ["Pavilions", 83.64], ["99 Ranch", 44.99], ["Vons", 42.37], ["Ralphs", 32.3], ["Wholefds Cul", 17.55]], [["Pavilions", 50.22]], [["Trader Joe’s", 426.17], ["Sprouts Farmers Mar", 36.71], ["Bristol Farms 15", 21.99]], [["Vons", 136.23], ["Galleria Marke", 92.32], ["Vintage Grocers", 76.18], ["Wholefds Plv", 11.67]], [["Trader Joe’s", 202.01], ["Ralphs", 35.82], ["Wholefds Plv", 26.76], ["Amazon", 25.42], ["Pavilions", 15.99]], [["Ralphs", 186.35], ["Trader Joe’s", 151.96], ["Northgate Market", 43.64], ["Amazon", 10.96]]]},
+    {name:"Groceries", bud:450, byMonth:[[["Trader Joe’s", 220.59], ["Northgate Market", 208.61], ["Pavilions", 83.64], ["99 Ranch", 44.99], ["Vons", 42.37], ["Ralphs", 32.3], ["Wholefds Cul", 17.55]], [["Pavilions", 50.22]], [["Trader Joe’s", 426.17], ["Sprouts Farmers Mar", 36.71], ["Bristol Farms 15", 21.99]], [["Vons", 136.23], ["Galleria Marke", 92.32], ["Vintage Grocers", 76.18], ["Wholefds Plv", 11.67]], [["Trader Joe’s", 202.01], ["Ralphs", 35.82], ["Wholefds Plv", 26.76], ["Amazon", 25.42], ["Pavilions", 15.99]], [["Ralphs", 186.35], ["Trader Joe’s", 151.96], ["Northgate Market", 43.64], ["Amazon", 10.96], ["Sandune Liquor", 9.06]]]},
     {name:"Cash/ATM Withdrawal", bud:150, byMonth:[[], [], [["1616000011", 1081.05], ["G24331A00", 607.76], ["Bddf", 497.39]], [], [], []]},
-    {name:"Entertainment/Gaming", bud:150, byMonth:[[["Castle Park", 36.0]], [], [], [["Eventim Axs Ticketing Los Angeles", 1433.84], ["Leo Carrillo Beach Stor", 19.06]], [["Cinemark 1014 Online", 38.98], ["Cinemark 1014 Rstbar", 14.65]], [["Cinemark 1085 Boxcon", 23.0], ["Oc Parks Hq Irvine", 20.0]]]},
+    {name:"Entertainment/Gaming", bud:150, byMonth:[[["Castle Park", 36.0], ["Prime Video", 7.58]], [["Prime Video", 3.99]], [["Prime Video", 7.98]], [["Eventim Axs Ticketing Los Angeles", 1433.84], ["MDR Sportfishing", 127.2], ["Leo Carrillo Beach Stor", 19.06], ["TikTok Shop", 8.22]], [["Cinemark 1014 Online", 38.98], ["Cinemark 1014 Rstbar", 14.65]], [["Cinemark 1085 Boxcon", 23.0], ["Oc Parks Hq Irvine", 20.0]]]},
     {name:"Software/Advertising", bud:200, byMonth:[[["Envato", 198.0], ["Higgsfield", 150.0], ["Tiktok Promote", 115.28], ["Google", 22.92], ["OpenAI", 20.0], ["Suno", 10.0]], [["Dnh", 55.18], ["Tiktok Promote", 20.0], ["Google", 12.44], ["Suno", 10.0]], [["OpenAI", 40.0], ["Suno", 10.0], ["Google", 7.49]], [["OpenAI", 20.0], ["Tiktok Promote", 10.47], ["Suno", 10.0]], [["Anthropic", 55.84], ["Sp Creation Engine", 55.0], ["Claude.Ai Subscription", 20.0], ["Suno", 10.0], ["Facebk Wilmington", 1.0]], [["Anthropic", 163.91], ["Framer", 120.0], ["Higgsfield", 29.5], ["OpenAI", 20.0], ["Suno", 10.0]]]},
     {name:"Insurance", bud:191, byMonth:[[["Progressive insurance", 191.92]], [["Progressive insurance", 191.0]], [["Progressive insurance", 191.0]], [["Progressive insurance", 191.0]], [["Progressive insurance", 191.0]], []]},
     {name:"House Cleaning", bud:180, byMonth:[[["House cleaner (Maria/Mairam)", 170.0]], [["House cleaner (Maria/Mairam)", 170.0]], [["House cleaner (Maria/Mairam)", 170.0]], [["House cleaner (Maria/Mairam)", 170.0]], [["House cleaner (Maria/Mairam)", 200.0]], []]},
@@ -1253,16 +1226,16 @@
     {name:"Health/Medical", bud:200, byMonth:[[["Scott Tobin (therapy)", 100.0]], [["Cvs/Pharmacy #", 43.86]], [["Couples Therapy (personal)", 226.93], ["Cvs/Pharmacy #", 9.87]], [], [], [["Couples Therapy (personal)", 453.87]]]},
     {name:"P2P Payment Out", bud:150, byMonth:[[["Venmo", 385.0], ["Canva", 12.99], ["Paypal Des:Inst Xfer Id:Microsoft Indn:Owner Co Id:Paypalsi77 Web", 0.99]], [], [["Paypal Des:Inst Xfer Id:Ebay 800-456-32 Indn:Owner Co Id:Paypalsi77 Web", 195.5], ["Nora Soto", 6.0]], [], [["Paypal Des:", 16.64]], [["Venmo", 206.6]]]},
     {name:"Tutoring (Child)", bud:200, byMonth:[[["Akhil (tutor — 50% owed by ex)", 200.0]], [["Akhil (tutor — 50% owed by ex)", 150.0]], [["Akhil (tutor — 50% owed by ex)", 150.0]], [["Akhil (tutor — 50% owed by ex)", 100.0]], [["Akhil (tutor — 50% owed by ex)", 150.0]], []]},
+    {name:"Gas/Fuel", bud:120, byMonth:[[["Exxon Western Oil Inc", 74.28], ["Exxon Indo Phili Inc", 47.12], ["Rocket gas", 36.86]], [["Rocket gas", 39.62]], [["Arco 912076", 54.13], ["Sinaco Oil 2 Corp Los Angeles", 34.42]], [["Rocket gas", 149.47], ["Arco 912076", 64.3]], [["Arco 222950", 65.94]], [["Exxon Western Oil Inc", 54.25]]]},
     {name:"Pet care (Dog)", bud:60, byMonth:[[], [], [["Christina Kim (vet — dog)", 492.63]], [], [], []]},
     {name:"Gardener", bud:160, byMonth:[[], [["Dennise Enriquez (gardener)", 240.0]], [], [], [["Dennise Enriquez (gardener)", 240.0]], []]},
-    {name:"Uncategorized", bud:50, byMonth:[[["Rocket 193", 36.86], ["Par Chicken", 8.2], ["Prime Video", 7.58], ["Carls Jr 1100250", 3.65], ["Ca Parks Yodel Park", 3.55], ["Abm Culver Steps 4828", 2.0]], [["Rocket 193", 39.62], ["Caefile Plano", 20.51], ["Prime Video", 3.99], ["Caefile Los Angeles", 2.25]], [["Prime Video", 7.98]], [["Rocket 193", 149.47], ["Fh* Marina Del Rey Spo", 127.2], ["Tiktok Shop", 8.22], ["Dept. Beaches & Harbor Marina Del Re", 4.0], ["Dept. Beaches & Harbors", 4.0], ["Baldwin Hills Scenic O Culver City", 2.0]], [["2216 Santa Monica Blvd", 15.0], ["The Ups Store 0774", 5.26], ["Dept. Beaches & Harbor Marina Del Re", 5.0]], [["Sandune Liquor", 9.06], ["Joes Prkg Howard Hughes", 3.0]]]},
-    {name:"Gas/Fuel", bud:100, byMonth:[[["Exxon Western Oil Inc", 74.28], ["Exxon Indo Phili Inc", 47.12]], [], [["Arco 912076", 54.13], ["Sinaco Oil 2 Corp Los Angeles", 34.42]], [["Arco 912076", 64.3]], [["Arco 222950", 65.94]], [["Exxon Western Oil Inc", 54.25]]]},
     {name:"Coffee/Cafe", bud:60, byMonth:[[["Jamba Juice - 0023", 29.57], ["Jamba Juice - 1253", 12.35], ["Chakaa Tea Cafe", 7.34], ["Starbucks", 3.75]], [["Starbucks", 40.0], ["Jamba Juice - 0023", 20.58], ["Panorama Cafe", 13.21]], [["Jamba Juice - 0023", 20.58], ["Starbucks", 5.32]], [["Jamba 23", 21.26], ["Caffe Luxxe", 10.75], ["Jamba Juice - 1253", 10.29]], [["Kc'S Crepes Cafe Md", 13.5], ["Kc'S Crepes Cafe", 12.41], ["Jamba 23", 10.63]], [["Rutts Hawaiian Cafe", 44.83], ["Kc'S Crepes Cafe Md", 22.95], ["Starbucks", 15.25], ["Jamba 1253 Olo", 10.63]]]},
-    {name:"Transport/Tickets", bud:75, byMonth:[[], [["Uber Eats", 76.88], ["Auto Park 10-Broadway S", 20.0], ["Parking Meters - Ips", 1.25]], [["Ladot Meter Parking", 2.0], ["Parking Meters - Ips", 0.5]], [["Ladot Parking Citation Los Angeles", 70.0], ["Uber Eats", 30.24]], [["Waymo 8442613753", 56.0]], [["Ladot Meter Parking", 2.0]]]},
+    {name:"Transport/Tickets", bud:75, byMonth:[[], [["Uber Eats", 76.88], ["Auto Park 10-Broadway S", 20.0], ["Parking Meters - Ips", 1.25]], [["Ladot Meter Parking", 2.0], ["Parking Meters - Ips", 0.5]], [["Ladot Parking Citation Los Angeles", 70.0], ["Uber Eats", 30.24], ["Beaches & Harbor (parking)", 8.0]], [["Waymo 8442613753", 56.0], ["Parking (SM Blvd)", 15.0], ["Beaches & Harbor (parking)", 5.0]], [["Ladot Meter Parking", 2.0]]]},
+    {name:"Government/Legal", bud:25, byMonth:[[], [["CA tax e-file", 22.76]], [["Superiorcourtlapublica Los Angeles", 2.0]], [["Nic", 68.25]], [["Nic", 53.25]], []]},
     {name:"Personal Care", bud:50, byMonth:[[], [["Peter'S Salon Of Beauty", 40.0]], [["Floyd'S 99 Venice", 56.0]], [], [], [["Floyd'S 99 Marvista", 46.0]]]},
-    {name:"Government/Legal", bud:25, byMonth:[[], [], [["Superiorcourtlapublica Los Angeles", 2.0]], [["Nic", 68.25]], [["Nic", 53.25]], []]},
     {name:"Bank: Interest", bud:0, byMonth:[[], [["Interest Charged To Standard Purch", 5.53]], [["Interest Charged To Standard Purch", 6.82]], [], [["Interest Charged To Standard Purch", 33.93]], [["Interest Charged To Standard Purch", 56.13]]]},
     {name:"Bank: Fees", bud:0, byMonth:[[], [], [["1616000011", 10.0], ["Philz Coffee", 7.2], ["International Transaction Fee", 0.23]], [["Foreign Transaction Fee", 43.57], ["International Transaction Fee", 0.65]], [], [["Coffee Bean", 12.7]]]},
+    {name:"Uncategorized", bud:50, byMonth:[[["Par Chicken", 8.2], ["Carls Jr 1100250", 3.65], ["Ca Parks Yodel Park", 3.55], ["Abm Culver Steps 4828", 2.0]], [], [], [["Baldwin Hills Scenic O Culver City", 2.0]], [["The Ups Store 0774", 5.26]], [["Joes Prkg Howard Hughes", 3.0]]]},
   ];
   // Income by source, per month (Jan..Jun), from BofA ...3326 deposits (internal transfers + refunds excluded). June …3326 pending.
   const INCOME=[
@@ -1390,7 +1363,7 @@
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
       const inc=SNAP.chart_income;
       if(inc) C('cIncome',{type:'bar',data:{labels:inc.labels,
-        datasets:[{data:inc.data,backgroundColor:['#378add','#378add','#1d9e75'],borderRadius:4,borderWidth:0}]},
+        datasets:[{data:inc.data,backgroundColor:inc.labels.map(l=>/est/i.test(l)?'#1d9e75':'#378add'),borderRadius:4,borderWidth:0}]},
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y.toLocaleString()}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
       const ba=SNAP.chart_budget_actual;
       if(ba) C('cBudAct',{type:'bar',data:{labels:ba.labels,datasets:[
