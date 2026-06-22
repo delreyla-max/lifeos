@@ -408,13 +408,19 @@
       <div class="note" style="margin-top:6px;font-size:11px"><b>Tax paid</b> = total federal tax owed for the year (bars). <b>Effective rate</b> = that tax ÷ total income (line) — your real average rate. It jumps in property-sale years (2019, 2023), not with raises.</div>
     </section>
 
+    <section class="card col6">
+      <h2>📊 Tax-return P&amp;L <span class="sub" style="font-weight:400">· after-tax income, 2010+</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cTaxPnl" role="img" aria-label="Annual after-tax income and tax stacked to total income, from tax returns"></canvas></div>
+      <div class="note" style="margin-top:6px;font-size:11px">Each bar = that year's total income, split into what you <b>kept</b> (after-tax) vs <b>federal tax</b>. A return only records income and tax, so this is a tax-level P&amp;L, not living expenses. 2014 (tax unverified) &amp; 2017 (no total-income line) omitted.</div>
+    </section>
+
     <!-- Deeper analysis: income drivers since 2010 (finance variance analysis) -->
     <section class="card col12">
       <h2>🔎 Deeper analysis — income drivers since 2010 <span class="sub" style="font-weight:400">· variance decomposition</span></h2>
       <div class="grid" style="margin-top:6px">
         <div class="col6">
           <div class="subhead">The long arc: 2010 → 2023</div>
-          <p class="note" style="margin-top:4px">Total income fell from <b>$198K (2010)</b> to a <b>$29K trough (2018)</b>, then recovered to a record <b>$181K (2023)</b>. The 2010-13 drop was a wage collapse ($192K → $32K W-2) only partly offset by a self-employment push (Breakfast-Royale Schedule C peaked at <b>$56,887 in 2013</b>). The recovery since 2019 is a different mix: W-2 wages climbing back ($99K → $131K) <i>plus</i> property and rental income that didn't exist in the wage years.</p>
+          <p class="note" style="margin-top:4px">Total income fell from <b>$198K (2010)</b> to a <b>$29K trough (2018)</b>, then recovered to a record <b>$181K (2023)</b>. The 2010-13 drop was a wage collapse ($192K → $32K W-2) only partly offset by a self-employment push (Schedule C peaked at <b>$56,887 in 2013</b> — sole-proprietor income; business name isn't on the parsed PDF). The recovery since 2019 is a different mix: W-2 wages climbing back ($99K → $131K) <i>plus</i> property and rental income that didn't exist in the wage years.</p>
         </div>
         <div class="col6">
           <div class="subhead">Biggest single swing: 2023 vs 2022 (+$71,972)</div>
@@ -442,7 +448,7 @@
     <section class="card col6">
       <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
       <div class="chk" data-key="tax-2026-w2"><span class="box">✓</span><span class="nm">W-2 (RAPP)</span></div>
-      <div class="chk" data-key="tax-2026-breakfast"><span class="box">✓</span><span class="nm">Breakfast-Royale business income/expenses</span></div>
+      <div class="chk" data-key="tax-2026-breakfast"><span class="box">✓</span><span class="nm">Self-employment / 1099 income + expenses (if any)</span></div>
       <div class="chk" data-key="tax-2026-adu"><span class="box">✓</span><span class="nm">ADU-Rental rental income + expenses</span></div>
       <div class="chk" data-key="tax-2026-1099"><span class="box">✓</span><span class="nm">Investment 1099s → Investing Fidelity</span></div>
       <div class="chk" data-key="tax-2026-home"><span class="box">✓</span><span class="nm">Home / deductions</span></div>
@@ -1400,9 +1406,10 @@
     const ax={grid:{color:gridc},ticks:{font:{size:9}}};
     const C=(id,cfg)=>{ const e=el(id); if(!e||charts[id]) return; charts[id]=new Chart(e,cfg); };
     if(page==='money'){
-      const nw=SNAP.chart_nw, comp=SNAP.chart_comp, ob=SNAP.chart_overbudget;
-      if(nw) C('cNW',{type:'line',data:{labels:nw.labels,
-        datasets:[{data:nw.data,borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:0,borderWidth:2}]},
+      const comp=SNAP.chart_comp, ob=SNAP.chart_overbudget;
+      // Net worth — true-estimate series, 2010+ (self-tracker; not from tax returns)
+      C('cNW',{type:'line',data:{labels:['2010','2016','2018','2021','2022','2023','2025','2026'],
+        datasets:[{data:[140,590,1014,1350,1642,1521,1631,1619],borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.15)',fill:true,tension:.3,pointRadius:2,borderWidth:2}]},
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000).toFixed(1)+'M'}}}}});
       if(comp) C('cComp',{type:'doughnut',data:{labels:comp.labels,
         datasets:[{data:comp.data,backgroundColor:['#1d9e75','#378add','#ef9f27'],borderWidth:0}]},
@@ -1460,6 +1467,14 @@
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label==='Eff. rate'?c.parsed.y+'%':'$'+c.parsed.y.toLocaleString()}}},
           scales:{x:ax,y:{...ax,position:'left',ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{font:{size:9},callback:v=>v+'%'}}}}});
+
+      // Tax-return P&L: after-tax income + tax = total income (stacked), 2010+
+      const TPY=['2010','2011','2012','2013','2018','2019','2020','2021','2022','2023'];
+      C('cTaxPnl',{type:'bar',data:{labels:TPY,datasets:[
+          {label:'After-tax income',data:[163693,120975,98094,82371,27457,51774,93333,93290,96941,152086],backgroundColor:'#1d9e75',borderWidth:0},
+          {label:'Federal tax',data:[34456,16265,5966,16511,1967,3528,11272,17611,11714,28541],backgroundColor:'#e24b4a',borderWidth:0}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()}}},scales:{x:{...ax,stacked:true},y:{...ax,beginAtZero:true,stacked:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
 
       const pl=SNAP.chart_pnl;
       if(pl) C('cPnl',{type:'bar',data:{labels:pl.labels,datasets:[
