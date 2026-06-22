@@ -171,6 +171,10 @@
   .chk.done .nm{color:var(--muted);text-decoration:line-through}
   .chk .det{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap}
   .note{color:var(--muted);font-size:11px;line-height:1.4}
+  .bridge{margin-top:6px;font-size:12px;font-variant-numeric:tabular-nums}
+  .bridge .brow{display:flex;justify-content:space-between;gap:10px;padding:5px 8px;border-radius:6px;background:var(--panel2);margin-bottom:4px}
+  .bridge .brow.pos b{color:var(--good,#1d9e75)}
+  .bridge .brow.tot{background:transparent;border-top:2px solid var(--line);border-radius:0;font-weight:700;margin-top:2px}
   .cinput{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:4px 7px}
   .cinput:focus{outline:none;border-color:var(--accent)}
   .crow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:12px}
@@ -330,6 +334,14 @@
   <!-- ============================= MONEY ============================= -->
   <div class="page" id="page-money">
    <div class="grid">
+    <!-- Profit & loss — top of page -->
+    <section class="card col12">
+      <h2>📈 Profit &amp; loss — 2026</h2>
+      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
+      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
+      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
+    </section>
+
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
     <section class="card col8">
       <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
@@ -372,33 +384,54 @@
 
     <!-- 4 ▸ NET WORTH & INCOME TRENDS (3-col) -->
     <section class="card col4">
-      <h2>💎 Net worth — by year</h2>
-      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cNW" role="img" aria-label="Net worth trend by year"></canvas></div>
+      <h2>💎 Net worth — by year <span class="sub" style="font-weight:400">· 2010+ · estimates</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cNW" role="img" aria-label="Net worth trend by year since 2010"></canvas></div>
+      <div class="note" style="margin-top:6px;font-size:11px">Net worth isn't on a tax return — these are estimates from the self-tracker + statements (real estate, Fidelity, cash). Shown 2010-onward to line up with the income charts.</div>
     </section>
     <section class="card col6">
-      <h2>💵 Income — by year <span class="sub" style="font-weight:400">· total income per tax returns</span></h2>
-      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncome" role="img" aria-label="Annual income on record"></canvas></div>
+      <h2>💵 Income — by year <span class="sub" style="font-weight:400">· total income + AGI, tax returns 2010+</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncome" role="img" aria-label="Total income and AGI by year from tax returns since 2010"></canvas></div>
     </section>
     <section class="card col6">
       <h2>🧱 Income — by source <span class="sub" style="font-weight:400">· wages vs side income (tax returns)</span></h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncSrc" role="img" aria-label="Income by source stacked by year from tax returns"></canvas></div>
+      <div class="note" style="margin-top:6px;font-size:11px">Tax-return income only. Child support is <b>not</b> taxable, so it never appears on a return — see it in the Budget cash-flow instead.</div>
     </section>
     <section class="card col6">
-      <h2>💹 Capital gains <span class="sub" style="font-weight:400">· property &amp; investment sales</span></h2>
-      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cCapG" role="img" aria-label="Capital gains by year, spikes in 2019 and 2023"></canvas></div>
+      <h2>💹 Capital gains — by source <span class="sub" style="font-weight:400">· real estate vs investments</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cCapG" role="img" aria-label="Capital gains by source by year, real estate versus investments"></canvas></div>
+      <div class="note" style="margin-top:6px;font-size:11px">2019 &amp; 2023 spikes = Big Bear / Silver Tip Dr sale (installment, acquired 2018, final 1/31/23). 2021 = Fidelity trading. 2023 also carries a −$2,980 Fidelity loss.</div>
     </section>
     <section class="card col6">
       <h2>🧾 Tax paid &amp; effective rate <span class="sub" style="font-weight:400">· tax ÷ total income</span></h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cEffTax" role="img" aria-label="Total tax bars and effective tax rate line by year"></canvas></div>
-    </section>
-    <!-- Profit & loss (moved from Budget) -->
-    <section class="card col12">
-      <h2>📈 Profit &amp; loss — 2026</h2>
-      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
-      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
-      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
+      <div class="note" style="margin-top:6px;font-size:11px"><b>Tax paid</b> = total federal tax owed for the year (bars). <b>Effective rate</b> = that tax ÷ total income (line) — your real average rate. It jumps in property-sale years (2019, 2023), not with raises.</div>
     </section>
 
+    <!-- Deeper analysis: income drivers since 2010 (finance variance analysis) -->
+    <section class="card col12">
+      <h2>🔎 Deeper analysis — income drivers since 2010 <span class="sub" style="font-weight:400">· variance decomposition</span></h2>
+      <div class="grid" style="margin-top:6px">
+        <div class="col6">
+          <div class="subhead">The long arc: 2010 → 2023</div>
+          <p class="note" style="margin-top:4px">Total income fell from <b>$198K (2010)</b> to a <b>$29K trough (2018)</b>, then recovered to a record <b>$181K (2023)</b>. The 2010-13 drop was a wage collapse ($192K → $32K W-2) only partly offset by a self-employment push (Breakfast-Royale Schedule C peaked at <b>$56,887 in 2013</b>). The recovery since 2019 is a different mix: W-2 wages climbing back ($99K → $131K) <i>plus</i> property and rental income that didn't exist in the wage years.</p>
+        </div>
+        <div class="col6">
+          <div class="subhead">Biggest single swing: 2023 vs 2022 (+$71,972)</div>
+          <div class="bridge">
+            <div class="brow"><span>2022 total income</span><b>$108,655</b></div>
+            <div class="brow pos"><span>＋ Capital gains (Big Bear sale)</span><b>+$37,849</b></div>
+            <div class="brow pos"><span>＋ Rental swing to positive</span><b>+$19,815</b></div>
+            <div class="brow pos"><span>＋ Wage growth</span><b>+$11,457</b></div>
+            <div class="brow pos"><span>＋ Dividends/interest</span><b>+$2,851</b></div>
+            <div class="brow tot"><span>2023 total income</span><b>$180,627</b></div>
+          </div>
+        </div>
+        <div class="col12" style="margin-top:4px">
+          <p class="note"><b>What it means:</b> income is getting less wage-dependent. In 2010, ~97% was W-2 wages; in 2023, wages were ~73% and the rest came from capital gains, rental, and dividends. The volatility now lives in one-time property sales (2019, 2023) — strip those out and the underlying earned income is ~$130-145K. Effective tax rate tracks those sale years, so timing the next sale (or spreading it) is the main tax lever. <span style="color:var(--muted)">Decomposition via the finance plugin's variance-analysis method; figures from Private/Tax Returns.</span></p>
+        </div>
+      </div>
+    </section>
     <section class="card col12">
       <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
       <ul id="annual"></ul>
@@ -1381,10 +1414,13 @@
       if(nwm) C('cNWm',{type:'line',data:{labels:nwm.labels,
         datasets:[{data:nwm.data,borderColor:'#378add',backgroundColor:'rgba(55,138,221,.15)',fill:true,tension:.3,pointRadius:2,borderWidth:2}]},
         options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
-      const inc=SNAP.chart_income;
-      if(inc) C('cIncome',{type:'bar',data:{labels:inc.labels,
-        datasets:[{data:inc.data,backgroundColor:inc.labels.map(l=>/est/i.test(l)?'#1d9e75':'#378add'),borderRadius:4,borderWidth:0}]},
-        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y.toLocaleString()}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      // Income by year — tax-return total income (bars) + AGI (line), 2010+
+      const IY=['2010','2011','2012','2013','2014','2017','2018','2019','2020','2021','2022','2023'];
+      C('cIncome',{data:{labels:IY,datasets:[
+          {type:'bar',label:'Total income',data:[198149,137240,104060,98882,151576,null,29424,55302,104605,110901,108655,180627],backgroundColor:'#378add',borderRadius:4,borderWidth:0,order:2},
+          {type:'line',label:'AGI',data:[194277,136178,91952,77807,136365,80516,28962,50831,104605,110901,108655,180627],borderColor:'#1d9e75',backgroundColor:'rgba(29,158,117,.10)',tension:.3,pointRadius:2,borderWidth:2,spanGaps:true,order:1}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y==null?'n/a':'$'+c.parsed.y.toLocaleString())}}},scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
       const ba=SNAP.chart_budget_actual;
       if(ba) C('cBudAct',{type:'bar',data:{labels:ba.labels,datasets:[
           {type:'bar',label:'Spent',data:ba.actual,backgroundColor:ba.actual.map((a,i)=>a>ba.budget[i]?'#e24b4a':'#1d9e75'),borderWidth:0,order:2},
@@ -1412,8 +1448,11 @@
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},
           scales:{x:{...ax,stacked:true},y:{...ax,stacked:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
-      C('cCapG',{type:'bar',data:{labels:TXY,datasets:[{data:[-218,3662,877,0,-732,38775,0,8225,-3000,34849],backgroundColor:c=>c.parsed.y<0?'#e24b4a':'#ef9f27',borderRadius:4,borderWidth:0}]},
-        options:{plugins:{tooltip:{callbacks:{label:c=>(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      C('cCapG',{type:'bar',data:{labels:TXY,datasets:[
+          {label:'Real estate (Big Bear)',data:[0,0,0,0,0,38775,0,0,0,37829],backgroundColor:'#1d9e75',borderWidth:0},
+          {label:'Investments (Fidelity)',data:[-218,3662,877,0,-732,0,0,8225,-3000,-2980],backgroundColor:'#378add',borderWidth:0}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},scales:{x:{...ax,stacked:true},y:{...ax,stacked:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
       const ETY=['2006','2010','2011','2012','2013','2017','2018','2019','2020','2021','2022','2023'];
       C('cEffTax',{type:'bar',data:{labels:ETY,datasets:[
           {type:'bar',label:'Total tax',data:[8087,34456,16265,5966,16511,2755,1967,3528,11272,17611,11714,28541],backgroundColor:'#e24b4a',borderWidth:0,yAxisID:'y',order:2},
