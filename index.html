@@ -214,9 +214,9 @@
 
   <nav class="tabs" id="tabs">
     <a href="#today" data-page="today">🔆 Today</a>
-    <a href="#spend" data-page="spend">📊 Monthly Finance</a>
+    <a href="#spend" data-page="spend">📊 Budget</a>
     <a href="#adu" data-page="adu">🏘️ ADU Rental</a>
-    <a href="#money" data-page="money">💰 Personal Finance</a>
+    <a href="#money" data-page="money">💰 Finance</a>
     <a href="#investing" data-page="investing">📈 Investing</a>
     <a href="#projects" data-page="projects">🚀 Projects</a>
     <a href="#child" data-page="child">🧒 Child</a>
@@ -351,13 +351,10 @@
       <div class="note" id="gbLeaks" style="margin-top:10px"></div>
     </section>
 
-    <!-- 2 ▸ THIS MONTH + SNAPSHOT -->
+    <!-- 2 ▸ NET WORTH SNAPSHOT (this-month flow moved to Budget page) -->
     <section class="card col4">
-      <h2>💵 This month at a glance</h2>
-      <div class="row"><span>Income in</span><span class="v pos" id="incTotal">$0</span></div>
-      <div class="row"><span>Budget out</span><span class="v" id="expTotal">$0</span></div>
-      <div class="row"><span>Left to save</span><span class="v pos" id="sumSave">$0</span></div>
-      <div class="metric" style="margin:14px 0 4px"><span id="nw">•••</span> <small>net worth (incl. home)</small></div>
+      <h2>💰 Net worth snapshot</h2>
+      <div class="metric" style="margin:4px 0 4px"><span id="nw">•••</span> <small>net worth (incl. home)</small></div>
       <div class="row"><span>Bank cash</span><span class="v" id="nwBank">•••</span></div>
       <div class="row"><span>Fidelity (401k/brok/HSA)</span><span class="v" id="nwFid">•••</span></div>
       <div class="row"><span id="nwEqLbl">Home equity</span><span class="v" id="nwEq">•••</span></div>
@@ -381,6 +378,25 @@
     <section class="card col6">
       <h2>💵 Income — by year <span class="sub" style="font-weight:400">· total income per tax returns</span></h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncome" role="img" aria-label="Annual income on record"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>🧱 Income — by source <span class="sub" style="font-weight:400">· wages vs side income (tax returns)</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncSrc" role="img" aria-label="Income by source stacked by year from tax returns"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>💹 Capital gains <span class="sub" style="font-weight:400">· property &amp; investment sales</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cCapG" role="img" aria-label="Capital gains by year, spikes in 2019 and 2023"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>🧾 Tax paid &amp; effective rate <span class="sub" style="font-weight:400">· tax ÷ total income</span></h2>
+      <div style="position:relative;height:140px;margin-top:8px"><canvas id="cEffTax" role="img" aria-label="Total tax bars and effective tax rate line by year"></canvas></div>
+    </section>
+    <!-- Profit & loss (moved from Budget) -->
+    <section class="card col12">
+      <h2>📈 Profit &amp; loss — 2026</h2>
+      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
+      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
+      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
     </section>
 
     <section class="card col12">
@@ -468,8 +484,17 @@
   <!-- ============================= SPEND vs BUDGET ============================= -->
   <div class="page" id="page-spend">
    <div class="grid">
+    <!-- This month at a glance (moved from Finance) -->
     <section class="card col12">
-      <h2><span>📊 Monthly Finance — spend vs budget</span>
+      <h2>💵 This month at a glance</h2>
+      <div class="mmsum" style="margin-top:6px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Income in</div><div class="val pos" id="incTotal">$0</div></div>
+        <div class="cell"><div class="lbl">Budget out</div><div class="val" id="expTotal">$0</div></div>
+        <div class="cell"><div class="lbl">Left to save</div><div class="val pos" id="sumSave">$0</div></div>
+      </div>
+    </section>
+    <section class="card col12">
+      <h2><span>📊 Budget — spend vs budget</span>
         <span class="sp-mode">
           <button id="spPrev" class="navbtn">◀</button><b id="spLabel" style="min-width:64px;text-align:center;display:inline-block"></b><button id="spNext" class="navbtn">▶</button>
           <button id="spH1" title="2026 year-to-date (Jan–Jun)">Year total</button>
@@ -503,14 +528,6 @@
         <tfoot id="spIncFoot"></tfoot>
       </table>
       <div class="note" id="spNetNote" style="margin-top:8px"></div>
-    </section>
-
-    <!-- Profit & loss (moved from Personal Finance) -->
-    <section class="card col12">
-      <h2>📈 Profit &amp; loss — 2026</h2>
-      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
-      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
-      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
     </section>
 
     <!-- Monthly budget checklist (moved from Personal Finance) -->
@@ -1383,8 +1400,28 @@
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': +$'+(c.parsed.y/1000).toFixed(0)+'K'}}},
           scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'+$'+(v/1000)+'K'}}}}});
-    }
-    if(page==='spend'){
+
+      // --- Tax-return charts (static history from Private/Tax Returns) ---
+      const TXY=['2010','2011','2012','2013','2018','2019','2020','2021','2022','2023'];
+      C('cIncSrc',{type:'bar',data:{labels:TXY,datasets:[
+          {label:'Wages',data:[192332,133380,86840,32000,0,11481,99439,104178,120020,131477],backgroundColor:'#378add'},
+          {label:'Business',data:[5163,-310,6574,56887,6536,7253,0,0,0,0],backgroundColor:'#9b7ddb'},
+          {label:'Capital gains',data:[-218,3662,877,0,-732,38775,0,8225,-3000,34849],backgroundColor:'#ef9f27'},
+          {label:'Rental',data:[0,0,0,0,17274,-2281,589,-1625,-8446,11369],backgroundColor:'#1d9e75'},
+          {label:'Other',data:[872,508,9769,9995,6346,74,4577,123,81,2932],backgroundColor:'#888780'}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},
+          scales:{x:{...ax,stacked:true},y:{...ax,stacked:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      C('cCapG',{type:'bar',data:{labels:TXY,datasets:[{data:[-218,3662,877,0,-732,38775,0,8225,-3000,34849],backgroundColor:c=>c.parsed.y<0?'#e24b4a':'#ef9f27',borderRadius:4,borderWidth:0}]},
+        options:{plugins:{tooltip:{callbacks:{label:c=>(c.parsed.y<0?'-$':'$')+Math.abs(c.parsed.y).toLocaleString()}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+      const ETY=['2006','2010','2011','2012','2013','2017','2018','2019','2020','2021','2022','2023'];
+      C('cEffTax',{type:'bar',data:{labels:ETY,datasets:[
+          {type:'bar',label:'Total tax',data:[8087,34456,16265,5966,16511,2755,1967,3528,11272,17611,11714,28541],backgroundColor:'#e24b4a',borderWidth:0,yAxisID:'y',order:2},
+          {type:'line',label:'Eff. rate',data:[12.8,17.4,11.9,5.7,16.7,3.4,6.7,6.4,10.8,15.9,10.8,15.8],borderColor:'#ef9f27',backgroundColor:'#ef9f27',tension:.3,pointRadius:2,borderWidth:2,yAxisID:'y1',order:1}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label==='Eff. rate'?c.parsed.y+'%':'$'+c.parsed.y.toLocaleString()}}},
+          scales:{x:ax,y:{...ax,position:'left',ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}},y1:{position:'right',grid:{drawOnChartArea:false},ticks:{font:{size:9},callback:v=>v+'%'}}}}});
+
       const pl=SNAP.chart_pnl;
       if(pl) C('cPnl',{type:'bar',data:{labels:pl.labels,datasets:[
           {type:'bar',label:'Income',data:pl.income,backgroundColor:'#1d9e75',borderWidth:0,order:2},
