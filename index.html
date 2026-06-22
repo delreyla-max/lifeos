@@ -54,6 +54,12 @@
   .tabs a{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-size:12px;font-weight:500;letter-spacing:-.1px;color:var(--muted);text-decoration:none;padding:7px 13px;border-radius:11px;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
   .tabs a:hover{color:var(--text)}
   .tabs a.active{color:var(--accent);background:var(--panel);box-shadow:var(--shadow-sm);font-weight:600}
+  .tabs a{cursor:pointer}
+  .tabs.reorder a{cursor:grab}
+  .tabs a.dragging{opacity:.4}
+  .tabs a.dragover{box-shadow:inset 2px 0 0 var(--accent)}
+  .tabs .reorder-toggle{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:9px;padding:5px 9px;cursor:pointer;white-space:nowrap}
+  .tabs .reorder-toggle.on{color:var(--accent);border-color:var(--accent)}
   .page{display:none}
   .page.active{display:block}
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}
@@ -338,6 +344,7 @@
     <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
     <a href="#child" data-page="child">🧒 Child</a>
     <a href="#projects" data-page="projects">🚀 Projects</a>
+    <button class="reorder-toggle" id="reorderToggle" title="Drag tabs to reorder, then click Done">⇄ Reorder</button>
   </nav>
 
   <!-- ============================= TODAY ============================= -->
@@ -1106,6 +1113,44 @@
   }
   window.addEventListener('hashchange',()=>showPage((location.hash||'#today').slice(1)));
 
+  /* ---------- TAB REORDER ---------- */
+  const TAB_ORDER_KEY='tab_order';
+  let reorderMode=false, dragEl=null, tabReorderWired=false;
+  function tabAnchors(){ return [...document.querySelectorAll('#tabs a[data-page]')]; }
+  function applyTabOrder(order){
+    if(!Array.isArray(order)) return;
+    const tabs=el('tabs'), toggle=el('reorderToggle');
+    const byPage={}; tabAnchors().forEach(a=>byPage[a.dataset.page]=a);
+    order.forEach(p=>{ if(byPage[p]){ tabs.insertBefore(byPage[p], toggle); delete byPage[p]; } });
+    Object.values(byPage).forEach(a=>tabs.insertBefore(a, toggle)); // any new pages → end
+  }
+  async function loadTabOrder(){
+    const { data, error }=await sb.from('ui_prefs').select('value').eq('key',TAB_ORDER_KEY).maybeSingle();
+    if(!error && data && Array.isArray(data.value)) applyTabOrder(data.value);
+  }
+  async function saveTabOrder(){
+    const order=tabAnchors().map(a=>a.dataset.page);
+    const { error }=await sb.from('ui_prefs').upsert({key:TAB_ORDER_KEY, value:order, updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error) setStatus('Order save failed: '+error.message,true); else setStatus('order saved '+new Date().toLocaleTimeString());
+  }
+  function setupTabReorder(){
+    if(tabReorderWired) return; tabReorderWired=true;
+    const tabs=el('tabs'), toggle=el('reorderToggle');
+    toggle.onclick=()=>{
+      reorderMode=!reorderMode;
+      tabs.classList.toggle('reorder', reorderMode);
+      toggle.classList.toggle('on', reorderMode);
+      toggle.textContent=reorderMode?'✓ Done':'⇄ Reorder';
+      tabAnchors().forEach(a=>a.setAttribute('draggable', reorderMode?'true':'false'));
+      if(!reorderMode) saveTabOrder();
+    };
+    tabs.addEventListener('click', e=>{ if(reorderMode){ const a=e.target.closest('a[data-page]'); if(a) e.preventDefault(); } });
+    tabs.addEventListener('dragstart', e=>{ const a=e.target.closest('a[data-page]'); if(!reorderMode||!a){ if(a) e.preventDefault(); return; } dragEl=a; a.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+    tabs.addEventListener('dragend', e=>{ const a=e.target.closest('a[data-page]'); if(a) a.classList.remove('dragging'); tabAnchors().forEach(x=>x.classList.remove('dragover')); dragEl=null; });
+    tabs.addEventListener('dragover', e=>{ if(!reorderMode||!dragEl) return; const a=e.target.closest('a[data-page]'); if(!a||a===dragEl) return; e.preventDefault(); e.dataTransfer.dropEffect='move'; tabAnchors().forEach(x=>x.classList.remove('dragover')); a.classList.add('dragover'); });
+    tabs.addEventListener('drop', e=>{ if(!reorderMode||!dragEl) return; const a=e.target.closest('a[data-page]'); if(!a||a===dragEl) return; e.preventDefault(); a.classList.remove('dragover'); const r=a.getBoundingClientRect(); const after=(e.clientX-r.left)>r.width/2; tabs.insertBefore(dragEl, after?a.nextSibling:a); });
+  }
+
   /* ---------- AUTH ---------- */
   function renderAuth(user){
     const bar=el('authbar'); bar.innerHTML='<span>🔓 '+user.email+'</span>';
@@ -1130,6 +1175,7 @@
     if(session && session.user){
       document.body.classList.add('authed');
       renderAuth(session.user);
+      setupTabReorder();
       showPage((location.hash||'#today').slice(1));
       load();
     } else {
@@ -1151,7 +1197,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks();
+    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
