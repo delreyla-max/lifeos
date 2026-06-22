@@ -222,10 +222,10 @@
     <a href="#adu" data-page="adu">🏘️ ADU Rental</a>
     <a href="#money" data-page="money">💰 Finance</a>
     <a href="#investing" data-page="investing">📈 Investing</a>
-    <a href="#projects" data-page="projects">🚀 Projects</a>
-    <a href="#child" data-page="child">🧒 Child</a>
-    <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
     <a href="#jobs" data-page="jobs">🔎 Career</a>
+    <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
+    <a href="#child" data-page="child">🧒 Child</a>
+    <a href="#projects" data-page="projects">🚀 Projects</a>
   </nav>
 
   <!-- ============================= TODAY ============================= -->
@@ -714,32 +714,65 @@
   <!-- ============================= PROJECTS ============================= -->
   <div class="page" id="page-projects">
    <div class="grid">
-    <section class="card col12">
-      <h2>🚀 Projects</h2>
-      <div class="areawrap">
-        <div class="areagrp"><div class="lbl">💻 Build</div>
-          <span class="chip">Agent-Dashboard</span><span class="chip">Gyip-com</span><span class="chip">Web-Projects</span><span class="chip">Second Brain (Obsidian)</span>
-        </div>
-        <div class="areagrp"><div class="lbl">🎬 Content</div>
-          <span class="chip">TikTok-YouTube</span><span class="chip">Travel-Channel</span><span class="chip">Pokémon Channel</span>
-        </div>
-        <div class="areagrp"><div class="lbl">🪚 Hands-on</div>
-          <span class="chip">Woodworking</span><span class="chip">Breakfast Royale (card game)</span>
-        </div>
-      </div>
-      <div class="note" style="margin-top:10px">
-        <b>Breakfast Royale</b> 🍳 — card/board game designed &amp; built with Child; Midjourney art; trademark "Roguelike Games". <b>Archived ~2024</b> — off Amazon, copies at home, no income.<br>
-        <b>Woodworking</b> 🪚 — builds with Girlfriend; current: her shelf. Past: Van-E150 base cabinet, shelving, bed/couch.<br>
-        Full notes &amp; context live in the Obsidian vault under Projects / Content.
+
+    <!-- ── Agent-Dashboard ── -->
+    <section class="card col6">
+      <h2>🖥️ Agent-Dashboard</h2>
+      <div class="note">Agent-manager dashboard + LifeOS. Repo <code>agent-dashboard</code> / <code>lifeos</code>, served under gyip.com. Multipage, login-gated, Supabase-backed.</div>
+      <div style="margin-top:8px">
+        <div class="chk" data-key="proj-lifeos"><span class="box">✓</span><span class="nm">LifeOS dashboard — multipage</span></div>
+        <div class="chk" data-key="proj-dash-deploy"><span class="box">✓</span><span class="nm">Deploy latest to gyip.com/lifeos</span></div>
       </div>
     </section>
 
-    <section class="card col12">
-      <h2>✅ Project to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="proj-lifeos"><span class="box">✓</span><span class="nm">LifeOS dashboard — multipage</span></div>
-      <div class="chk" data-key="proj-site"><span class="box">✓</span><span class="nm">gyip.com portfolio refresh</span></div>
-      <div class="chk" data-key="proj-content"><span class="box">✓</span><span class="nm">Plan next content batch</span></div>
+    <!-- ── gyip.com ── -->
+    <section class="card col6">
+      <h2>🌐 gyip.com</h2>
+      <div class="note">Portfolio site. Repo <code>delreyla-max.github.io</code>, custom domain gyip.com.</div>
+      <div style="margin-top:8px">
+        <div class="chk" data-key="proj-site"><span class="box">✓</span><span class="nm">Portfolio refresh</span></div>
+      </div>
     </section>
+
+    <!-- ── Social Media ── -->
+    <section class="card col12">
+      <h2>🎬 Social Media <span class="sub" style="font-weight:400">· all content channels</span></h2>
+      <div class="note">Umbrella for every content channel. Each channel below tracks its own to-dos.</div>
+
+      <div class="subhead">📹 TikTok / YouTube</div>
+      <div class="chk" data-key="proj-sm-tiktok"><span class="box">✓</span><span class="nm">Plan next TikTok / YouTube batch</span></div>
+
+      <div class="subhead">✈️ Travel Channel</div>
+      <div class="chk" data-key="proj-sm-travel"><span class="box">✓</span><span class="nm">Edit next travel video</span></div>
+
+      <div class="subhead">🎴 Pokémon Channel</div>
+      <div class="chk" data-key="proj-sm-pokemon"><span class="box">✓</span><span class="nm">Film next Pokémon video</span></div>
+    </section>
+
+    <!-- ── Woodworking ── -->
+    <section class="card col6">
+      <h2>🪚 Woodworking</h2>
+      <div class="note">Builds with Girlfriend. Past: Van-E150 base cabinet, shelving, bed/couch.</div>
+      <div style="margin-top:8px">
+        <div class="chk" data-key="proj-wood-shelves"><span class="box">✓</span><span class="nm">Make shelves for girlfriend</span></div>
+      </div>
+    </section>
+
+    <!-- ── Yips Products ── -->
+    <section class="card col6">
+      <h2>📦 Yips Products</h2>
+      <div class="note">Products sold on Amazon under the <b>Yips Products</b> brand.</div>
+      <div style="margin-top:8px">
+        <div class="chk" data-key="proj-yips-listings"><span class="box">✓</span><span class="nm">Review Amazon listings &amp; inventory</span></div>
+      </div>
+    </section>
+
+    <!-- ── Breakfast Royale (retired) ── -->
+    <section class="card col12">
+      <h2>🍳 Breakfast Royale <span class="sub" style="font-weight:400">· retired</span></h2>
+      <div class="note">Card game I created and printed in <b>2024</b> — built the website and marketing materials, then sold it on Amazon. <b>Retired</b>: off Amazon, copies at home, no active income.</div>
+    </section>
+
    </div>
   </div>
 
@@ -855,7 +888,7 @@
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','spend','adu','money','investing','projects','child','realestate','jobs'];
+  const PAGES=['today','spend','adu','money','investing','jobs','realestate','child','projects'];
   function showPage(p){
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
