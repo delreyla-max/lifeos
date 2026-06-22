@@ -158,6 +158,23 @@
   .hold-tbl .tot td{border-top:2px solid var(--line);font-weight:700;color:var(--text)}
   .hold-tbl .tk{font-family:var(--mono);font-weight:700;color:var(--text)}
   .hold-tbl .nmsub{display:block;font-family:var(--body);font-size:9px;color:var(--muted);font-weight:400;letter-spacing:0}
+  .exo-scroll{overflow-x:auto}
+  .exo-tbl{min-width:540px}
+  .exo-tbl td{text-align:right}
+  .exo-cat{display:inline-block;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 6px;border-radius:20px;background:var(--chip);color:var(--muted);margin-right:5px}
+  .exo-cat.med{background:rgba(225,80,80,.16);color:#e15858}
+  .exo-cat.tut{background:rgba(244,177,61,.18);color:#caa028}
+  .exo-cat.ther{background:rgba(110,168,254,.16);color:#8fb6f5}
+  .exo-prov{font-weight:700;color:var(--text)}
+  .exo-tot{width:64px;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--text);font:inherit;font-weight:600;text-align:right;padding:2px 4px;font-variant-numeric:tabular-nums}
+  .exo-tot:hover{border-color:var(--line)}
+  .exo-tot:focus{outline:none;border-color:var(--accent);background:var(--panel2)}
+  .exo-tog{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:2px 7px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;margin-right:4px}
+  .exo-tog.on{background:var(--good);border-color:var(--good);color:#fff}
+  .exo-tog.dem.on{background:var(--accent);border-color:var(--accent)}
+  .exo-del{border:0;background:transparent;color:var(--muted);cursor:pointer;opacity:.45;font-size:11px;padding:0 2px}
+  .exo-del:hover{opacity:1;color:var(--bad)}
+  .exo-tbl tr.ispaid .exo-prov,.exo-tbl tr.ispaid .exo-owe{text-decoration:line-through;color:var(--muted)}
   .read{font-size:9px;padding:2px 8px;border-radius:20px;white-space:nowrap;font-weight:600}
   .read.fair{background:rgba(110,168,254,.14);color:#8fb6f5}
   .read.value{background:rgba(69,201,140,.16);color:var(--good)}
@@ -514,6 +531,27 @@
       <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
       <ul id="annual"></ul>
       <div class="progress" id="annualProg">Set-aside: $0/mo</div>
+    </section>
+
+    <!-- OWED BY EX — reimbursement tracker -->
+    <section class="card col12">
+      <h2><span>💸 Owed by ex — reimbursement tracker</span><span class="sub" style="font-weight:400">· outstanding <b id="exoOut">$0</b> · syncs</span></h2>
+      <div class="note" style="margin-top:2px">Per <b>MSA §3.10</b>, uninsured medical/therapy splits 50/50, due within 30 days of proof. Mark <b>Demanded</b> when you send the invoice via TalkingParents (starts the clock) and <b>Paid</b> when reimbursed. <i>Tutoring standing isn't confirmed by existing orders — track it, but get attorney sign-off before a formal demand.</i></div>
+      <div class="exo-scroll" style="margin-top:8px">
+      <table class="hold-tbl exo-tbl">
+        <thead><tr><th>Item</th><th>Date</th><th>Total</th><th>Owes</th><th>Status</th><th></th></tr></thead>
+        <tbody id="exoBody"></tbody>
+        <tfoot id="exoFoot"></tfoot>
+      </table>
+      </div>
+      <div class="addrow" style="flex-wrap:wrap;margin-top:9px">
+        <select id="exo-cat" class="cinput"><option>Medical</option><option>Therapy</option><option>Tutoring</option><option>Other</option></select>
+        <input id="exo-prov" placeholder="Provider" style="flex:2;min-width:120px" autocomplete="off">
+        <input id="exo-desc" placeholder="Description" style="flex:2;min-width:120px" autocomplete="off">
+        <input id="exo-date" type="date" class="cinput">
+        <input id="exo-total" type="number" min="0" step="0.01" placeholder="Total $" style="max-width:90px">
+        <button class="btn" id="exo-add">Add</button>
+      </div>
     </section>
 
     <!-- 6 ▸ TAXES gather -->
@@ -1074,7 +1112,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps();
+    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
@@ -1485,6 +1523,73 @@
     if(el('ja-date')) el('ja-date').value=new Date().toISOString().slice(0,10);
     if(el('ja-add')) el('ja-add').onclick=addApp;
     ['ja-company','ja-role','ja-notes'].forEach(id=>{ if(el(id)) el(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addApp(); }); });
+  }
+
+  /* ---------- OWED BY EX — reimbursement tracker ---------- */
+  let cExo=[], exoWired=false;
+  const EXO_CAT={Medical:'med',Therapy:'ther',Tutoring:'tut'};
+  async function loadExo(){
+    const { data, error }=await sb.from('ex_owed').select('*');
+    cExo = error ? [] : (data||[]); renderExo();
+  }
+  const exoOwe=r=>(r.total==null||r.total==='')?null:Number(r.total)*(Number(r.owe_pct)||50)/100;
+  function renderExo(){
+    const b=el('exoBody'); if(!b) return;
+    cExo.sort((a,c)=>(Number(a.sort_order)||0)-(Number(c.sort_order)||0)||(a.created_at||'').localeCompare(c.created_at||''));
+    let outstanding=0;
+    b.innerHTML='';
+    cExo.forEach(r=>{
+      const owe=exoOwe(r); if(owe!=null && !r.paid) outstanding+=owe;
+      const tr=document.createElement('tr'); if(r.paid) tr.className='ispaid';
+      const item=document.createElement('td'); item.style.textAlign='left';
+      item.innerHTML='<span class="exo-cat '+(EXO_CAT[r.category]||'')+'">'+esc(r.category||'')+'</span><span class="exo-prov">'+esc(r.provider||'')+'</span>'+(r.description?'<span class="nmsub">'+esc(r.description)+'</span>':'');
+      const date=document.createElement('td'); date.textContent=r.incurred_on||'—';
+      const total=document.createElement('td');
+      const ti=document.createElement('input'); ti.className='exo-tot'; ti.type='number'; ti.min=0; ti.step='0.01'; ti.placeholder='—'; ti.title='Edit total (from receipt)'; ti.value=(r.total==null?'':Number(r.total));
+      ti.onchange=()=>updateExo(r.id,{total: ti.value===''?null:Math.max(0,+ti.value||0)});
+      total.appendChild(ti);
+      const oweCell=document.createElement('td'); oweCell.className='exo-owe'; oweCell.textContent=owe==null?'—':money(owe);
+      const status=document.createElement('td'); status.style.textAlign='left';
+      const dem=document.createElement('button'); dem.className='exo-tog dem'+(r.demanded?' on':''); dem.textContent='Demanded'; dem.title='Invoice sent via TalkingParents (starts 30-day clock)';
+      dem.onclick=()=>updateExo(r.id,{demanded:!r.demanded});
+      const paid=document.createElement('button'); paid.className='exo-tog'+(r.paid?' on':''); paid.textContent='Paid'; paid.title='Reimbursed';
+      paid.onclick=()=>updateExo(r.id,{paid:!r.paid});
+      status.append(dem,paid);
+      const del=document.createElement('td');
+      const x=document.createElement('button'); x.className='exo-del'; x.textContent='✕'; x.title='Remove';
+      x.onclick=()=>{ if(confirm('Remove “'+(r.provider||'')+'” from the tracker?')) delExo(r.id); };
+      del.appendChild(x);
+      tr.append(item,date,total,oweCell,status,del); b.appendChild(tr);
+    });
+    const foot=el('exoFoot');
+    if(foot) foot.innerHTML='<tr class="tot"><td style="text-align:left">Outstanding (unpaid)</td><td></td><td></td><td>'+money(outstanding)+'</td><td colspan="2"></td></tr>';
+    if(el('exoOut')) el('exoOut').textContent=money(outstanding);
+  }
+  async function updateExo(id, patch){
+    const r=cExo.find(x=>x.id===id); if(r) Object.assign(r, patch); renderExo();
+    const { error }=await sb.from('ex_owed').update(patch).eq('id',id);
+    if(error) setStatus('Save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function addExo(){
+    const provider=(el('exo-prov').value||'').trim(); if(!provider){ el('exo-prov').focus(); return; }
+    const t=el('exo-total').value;
+    const sort_order=Math.max(0,...cExo.map(r=>Number(r.sort_order)||0))+1;
+    const row={ category:el('exo-cat').value, provider, description:(el('exo-desc').value||'').trim()||null, incurred_on:el('exo-date').value||null, total:t===''?null:Math.max(0,+t||0), owe_pct:50, sort_order };
+    const { data, error }=await sb.from('ex_owed').insert(row).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) cExo.push(data[0]);
+    el('exo-prov').value=''; el('exo-desc').value=''; el('exo-total').value=''; renderExo(); setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function delExo(id){
+    cExo=cExo.filter(r=>r.id!==id); renderExo();
+    const { error }=await sb.from('ex_owed').delete().eq('id',id);
+    if(error){ setStatus('Delete failed',true); loadExo(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  function wireExo(){
+    if(exoWired) return; exoWired=true;
+    if(el('exo-date')) el('exo-date').value=new Date().toISOString().slice(0,10);
+    if(el('exo-add')) el('exo-add').onclick=addExo;
+    ['exo-prov','exo-desc','exo-total'].forEach(id=>{ if(el(id)) el(id).addEventListener('keydown',e=>{ if(e.key==='Enter') addExo(); }); });
   }
 
   /* ---------- CHARTS (data from DB, built lazily per page) ---------- */
