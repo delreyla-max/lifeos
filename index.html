@@ -122,9 +122,14 @@
   details.collapse>summary h2{margin:0}
   details.collapse>summary .caret{color:var(--muted);font-size:11px;transition:transform .15s}
   details.collapse[open]>summary .caret{transform:rotate(90deg)}
-  .vargrid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
-  @media(max-width:820px){.vargrid{grid-template-columns:1fr}}
   .varwrap{padding:8px 0;border-bottom:1px solid var(--line)}
+  /* compact category list inside the monthly card */
+  .varlist .varwrap{padding:4px 0}
+  .varlist .var{font-size:11px;gap:6px}
+  .varlist .var input{width:50px;padding:2px 5px}
+  .varlist .var .vspent{width:52px;font-size:11px;padding:2px 0}
+  .varlist .var .vrem{width:66px;font-size:11px}
+  .varlist .varwrap .vbar{height:3px;margin-top:4px}
   .varwrap:last-child{border-bottom:0}
   .varwrap .var{border-bottom:0;padding:0}
   .varwrap .vbar{height:6px;background:var(--panel2);border-radius:5px;overflow:hidden;margin-top:7px}
@@ -218,15 +223,16 @@
       <div id="goalStrip"><div class="note">loading…</div></div>
     </section>
 
-    <!-- DATES -->
+    <!-- MONTHLY DOCUMENTS TO UPLOAD (aggregated from all pages) -->
     <section class="card col6">
-      <h2>📅 Upcoming &amp; recurring <span class="sub" style="font-weight:400">checks sync across devices</span></h2>
-      <div class="chk" data-key="date-school"><span class="box">✓</span><span class="nm">Child — first day of school</span><span class="det">Aug 19</span></div>
-      <div class="chk" data-key="date-japan"><span class="box">✓</span><span class="nm">Japan trip window</span><span class="det">Summer</span></div>
-      <div class="chk" data-key="date-gardener"><span class="box">✓</span><span class="nm">Gardener</span><span class="det">every Wed</span></div>
-      <div class="chk" data-key="date-cleaner"><span class="box">✓</span><span class="nm">House cleaner</span><span class="det">every 2 wks</span></div>
-      <div class="chk" data-key="date-coparent"><span class="box">✓</span><span class="nm">Co-parenting therapy</span><span class="det">2× / mo</span></div>
-      <div class="chk" data-key="date-proptax"><span class="box">✓</span><span class="nm">Property tax</span><span class="det">2× / yr</span></div>
+      <h2>📥 Monthly documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → ingest · checks sync</span></h2>
+      <div class="chk" data-key="doc-bofa3326"><span class="box">✓</span><span class="nm">BofA ...3326 statement</span><span class="det">finance</span></div>
+      <div class="chk" data-key="doc-bofa4394"><span class="box">✓</span><span class="nm">BofA ...4394 statement</span><span class="det">finance</span></div>
+      <div class="chk" data-key="doc-bofasav"><span class="box">✓</span><span class="nm">BofA savings ...1246</span><span class="det">finance</span></div>
+      <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">finance</span></div>
+      <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">investing</span></div>
+      <div class="chk" data-key="inv-401k-snap"><span class="box">✓</span><span class="nm">Fidelity.com "All accounts" screenshot (401k)</span><span class="det">investing</span></div>
+      <div class="chk" data-key="adu-doc-stmt"><span class="box">✓</span><span class="nm">Utopia owner statement (ADU)</span><span class="det">rental</span></div>
     </section>
 
     <!-- WEEKLY CHALLENGES -->
@@ -305,14 +311,14 @@
     <section class="card col12">
       <h2><span>📅 Monthly spending vs budget — 2026</span><span class="mnav"><button class="navbtn" id="mPrev2">◀</button><b id="mMonth2"></b><button class="navbtn" id="mNext2">▶</button></span></h2>
       <div class="grid" style="margin-top:6px">
-        <div class="col5">
+        <div class="col6">
           <div class="subhead">Total — spent vs budget by month <span class="sub" style="font-weight:400">· click a month</span></div>
-          <div style="position:relative;height:330px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
+          <div style="position:relative;height:360px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
           <div class="note" id="budActNote" style="margin-top:8px"></div>
         </div>
-        <div class="col7">
-          <div class="subhead">Categories — <span id="vbMonth" style="color:var(--text)"></span> <span class="sub" style="font-weight:400">· set the budget; spent + bar fill on ingest</span></div>
-          <ul id="varexp" class="vargrid"></ul>
+        <div class="col6">
+          <div class="subhead">Categories — <span id="vbMonth" style="color:var(--text)"></span> <span class="sub" style="font-weight:400">· set budget; spent + bar fill on ingest</span></div>
+          <ul id="varexp" class="varlist"></ul>
           <div class="progress" id="varProg">Spent: $0</div>
         </div>
       </div>
@@ -525,10 +531,10 @@
       <h2>🏦 Mortgage detail</h2>
       <div class="grid" style="margin-top:8px">
         <div class="col4"><div class="subhead">Where the payment goes</div><div style="position:relative;height:170px"><canvas id="cPaySplit" role="img" aria-label="Monthly mortgage payment split between interest, principal and escrow"></canvas></div></div>
-        <div class="col4"><div class="subhead">Interest vs principal — by year</div><div style="position:relative;height:170px"><canvas id="cMortBd" role="img" aria-label="Interest paid versus principal paid down each year"></canvas></div></div>
+        <div class="col4"><div class="subhead">Amortization — balance to payoff (~2062)</div><div style="position:relative;height:170px"><canvas id="cAmort" role="img" aria-label="Projected mortgage balance declining to zero by payoff around 2062"></canvas></div></div>
         <div class="col4"><div class="subhead">Home equity vs debt (≈$1.8M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
       </div>
-      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal — but principal paydown is accelerating (~$451/mo in 2023 → ~$499/mo in 2026). Equity (~$1.37M) is almost the entire net worth.</div>
+      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal. On the current schedule the loan pays off <b>~2062</b> with <b>~$322K</b> interest still to come — but at 3.5% this is cheap debt, so accelerating it isn't the priority vs. investing. Equity (~$1.37M) is almost the entire net worth.</div>
     </section>
 
     <section class="card col12">
@@ -1232,13 +1238,12 @@
       if(ps) C('cPaySplit',{type:'doughnut',data:{labels:ps.labels,
         datasets:[{data:ps.data,backgroundColor:['#e24b4a','#1d9e75','#ef9f27'],borderWidth:0}]},
         options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'/mo'}}}}});
-      const mb=SNAP.chart_mort_breakdown;
-      if(mb) C('cMortBd',{type:'bar',data:{labels:mb.labels,datasets:[
-          {label:'Interest',data:mb.interest,backgroundColor:'#e24b4a',borderWidth:0},
-          {label:'Principal',data:mb.principal,backgroundColor:'#1d9e75',borderWidth:0}
+      const am=SNAP.chart_amort;
+      if(am) C('cAmort',{type:'line',data:{labels:am.labels,datasets:[
+          {data:am.balance,borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.1,pointRadius:0,borderWidth:2}
         ]},
-        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()}}},
-          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+        options:{plugins:{tooltip:{callbacks:{title:c=>c[0].label,label:c=>'$'+c.parsed.y+'K remaining'}}},
+          scales:{x:{...ax,ticks:{font:{size:9},maxTicksLimit:8,autoSkip:true}},y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
       const eq=SNAP.chart_equity;
       if(eq) C('cEquity',{type:'doughnut',data:{labels:eq.labels,
         datasets:[{data:eq.data,backgroundColor:['#1d9e75','#e24b4a'],borderWidth:0}]},
