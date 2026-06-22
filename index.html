@@ -215,7 +215,7 @@
   <nav class="tabs" id="tabs">
     <a href="#today" data-page="today">🔆 Today</a>
     <a href="#money" data-page="money">💰 Personal Finance</a>
-    <a href="#spend" data-page="spend">📊 Spend vs Budget</a>
+    <a href="#spend" data-page="spend">📊 Monthly Finance</a>
     <a href="#investing" data-page="investing">📈 Investing</a>
     <a href="#jobs" data-page="jobs">🔎 Career</a>
     <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
@@ -331,23 +331,6 @@
   <!-- ============================= MONEY ============================= -->
   <div class="page" id="page-money">
    <div class="grid">
-    <!-- 0 ▸ MONTHLY SPENT vs BUDGET + EDITABLE CATEGORY BUDGETS (above the goal) -->
-    <section class="card col12">
-      <h2><span>📅 Monthly spending vs budget — 2026</span><span class="mnav"><button class="navbtn" id="mPrev2">◀</button><b id="mMonth2"></b><button class="navbtn" id="mNext2">▶</button></span></h2>
-      <div class="grid" style="margin-top:6px">
-        <div class="col6">
-          <div class="subhead">Total — spent vs budget by month <span class="sub" style="font-weight:400">· click a month</span></div>
-          <div style="position:relative;height:360px"><canvas id="cBudAct" role="img" aria-label="Actual spending versus budget by month, 2026, with over and under budget"></canvas></div>
-          <div class="note" id="budActNote" style="margin-top:8px"></div>
-        </div>
-        <div class="col6">
-          <div class="subhead">Categories — <span id="vbMonth" style="color:var(--text)"></span> <span class="sub" style="font-weight:400">· set budget; spent + bar fill on ingest</span></div>
-          <ul id="varexp" class="varlist"></ul>
-          <div class="progress" id="varProg">Spent: $0</div>
-        </div>
-      </div>
-    </section>
-
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
     <section class="card col8">
       <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
@@ -389,13 +372,7 @@
       <span style="display:none" id="nwIn"></span><span style="display:none" id="nwOut"></span>
     </section>
 
-    <!-- 3 ▸ P&L + COMPOSITION -->
-    <section class="card col8">
-      <h2>📈 Profit &amp; loss — 2026</h2>
-      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
-      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
-      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
-    </section>
+    <!-- 3 ▸ NET WORTH COMPOSITION -->
     <section class="card col4">
       <h2>🍩 What net worth is made of</h2>
       <div style="position:relative;height:170px;margin-top:10px"><canvas id="cComp" role="img" aria-label="Net worth composition"></canvas></div>
@@ -413,16 +390,6 @@
     <section class="card col4">
       <h2>💵 Income — by year</h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cIncome" role="img" aria-label="Annual income on record"></canvas></div>
-    </section>
-
-    <!-- 5 ▸ BUDGETS (working area) -->
-    <section class="card col12">
-      <h2><span>🗓️ Monthly budget — check off as paid</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
-      <div class="grid" style="margin-top:6px">
-        <div class="col4"><div class="subhead">💸 Fixed bills</div><ul id="exp"></ul><div class="progress" id="expProg">Paid: $0</div></div>
-        <div class="col4"><div class="subhead">📺 Subscriptions</div><ul id="subs"></ul><div class="progress" id="subsProg">Paid: $0</div></div>
-        <div class="col4"><div class="subhead">💵 Income</div><ul id="inc"></ul><div class="progress" id="incProg">Received: $0</div></div>
-      </div>
     </section>
 
     <section class="card col12">
@@ -529,7 +496,7 @@
   <div class="page" id="page-spend">
    <div class="grid">
     <section class="card col12">
-      <h2><span>📊 Spend vs Budget — where the money goes</span>
+      <h2><span>📊 Monthly Finance — spend vs budget</span>
         <span class="sp-mode">
           <button id="spPrev" class="navbtn">◀</button><b id="spLabel" style="min-width:64px;text-align:center;display:inline-block"></b><button id="spNext" class="navbtn">▶</button>
           <button id="spH1" title="Half-year total">H1 total</button>
@@ -552,6 +519,24 @@
         </div>
       </div>
       <div class="note" style="margin-top:10px">Everyday-spend categorization (cards + BofA ...4394), parsed from statements in the vault tracker. Fixed bills paid direct from main checking ...3326 — mortgage, property tax, insurance, utilities — are tracked separately on the <b>Personal Finance</b> page. Budgets you set here save to this browser. Source of truth for categories: vault <b>2026-Money-Tracker</b>.</div>
+    </section>
+
+    <!-- Profit & loss (moved from Personal Finance) -->
+    <section class="card col12">
+      <h2>📈 Profit &amp; loss — 2026</h2>
+      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
+      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
+      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
+    </section>
+
+    <!-- Monthly budget checklist (moved from Personal Finance) -->
+    <section class="card col12">
+      <h2><span>🗓️ Monthly budget — check off as paid</span><span class="mnav"><button class="navbtn" id="mPrev">◀</button><b id="mMonth"></b><button class="navbtn" id="mNext">▶</button></span></h2>
+      <div class="grid" style="margin-top:6px">
+        <div class="col4"><div class="subhead">💸 Fixed bills</div><ul id="exp"></ul><div class="progress" id="expProg">Paid: $0</div></div>
+        <div class="col4"><div class="subhead">📺 Subscriptions</div><ul id="subs"></ul><div class="progress" id="subsProg">Paid: $0</div></div>
+        <div class="col4"><div class="subhead">💵 Income</div><ul id="inc"></ul><div class="progress" id="incProg">Received: $0</div></div>
+      </div>
     </section>
    </div>
   </div>
@@ -1009,9 +994,10 @@
     const annualMonthly=annualYear/12;
     el('annualProg').textContent='Set-aside: '+money(annualMonthly)+'/mo (annual '+money(annualYear)+'/yr)';
 
-    const ve=el('varexp'); ve.innerHTML=''; let budTot=0, spentTot=0, haveAny=false;
+    const ve=el('varexp'); if(ve) ve.innerHTML=''; let budTot=0, spentTot=0, haveAny=false;
     variable.forEach(it=>{ const s=st(it.id); const has=!!statusMap[it.id+'|'+mkey(cur)] && s.spent!=null;
       const b=Number(it.amount)||0, sp=Number(s.spent)||0; budTot+=b; if(has){ spentTot+=sp; haveAny=true; }
+      if(!ve) return;
       const li=document.createElement('li'); li.className='varwrap';
       const rem=b-sp; const remTxt= !has ? '—' : (rem<0 ? '-$'+Math.abs(rem).toLocaleString()+' over' : '$'+rem.toLocaleString()+' left');
       const pct=(has&&b>0)?Math.min(100,Math.round(sp/b*100)):0;
@@ -1021,7 +1007,7 @@
       vb.value=b;
       vb.onchange=e=>setBudget(it.id, Math.max(0,+e.target.value||0));
       ve.appendChild(li); });
-    el('varProg').textContent= haveAny
+    if(el('varProg')) el('varProg').textContent= haveAny
       ? ('Spent '+money(spentTot)+' of '+money(budTot)+' budget · '+(budTot-spentTot>=0?money(budTot-spentTot)+' under':money(spentTot-budTot)+' over'))
       : ('Budget '+money(budTot)+'/mo · spent fills from ingested statements');
 
@@ -1334,7 +1320,7 @@
   })();
 
   function buildCharts(page){
-    if(page==='spend'){ renderSpend(); spBuildChart(); return; }
+    if(page==='spend'){ renderSpend(); spBuildChart(); }
     if(!window.Chart || !Object.keys(SNAP).length) return;
     Chart.defaults.font.size=10; Chart.defaults.plugins.legend.display=false;
     Chart.defaults.maintainAspectRatio=false; Chart.defaults.responsive=true;
@@ -1375,6 +1361,8 @@
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': +$'+(c.parsed.y/1000).toFixed(0)+'K'}}},
           scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'+$'+(v/1000)+'K'}}}}});
+    }
+    if(page==='spend'){
       const pl=SNAP.chart_pnl;
       if(pl) C('cPnl',{type:'bar',data:{labels:pl.labels,datasets:[
           {type:'bar',label:'Income',data:pl.income,backgroundColor:'#1d9e75',borderWidth:0,order:2},
