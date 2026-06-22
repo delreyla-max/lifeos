@@ -85,6 +85,29 @@
   .chip{display:inline-block;background:var(--chip);color:var(--muted);border-radius:20px;padding:2px 8px;font-size:9px;margin:2px 3px 0 0}
   a.chip{text-decoration:none;color:var(--accent);font-weight:600;cursor:pointer}
   a.chip:hover{filter:brightness(1.1);text-decoration:underline}
+  /* Spend vs Budget page */
+  .sp-tbl{width:100%;border-collapse:collapse;font-size:11px}
+  .sp-tbl th{font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:600;text-align:right;padding:4px 6px;border-bottom:1px solid var(--line)}
+  .sp-tbl th:first-child{text-align:left}
+  .sp-row>td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}
+  .sp-row>td:first-child{text-align:left;font-weight:600;color:var(--text)}
+  .sp-row{cursor:pointer}
+  .sp-row:hover{background:var(--chip)}
+  .sp-row .caret{display:inline-block;width:12px;color:var(--muted);font-size:9px;transition:transform .15s}
+  .sp-row.open .caret{transform:rotate(90deg)}
+  .sp-bud{width:62px;text-align:right;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:2px 5px;background:var(--bg);color:var(--text)}
+  .sp-over{color:var(--bad);font-weight:700}
+  .sp-under{color:var(--ok,#1d9e75)}
+  .sp-bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:3px}
+  .sp-bar i{display:block;height:100%;background:#1d9e75}
+  .sp-bar i.over{background:#e24b4a}
+  .sp-detail td{padding:0 6px 9px 22px;border-bottom:1px solid var(--line)}
+  .sp-sub{display:flex;justify-content:space-between;font-size:10.5px;padding:3px 0;border-bottom:1px dashed var(--line);color:var(--muted)}
+  .sp-sub:last-child{border-bottom:0}
+  .sp-sub b{color:var(--text);font-weight:600}
+  .sp-mode{display:inline-flex;gap:4px}
+  .sp-mode button{font-size:10px;padding:2px 8px;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:999px;cursor:pointer}
+  .sp-mode button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
   .date{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px}
   .date:last-child{border-bottom:0}
   .date b{font-variant-numeric:tabular-nums}
@@ -192,6 +215,7 @@
   <nav class="tabs" id="tabs">
     <a href="#today" data-page="today">🔆 Today</a>
     <a href="#money" data-page="money">💰 Personal Finance</a>
+    <a href="#spend" data-page="spend">📊 Spend vs Budget</a>
     <a href="#investing" data-page="investing">📈 Investing</a>
     <a href="#jobs" data-page="jobs">🔎 Career</a>
     <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
@@ -501,6 +525,37 @@
    </div>
   </div>
 
+  <!-- ============================= SPEND vs BUDGET ============================= -->
+  <div class="page" id="page-spend">
+   <div class="grid">
+    <section class="card col12">
+      <h2><span>📊 Spend vs Budget — where the money goes</span>
+        <span class="sp-mode">
+          <button id="spPrev" class="navbtn">◀</button><b id="spLabel" style="min-width:64px;text-align:center;display:inline-block"></b><button id="spNext" class="navbtn">▶</button>
+          <button id="spH1" title="Half-year total">H1 total</button>
+          <button id="spAvg" title="Average per month">avg/mo</button>
+        </span>
+      </h2>
+      <div class="grid" style="margin-top:6px">
+        <div class="col5">
+          <div class="subhead">Monthly total — spent vs budget <span class="sub" style="font-weight:400">· click a month</span></div>
+          <div style="position:relative;height:300px"><canvas id="cSpend" role="img" aria-label="Total spending versus budget by month"></canvas></div>
+          <div class="note" id="spNote" style="margin-top:8px"></div>
+        </div>
+        <div class="col7">
+          <div class="subhead">Categories — <span id="spCatLabel" style="color:var(--text)"></span> <span class="sub" style="font-weight:400">· set a budget · click a row to see merchants</span></div>
+          <table class="sp-tbl">
+            <thead><tr><th>Category</th><th>Budget</th><th>Actual</th><th>+/−</th><th>% spend</th></tr></thead>
+            <tbody id="spBody"></tbody>
+            <tfoot id="spFoot"></tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="note" style="margin-top:10px">Everyday-spend categorization (cards + BofA ...4394), parsed from statements in the vault tracker. Fixed bills paid direct from main checking ...3326 — mortgage, property tax, insurance, utilities — are tracked separately on the <b>Personal Finance</b> page. Budgets you set here save to this browser. Source of truth for categories: vault <b>2026-Money-Tracker</b>.</div>
+    </section>
+   </div>
+  </div>
+
   <!-- ============================= REAL ESTATE ============================= -->
   <div class="page" id="page-realestate">
    <div class="grid">
@@ -772,7 +827,7 @@
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','money','investing','jobs','realestate','adu','projects','child'];
+  const PAGES=['today','money','spend','investing','jobs','realestate','adu','projects','child'];
   function showPage(p){
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
@@ -1179,7 +1234,107 @@
 
   /* ---------- CHARTS (data from DB, built lazily per page) ---------- */
   const charts={};
+
+  /* ---------- SPEND vs BUDGET (baked from vault 2026-Money-Tracker) ---------- */
+  const SP_MONTHS=['Jan','Feb','Mar','Apr','May','Jun'];
+  // m = everyday-spend actual per month (Jan..Jun); bud = default monthly budget; subs = H1 merchant split
+  const CATSPEND=[
+    {name:'Shopping/Retail', bud:800, m:[557,227,699,2245,1506,3746], subs:[['Amazon',3443],['Other retail',3247],['IKEA / Marina / misc',148]]},
+    {name:'Dining/Restaurants', bud:700, m:[1232,1184,768,1138,985,471], subs:[['Restaurants (sit-down & misc)',4491],['Fast-casual (Chipotle, In-N-Out…)',826],['Work café (Omnicom) + delivery',461]]},
+    {name:'Travel/Lodging', bud:400, m:[0,275,120,5492,0,0], subs:[['Lodging / hotel',3005],['Tours & activities (GetYourGuide, Vatican)',1608],['Air / flights',845],['Rail (Trenitalia) + Paris metro',429]]},
+    {name:'Real Estate (reno)', bud:0, m:[0,0,0,0,3500,0], subs:[['Todd Beach reno checks — H1 all-in incl. ...3326',5571]]},
+    {name:'Groceries', bud:450, m:[650,50,485,316,306,393], subs:[]},
+    {name:'Cash/ATM Withdrawal', bud:150, m:[0,0,2186,0,0,0], subs:[['Euro withdrawals — Europe trip (Mar)',2186]]},
+    {name:'Entertainment/Gaming', bud:150, m:[36,0,0,1453,54,43], subs:[]},
+    {name:'Software/Advertising', bud:200, m:[516,98,57,40,142,343], subs:[]},
+    {name:'Utilities/Home', bud:250, m:[261,171,171,333,170,0], subs:[]},
+    {name:'Subscriptions/Streaming', bud:150, m:[123,151,177,146,145,129], subs:[]},
+    {name:'P2P Payment Out', bud:150, m:[399,0,196,0,17,207], subs:[]},
+    {name:'Health/Medical', bud:150, m:[0,44,237,0,0,454], subs:[]},
+    {name:'Gas/Fuel', bud:100, m:[121,0,89,64,66,54], subs:[]},
+    {name:'Coffee/Cafe', bud:60, m:[53,74,26,42,37,94], subs:[]},
+    {name:'Transport/Tickets', bud:75, m:[0,98,2,100,56,2], subs:[]},
+    {name:'Personal Care', bud:50, m:[0,40,56,0,0,46], subs:[]},
+    {name:'Government/Legal', bud:25, m:[0,0,2,68,53,0], subs:[]},
+    {name:'Uncategorized', bud:50, m:[62,66,8,295,25,12], subs:[]},
+    {name:'Bank: Interest', bud:0, m:[0,6,7,0,34,56], subs:[]},
+    {name:'Bank: Fees', bud:0, m:[0,0,17,44,0,13], subs:[]}
+  ];
+  let spIdx=5, spMode='month'; // 'month' | 'total' | 'avg'
+  const spOpen={};
+  const spMoney=v=>(v<0?'-$':'$')+Math.abs(Math.round(v)).toLocaleString();
+  function spGetBud(c){ const v=localStorage.getItem('spbud:'+c.name); return v==null?c.bud:+v; }
+  function spActual(c){ const sum=c.m.reduce((a,b)=>a+b,0); return spMode==='total'?sum:spMode==='avg'?sum/6:c.m[spIdx]; }
+  function spBudget(c){ const b=spGetBud(c); return spMode==='total'?b*6:b; }
+  function spPeriodLabel(){ return spMode==='total'?'H1 total':spMode==='avg'?'avg / mo':SP_MONTHS[spIdx]; }
+  function spTotalsByMonth(){ return SP_MONTHS.map((_,i)=>CATSPEND.reduce((s,c)=>s+c.m[i],0)); }
+  function spBudgetTotalMo(){ return CATSPEND.reduce((s,c)=>s+spGetBud(c),0); }
+  function renderSpend(){
+    if(!el('spBody')) return;
+    el('spLabel').textContent=SP_MONTHS[spIdx];
+    el('spCatLabel').textContent=spPeriodLabel();
+    el('spH1').classList.toggle('on',spMode==='total');
+    el('spAvg').classList.toggle('on',spMode==='avg');
+    const rows=CATSPEND.map(c=>({c,a:spActual(c),b:spBudget(c)})).filter(r=>r.a>0||r.b>0).sort((x,y)=>y.a-x.a);
+    const tot=rows.reduce((s,r)=>s+r.a,0)||1;
+    const body=el('spBody'); body.innerHTML='';
+    rows.forEach(r=>{
+      const over=r.a-r.b, pct=r.a/tot*100, fill=r.b>0?Math.min(100,r.a/r.b*100):(r.a>0?100:0);
+      const tr=document.createElement('tr'); tr.className='sp-row'+(spOpen[r.c.name]?' open':'');
+      tr.innerHTML='<td><span class="caret">▶</span> '+r.c.name+'</td>'+
+        '<td><input class="sp-bud" type="number" min="0" step="25" value="'+spGetBud(r.c)+'"'+(spMode==='total'?' disabled title="per-month budget — leave H1 total to edit"':'')+'></td>'+
+        '<td>'+spMoney(r.a)+'<div class="sp-bar"><i class="'+(over>0?'over':'')+'" style="width:'+fill+'%"></i></div></td>'+
+        '<td class="'+(over>0?'sp-over':'sp-under')+'">'+(over>0?'+'+spMoney(over):spMoney(-over))+'</td>'+
+        '<td>'+pct.toFixed(0)+'%</td>';
+      const inp=tr.querySelector('.sp-bud');
+      inp.onclick=e=>e.stopPropagation();
+      inp.onchange=e=>{ localStorage.setItem('spbud:'+r.c.name, Math.max(0,+e.target.value||0)); renderSpend(); spBuildChart(); };
+      tr.onclick=()=>{ spOpen[r.c.name]=!spOpen[r.c.name]; renderSpend(); };
+      body.appendChild(tr);
+      if(spOpen[r.c.name]){
+        const dt=document.createElement('tr'); dt.className='sp-detail';
+        let html;
+        if(r.c.subs && r.c.subs.length){
+          const st=r.c.subs.reduce((s,x)=>s+x[1],0)||1;
+          html=r.c.subs.map(x=>'<div class="sp-sub"><span>'+x[0]+'</span><span><b>'+spMoney(x[1])+'</b> · '+(x[1]/st*100).toFixed(0)+'%</span></div>').join('')+
+               '<div class="sp-sub" style="border-top:1px solid var(--line)"><span>H1 merchant total</span><span><b>'+spMoney(st)+'</b></span></div>';
+        } else {
+          html='<div class="sp-sub" style="flex-wrap:wrap;gap:10px;border:0">'+SP_MONTHS.map((mn,i)=>'<span>'+mn+' <b>'+spMoney(r.c.m[i])+'</b></span>').join('')+'</div>'+
+               '<div class="sp-sub" style="border:0;color:var(--muted)">No merchant split recorded yet — add one in the vault tracker and re-bake.</div>';
+        }
+        dt.innerHTML='<td colspan="5">'+html+'</td>';
+        body.appendChild(dt);
+      }
+    });
+    const fb=rows.reduce((s,r)=>s+r.b,0), diff=tot-fb;
+    el('spFoot').innerHTML='<tr><td style="font-weight:700">Total ('+spPeriodLabel()+')</td>'+
+      '<td style="text-align:right;font-weight:700">'+spMoney(fb)+'</td>'+
+      '<td style="text-align:right;font-weight:700">'+spMoney(tot)+'</td>'+
+      '<td class="'+(diff>0?'sp-over':'sp-under')+'" style="text-align:right;font-weight:700">'+(diff>0?'+'+spMoney(diff):spMoney(-diff))+'</td><td></td></tr>';
+    el('spNote').innerHTML=(diff>0?'<b>'+spMoney(diff)+' over</b> budget':'<b>'+spMoney(-diff)+' under</b> budget')+' for '+spPeriodLabel()+'. Biggest line: <b>'+rows[0].c.name+'</b> at '+spMoney(rows[0].a)+'.';
+  }
+  function spBuildChart(){
+    if(!window.Chart){ return; } const e=el('cSpend'); if(!e) return;
+    if(charts['cSpend']){ charts['cSpend'].destroy(); delete charts['cSpend']; }
+    const spent=spTotalsByMonth(), bt=spBudgetTotalMo();
+    charts['cSpend']=new Chart(e,{type:'bar',data:{labels:SP_MONTHS,datasets:[
+        {type:'bar',label:'Spent',data:spent,backgroundColor:spent.map((a,i)=>i===spIdx&&spMode==='month'?(a>bt?'#e24b4a':'#1d9e75'):'rgba(127,127,127,.35)'),borderWidth:0,order:2},
+        {type:'line',label:'Budget',data:SP_MONTHS.map(()=>bt),borderColor:'#ef9f27',borderDash:[6,4],pointRadius:0,borderWidth:2,order:1}
+      ]},
+      options:{onClick:(ev,els,ch)=>{ let i=(els&&els.length)?els[0].index:null; if(i==null){ const p=ch.getElementsAtEventForMode(ev,'index',{intersect:false},true); if(p&&p.length)i=p[0].index; } if(i!=null){ spIdx=i; spMode='month'; renderSpend(); spBuildChart(); } },
+        plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>{const v=c.parsed.y; if(c.dataset.label==='Budget')return 'Budget: $'+v.toLocaleString(); const o=v-bt; return 'Spent: $'+v.toLocaleString()+'  ('+(o>=0?'+$'+o.toLocaleString()+' over':'$'+(-o).toLocaleString()+' under')+')';}}}},
+        scales:{x:{grid:{color:'rgba(127,127,127,.15)'},ticks:{font:{size:9}}},y:{grid:{color:'rgba(127,127,127,.15)'},beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+  }
+  (function spWire(){
+    const p=el('spPrev'),n=el('spNext'),h=el('spH1'),a=el('spAvg');
+    if(p) p.onclick=()=>{ spMode='month'; spIdx=Math.max(0,spIdx-1); renderSpend(); spBuildChart(); };
+    if(n) n.onclick=()=>{ spMode='month'; spIdx=Math.min(5,spIdx+1); renderSpend(); spBuildChart(); };
+    if(h) h.onclick=()=>{ spMode=spMode==='total'?'month':'total'; renderSpend(); spBuildChart(); };
+    if(a) a.onclick=()=>{ spMode=spMode==='avg'?'month':'avg'; renderSpend(); spBuildChart(); };
+  })();
+
   function buildCharts(page){
+    if(page==='spend'){ renderSpend(); spBuildChart(); return; }
     if(!window.Chart || !Object.keys(SNAP).length) return;
     Chart.defaults.font.size=10; Chart.defaults.plugins.legend.display=false;
     Chart.defaults.maintainAspectRatio=false; Chart.defaults.responsive=true;
