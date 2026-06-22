@@ -288,6 +288,12 @@
   .chk.done .nm{color:var(--muted);text-decoration:line-through}
   .chk .det{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap}
   .note{color:var(--muted);font-size:11px;line-height:1.4}
+  .cklist{list-style:none;margin:0;padding:0}
+  .chk.ckrow{cursor:default}
+  .cknm{flex:1;min-width:0;background:transparent;border:1px solid transparent;border-radius:5px;color:var(--text);font:inherit;padding:2px 5px}
+  .cknm:hover{border-color:var(--line)}
+  .cknm:focus{outline:none;border-color:var(--muted);background:var(--panel2)}
+  .chk.ckrow.done .cknm{color:var(--muted);text-decoration:line-through}
   .bridge{margin-top:6px;font-size:12px;font-variant-numeric:tabular-nums}
   .bridge .brow{display:flex;justify-content:space-between;gap:10px;padding:5px 8px;border-radius:6px;background:var(--panel2);margin-bottom:4px}
   .bridge .brow.pos b{color:var(--good,#1d9e75)}
@@ -431,11 +437,8 @@
     <!-- MONTHLY DOCUMENTS TO UPLOAD (aggregated from all pages) -->
     <section class="card col6">
       <h2>📥 Monthly documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → ingest · checks sync</span></h2>
-      <div class="chk" data-key="doc-bofa3326"><span class="box">✓</span><span class="nm">BofA statement (all accounts — one combined PDF)</span><span class="det">finance</span></div>
-      <div class="chk" data-key="doc-citi"><span class="box">✓</span><span class="nm">Citi ...6822 statement</span><span class="det">finance</span></div>
-      <div class="chk" data-key="doc-fidelity"><span class="box">✓</span><span class="nm">Fidelity monthly statement</span><span class="det">investing</span></div>
-      <div class="chk" data-key="inv-401k-snap"><span class="box">✓</span><span class="nm">Fidelity.com "All accounts" screenshot (401k)</span><span class="det">investing</span></div>
-      <div class="chk" data-key="adu-doc-stmt"><span class="box">✓</span><span class="nm">Utopia owner statement (ADU)</span><span class="det">rental</span></div>
+      <ul class="cklist" id="ck-documents"></ul>
+      <div class="addrow"><input id="ckadd-documents" placeholder="Add a document…" autocomplete="off"></div>
     </section>
 
     <!-- WEEKLY CHALLENGES -->
@@ -587,11 +590,8 @@
     <!-- 6 ▸ TAXES gather -->
     <section class="card col6">
       <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="tax-2026-w2"><span class="box">✓</span><span class="nm">W-2 (RAPP)</span></div>
-      <div class="chk" data-key="tax-2026-breakfast"><span class="box">✓</span><span class="nm">Self-employment / 1099 income + expenses (if any)</span></div>
-      <div class="chk" data-key="tax-2026-adu"><span class="box">✓</span><span class="nm">ADU-Rental rental income + expenses</span></div>
-      <div class="chk" data-key="tax-2026-1099"><span class="box">✓</span><span class="nm">Investment 1099s → Investing Fidelity</span></div>
-      <div class="chk" data-key="tax-2026-home"><span class="box">✓</span><span class="nm">Home / deductions</span></div>
+      <ul class="cklist" id="ck-taxes"></ul>
+      <div class="addrow"><input id="ckadd-taxes" placeholder="Add a tax item…" autocomplete="off"></div>
     </section>
 
    </div>
@@ -816,11 +816,8 @@
 
     <section class="card col6">
       <h2>✅ Property to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="prop-insurance"><span class="box">✓</span><span class="nm">Switch home insurance → Progressive (quote in hand)</span></div>
-      <div class="chk" data-key="prop-gas"><span class="box">✓</span><span class="nm">Resolve gas past-due (on monthly plan)</span></div>
-      <div class="chk" data-key="prop-electrician"><span class="box">✓</span><span class="nm">Hire electrician — six lights (main house)</span></div>
-      <div class="chk" data-key="prop-appraisal"><span class="box">✓</span><span class="nm">Get home appraisal / market estimate</span></div>
-      <div class="chk" data-key="prop-mortstmt"><span class="box">✓</span><span class="nm">Pull current mortgage statement (balance)</span></div>
+      <ul class="cklist" id="ck-property"></ul>
+      <div class="addrow"><input id="ckadd-property" placeholder="Add a property to-do…" autocomplete="off"></div>
       <div class="note" style="margin-top:8px">🏘️ Rental ops, P&amp;L, repairs &amp; documents now live on the <b>ADU Rental</b> page.</div>
     </section>
 
@@ -859,11 +856,8 @@
     </section>
     <section class="card col4">
       <h2>✅ Open issues &amp; to-dos <span class="sub" style="font-weight:400">checks sync · routed to Utopia</span></h2>
-      <div class="chk" data-key="adu-rats"><span class="box">✓</span><span class="nm">① Rat exterminator</span><span class="det">priority</span></div>
-      <div class="chk" data-key="adu-fence"><span class="box">✓</span><span class="nm">② Fence cover repair</span></div>
-      <div class="chk" data-key="adu-tree"><span class="box">✓</span><span class="nm">③ Tree removal</span></div>
-      <div class="chk" data-key="adu-rent-review"><span class="box">✓</span><span class="nm">Review rent vs market (next increase)</span></div>
-      <div class="chk" data-key="adu-insurance"><span class="box">✓</span><span class="nm">Reinstate proper landlord/home insurance</span></div>
+      <ul class="cklist" id="ck-adu"></ul>
+      <div class="addrow"><input id="ckadd-adu" placeholder="Add an issue…" autocomplete="off"></div>
     </section>
 
     <!-- Charts -->
@@ -1197,7 +1191,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder();
+    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
@@ -1498,6 +1492,55 @@
     const { error }=await sb.from('checklist_status').upsert({item_key:key, done, updated_at:new Date().toISOString()},{onConflict:'item_key'});
     if(error) setStatus('Checklist save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
   }
+
+  /* ---------- EDITABLE CHECKLISTS (DB-backed: add / delete / rename / check) ---------- */
+  const CKLISTS=['documents','taxes','property','adu'];
+  let ckItems=[];
+  async function loadCkItems(){
+    const { data, error }=await sb.from('checklist_items').select('*');
+    ckItems = error?[]:(data||[]);
+    CKLISTS.forEach(renderCk);
+  }
+  function renderCk(list){
+    const ul=el('ck-'+list); if(!ul) return; ul.innerHTML='';
+    ckItems.filter(i=>i.list===list)
+      .sort((a,b)=>(a.sort_order-b.sort_order)||(a.created_at||'').localeCompare(b.created_at||''))
+      .forEach(it=>{
+        const li=document.createElement('li'); li.className='chk ckrow'+(it.done?' done':'');
+        const box=document.createElement('span'); box.className='box'; box.textContent='✓'; box.title='Check off';
+        box.onclick=()=>toggleCk(it,!it.done);
+        const nm=document.createElement('input'); nm.className='cknm'; nm.value=it.label; nm.title='Click to rename';
+        nm.onchange=()=>{ const v=nm.value.trim(); if(v&&v!==it.label) updateCk(it,{label:v}); else nm.value=it.label; };
+        li.append(box,nm);
+        if(it.detail){ const d=document.createElement('span'); d.className='det'; d.textContent=it.detail; li.append(d); }
+        const del=document.createElement('button'); del.className='del'; del.textContent='✕'; del.title='Delete';
+        del.onclick=()=>{ if(confirm('Delete “'+it.label+'”?')) delCk(it); };
+        li.append(del); ul.appendChild(li);
+      });
+  }
+  async function toggleCk(it,done){
+    it.done=done; renderCk(it.list);
+    const { error }=await sb.from('checklist_items').update({done}).eq('id',it.id);
+    if(error){ setStatus('Save failed: '+error.message,true); loadCkItems(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function updateCk(it,patch){
+    Object.assign(it,patch); renderCk(it.list);
+    const { error }=await sb.from('checklist_items').update(patch).eq('id',it.id);
+    if(error){ setStatus('Save failed: '+error.message,true); loadCkItems(); } else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function delCk(it){
+    ckItems=ckItems.filter(x=>x.id!==it.id); renderCk(it.list);
+    const { error }=await sb.from('checklist_items').delete().eq('id',it.id);
+    if(error){ setStatus('Delete failed: '+error.message,true); loadCkItems(); }
+  }
+  async function addCk(list){
+    const inp=el('ckadd-'+list); const label=inp.value.trim(); if(!label) return; inp.value='';
+    const ord=Math.max(0,...ckItems.filter(i=>i.list===list).map(i=>i.sort_order||0))+1;
+    const { data, error }=await sb.from('checklist_items').insert({list,label,sort_order:ord}).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) ckItems.push(data[0]); renderCk(list);
+  }
+  CKLISTS.forEach(list=>{ const a=el('ckadd-'+list); if(a) a.addEventListener('keydown',e=>{ if(e.key==='Enter') addCk(list); }); });
 
   /* ---------- CHILD / UC TRACKING ---------- */
   let cCourses=[], cVol=[], cActs=[], childWired=false;
