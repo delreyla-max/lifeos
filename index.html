@@ -128,6 +128,9 @@
   .bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--good))}
   .chip{display:inline-block;background:var(--chip);color:var(--muted);border-radius:20px;padding:2px 8px;font-size:9px;margin:2px 3px 0 0}
   a.chip{text-decoration:none;color:var(--accent);font-weight:600;cursor:pointer}
+  .notesarea{width:100%;min-height:220px;resize:vertical;background:var(--panel2);border:1px solid var(--line);border-radius:10px;color:var(--text);font:inherit;line-height:1.5;padding:11px 12px;margin-top:4px;box-sizing:border-box}
+  .notesarea:focus{outline:none;border-color:var(--accent)}
+  #resumeFrame{width:100%;height:1100px;border:1px solid var(--line);border-radius:10px;background:#fff}
   /* per-page custom links bar */
   .pagelinks{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:12px 0 2px;padding:7px 12px;background:var(--glass);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow-sm);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%)}
   .pagelinks .pl-label{font-family:var(--mono);font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-right:2px}
@@ -682,13 +685,8 @@
   <div class="page" id="page-jobs">
    <div class="grid">
     <section class="card col6">
-      <h2>🔎 Job search pipeline <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="job-resume"><span class="box">✓</span><span class="nm">Resume up to date</span></div>
-      <div class="chk" data-key="job-targets"><span class="box">✓</span><span class="nm">Target company list refreshed</span></div>
-      <div class="chk" data-key="job-portfolio"><span class="box">✓</span><span class="nm">Portfolio / site current (gyip.com)</span></div>
-      <div class="chk" data-key="job-apps"><span class="box">✓</span><span class="nm">Applications out this week</span></div>
-      <div class="chk" data-key="job-followups"><span class="box">✓</span><span class="nm">Follow-ups sent</span></div>
-      <div class="chk" data-key="job-interviews"><span class="box">✓</span><span class="nm">Interviews scheduled</span></div>
+      <h2>📝 Job search notes <span class="sub" style="font-weight:400" id="jobNotesStatus">saved · syncs everywhere</span></h2>
+      <textarea id="jobNotes" class="notesarea" placeholder="Jot down anything — target companies, recruiters, follow-ups, interview prep, reminders…"></textarea>
     </section>
 
     <section class="card col6">
@@ -711,15 +709,13 @@
     </section>
 
     <section class="card col12">
-      <h2>🗂️ Career notes</h2>
-      <div class="areawrap">
+      <h2><span>📄 Resume</span> <span class="sub" style="font-weight:400">· live from Google Docs</span></h2>
+      <div class="areawrap" style="margin-bottom:10px">
         <div class="areagrp"><div class="lbl">🔗 Links</div>
-          <a class="chip" href="https://gyip.com" target="_blank" rel="noopener">🌐 Website (gyip.com)</a><a class="chip" href="https://www.linkedin.com/in/gyipla" target="_blank" rel="noopener">in LinkedIn</a><a class="chip" href="https://gyip.com/resume.html" target="_blank" rel="noopener">📄 Resume</a>
-        </div>
-        <div class="areagrp"><div class="lbl">📍 Where things live</div>
-          <span class="chip">Job-Search (vault)</span><span class="chip">RAPP (current)</span><span class="chip">Gyip-com (portfolio)</span><span class="chip">resume.pdf</span><span class="chip">Job Apply folder</span>
+          <a class="chip" href="https://gyip.com" target="_blank" rel="noopener">🌐 Website (gyip.com)</a><a class="chip" href="https://www.linkedin.com/in/gyipla" target="_blank" rel="noopener">in LinkedIn</a><a class="chip" href="https://gyip.com/resume.html" target="_blank" rel="noopener">📄 Resume page</a><a class="chip" href="https://docs.google.com/document/d/e/2PACX-1vR354cYhmbs1YbpsLhFoUxH8XE7qSgFEIwH13BB-bzSsJ3L1E3GQZjEaDQcSp-pXw/pub?output=pdf" target="_blank" rel="noopener" download="Garman_Resume.pdf">⬇️ Download PDF</a>
         </div>
       </div>
+      <iframe id="resumeFrame" src="https://docs.google.com/document/d/e/2PACX-1vTE-f1_-pZi2wnhGWdtrbOOzba7e0_zhEuUoQNwAtyRVWNY-wYSlOA94AUwUmVnPQ/pub?embedded=true" title="Resume" loading="lazy"></iframe>
     </section>
    </div>
   </div>
@@ -1122,6 +1118,32 @@
     const { data, error }=await sb.from('ui_prefs').select('value').eq('key',TAB_ORDER_KEY).maybeSingle();
     if(!error && data && Array.isArray(data.value)) applyTabOrder(data.value);
   }
+
+  /* ---------- JOB SEARCH NOTES (editable, persisted to ui_prefs) ---------- */
+  const JOB_NOTES_KEY='job-search-notes';
+  let jobNotesWired=false, jobNotesTimer=null;
+  async function loadJobNotes(){
+    const ta=el('jobNotes'); if(!ta) return;
+    const { data, error }=await sb.from('ui_prefs').select('value').eq('key',JOB_NOTES_KEY).maybeSingle();
+    if(!error && data && typeof data.value==='string' && document.activeElement!==ta) ta.value=data.value;
+    if(!jobNotesWired){
+      jobNotesWired=true;
+      const st=el('jobNotesStatus');
+      ta.addEventListener('input',()=>{
+        if(st) st.textContent='saving…';
+        clearTimeout(jobNotesTimer);
+        jobNotesTimer=setTimeout(saveJobNotes,700);
+      });
+      ta.addEventListener('blur',saveJobNotes);
+    }
+  }
+  async function saveJobNotes(){
+    const ta=el('jobNotes'); if(!ta) return;
+    clearTimeout(jobNotesTimer);
+    const st=el('jobNotesStatus');
+    const { error }=await sb.from('ui_prefs').upsert({key:JOB_NOTES_KEY, value:ta.value, updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(st) st.textContent=error?('save failed'):('saved '+new Date().toLocaleTimeString());
+  }
   async function saveTabOrder(){
     const order=tabAnchors().map(a=>a.dataset.page);
     const { error }=await sb.from('ui_prefs').upsert({key:TAB_ORDER_KEY, value:order, updated_at:new Date().toISOString()},{onConflict:'key'});
@@ -1191,7 +1213,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder();
+    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
