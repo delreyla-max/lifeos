@@ -661,6 +661,11 @@
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cTaxPnl" role="img" aria-label="Annual after-tax income and tax stacked to total income, from tax returns"></canvas></div>
       <div class="note" style="margin-top:6px;font-size:11px">Each bar = that year's total income, split into what you <b>kept</b> (after-tax) vs <b>federal tax</b>. A return only records income and tax, so this is a tax-level P&amp;L, not living expenses. 2014 (tax unverified) &amp; 2017 (no total-income line) omitted.</div>
     </section>
+    <section class="card col12">
+      <h2>📉 Income vs spending — full history <span class="sub" style="font-weight:400">· extended as far back as the data is honest</span></h2>
+      <div style="position:relative;height:200px;margin-top:8px"><canvas id="cPnlHist" role="img" aria-label="Annual income from tax returns 2010 to 2023 in blue and card spending 2024 to 2026 in orange, with no overlapping years showing the data gap"></canvas></div>
+      <div class="note" style="margin-top:6px;font-size:11px"><b>Income</b> (blue) is pinned from tax returns <b>2010–2023</b>. <b>Spending</b> (orange) only exists from card statements <b>2024 on</b> (2024 Citi just added). They <b>don't overlap yet</b> — income stops where measured spending starts, so no year has a true net P&amp;L. Spending is <b>card purchases only</b>, not total outflow; <b>2026 = first half</b>. To close the gap: file 2024/2025 taxes (income) + parse BofA checking (full spend).</div>
+    </section>
     <!-- Deeper analysis: income drivers since 2010 (finance variance analysis) -->
     <section class="card col12">
       <h2>🔎 Deeper analysis — income drivers since 2010 <span class="sub" style="font-weight:400">· variance decomposition</span></h2>
@@ -2257,6 +2262,15 @@
           {label:'Federal tax',data:[34456,16265,5966,16511,1967,3528,11272,17611,11714,28541],backgroundColor:'#e24b4a',borderWidth:0}
         ]},
         options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>c.dataset.label+': $'+c.parsed.y.toLocaleString()}}},scales:{x:{...ax,stacked:true},y:{...ax,beginAtZero:true,stacked:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+
+      // Income vs spending — honest full history: income (returns) 2010-2023, card spend 2024-2026. No overlap by design = the data gap.
+      const PHY=['2010','2011','2012','2013','2014','2018','2019','2020','2021','2022','2023','2024','2025','2026'];
+      C('cPnlHist',{type:'bar',data:{labels:PHY,datasets:[
+          {label:'Income (returns)',data:[198149,137240,104060,98882,151576,29424,55302,104605,110901,108655,180627,null,null,null],backgroundColor:'#378add',borderRadius:4,borderWidth:0},
+          {label:'Card spending',data:[null,null,null,null,null,null,null,null,null,null,null,39029,19864,36700],backgroundColor:'#ef9f27',borderRadius:4,borderWidth:0}
+        ]},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},tooltip:{callbacks:{label:c=>{if(c.parsed.y==null)return c.dataset.label+': n/a';let s=c.dataset.label+': $'+c.parsed.y.toLocaleString();if(c.label==='2026'&&c.dataset.label==='Card spending')s+=' (H1)';return s;}}}},
+          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
 
       const pl=SNAP.chart_pnl;
       if(pl) C('cPnl',{type:'bar',data:{labels:pl.labels,datasets:[
