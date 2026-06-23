@@ -468,7 +468,7 @@
     </section>
 
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
-    <section class="card col8">
+    <section class="card col12">
       <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
       <div class="goal" style="margin:2px 0 0">
         <div class="top"><span id="gbHead">loading…</span><span>target $70K</span></div>
@@ -539,6 +539,13 @@
       <div class="note" style="margin-top:6px;font-size:11px">Each bar = that year's total income, split into what you <b>kept</b> (after-tax) vs <b>federal tax</b>. A return only records income and tax, so this is a tax-level P&amp;L, not living expenses. 2014 (tax unverified) &amp; 2017 (no total-income line) omitted.</div>
     </section>
 
+    <!-- 6 ▸ TAXES gather -->
+    <section class="card col6">
+      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <ul class="cklist" id="ck-taxes"></ul>
+      <div class="addrow"><input id="ckadd-taxes" placeholder="Add a tax item…" autocomplete="off"></div>
+    </section>
+
     <!-- Deeper analysis: income drivers since 2010 (finance variance analysis) -->
     <section class="card col12">
       <h2>🔎 Deeper analysis — income drivers since 2010 <span class="sub" style="font-weight:400">· variance decomposition</span></h2>
@@ -563,14 +570,14 @@
         </div>
       </div>
     </section>
-    <section class="card col12">
+    <section class="card col6">
       <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
       <ul id="annual"></ul>
       <div class="progress" id="annualProg">Set-aside: $0/mo</div>
     </section>
 
     <!-- OWED BY EX — reimbursement tracker -->
-    <section class="card col12">
+    <section class="card col6">
       <h2><span>💸 Owed by ex — reimbursement tracker</span><span class="sub" style="font-weight:400">· outstanding <b id="exoOut">$0</b> · syncs</span></h2>
       <div class="note" style="margin-top:2px">Per <b>MSA §3.10</b>, uninsured medical/therapy splits 50/50, due within 30 days of proof. Mark <b>Demanded</b> when you send the invoice via TalkingParents (starts the clock) and <b>Paid</b> when reimbursed. <i>Tutoring standing isn't confirmed by existing orders — track it, but get attorney sign-off before a formal demand.</i></div>
       <div class="exo-scroll" style="margin-top:8px">
@@ -590,19 +597,16 @@
       </div>
     </section>
 
-    <!-- 6 ▸ TAXES gather -->
-    <section class="card col6">
-      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <ul class="cklist" id="ck-taxes"></ul>
-      <div class="addrow"><input id="ckadd-taxes" placeholder="Add a tax item…" autocomplete="off"></div>
-    </section>
-
    </div>
   </div>
 
   <!-- ============================= INVESTING ============================= -->
   <div class="page" id="page-investing">
    <div class="grid">
+    <section class="card col12">
+      <h2>📝 Investing notes <span class="sub" style="font-weight:400" id="invNotesStatus">saved · syncs everywhere</span></h2>
+      <textarea id="invNotes" class="notesarea" placeholder="Theses, watchlist, rebalancing reminders, what to buy/trim, tax-lot notes…"></textarea>
+    </section>
     <!-- FIDELITY SNAPSHOT -->
     <section class="card col12">
       <h2><span>📈 Investing — Fidelity <span class="sub" style="font-weight:400">6 accounts · figures from DB</span></span>
@@ -627,57 +631,6 @@
       <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → $138K (2021) → dip to $82K (2022) → $204K (2024) → $200K now; up ~$15K YTD (largest positions NVIDIA &amp; Alphabet, Roth). The year-end &amp; monthly lines are retail-only; the Omnicom 401(k) (~$72K) appears in the by-account ring.</div>
     </section>
 
-    <!-- HOLDINGS — stock-analysis card -->
-    <section class="card col12">
-      <h2>🧮 Holdings — stock analysis <span class="sub" style="font-weight:400">· equities · positions &amp; values Fidelity.com Jun 21 2026 · valuation reads live Jun 22</span></h2>
-      <div class="hold-scroll">
-      <table class="hold-tbl">
-        <thead>
-          <tr>
-            <th>Holding</th><th>Shares</th><th>Mkt value</th><th>Wt*</th>
-            <th>Unreal G/L</th><th>P/E ttm·fwd</th><th>Px now</th><th>Read</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="tk">NVDA</span><span class="nmsub">NVIDIA · Roth</span></td><td>100</td><td>$21,069</td><td>21.7%</td><td class="pos">+22.1%</td><td>32.3 · 23.4</td><td>$210.69</td><td><span class="read fair">Fair</span></td></tr>
-          <tr><td><span class="tk">NFLX</span><span class="nmsub">Netflix · Indiv + Roth</span></td><td>200</td><td>$15,476</td><td>15.9%</td><td class="neg">−23.2%</td><td>25.0 · —</td><td>$77.38</td><td><span class="read value">Cheap vs hist</span></td></tr>
-          <tr><td><span class="tk">GOOGL</span><span class="nmsub">Alphabet · Roth</span></td><td>40.14</td><td>$14,773</td><td>15.2%</td><td class="pos">+76.3%</td><td>27.5 · 25.8</td><td>$368.03</td><td><span class="read fair">Fair</span></td></tr>
-          <tr><td><span class="tk">MSFT</span><span class="nmsub">Microsoft · Roth</span></td><td>25</td><td>$9,485</td><td>9.8%</td><td class="neg">−4.9%</td><td>24.0 · 19.5</td><td>$379.40</td><td><span class="read fair">Fair</span></td></tr>
-          <tr><td><span class="tk">AAPL</span><span class="nmsub">Apple · Roth</span></td><td>30</td><td>$8,940</td><td>9.2%</td><td class="pos">+50.5%</td><td>35.0 · 30.9</td><td>$298.01</td><td><span class="read prem">Premium</span></td></tr>
-          <tr><td><span class="tk">AMC</span><span class="nmsub">AMC Entmt · Indiv</span></td><td>3,000</td><td>$8,490</td><td>8.7%</td><td class="pos">+136.2%</td><td>neg</td><td>$2.83</td><td><span class="read spec">Speculative</span></td></tr>
-          <tr><td><span class="tk">AMZN</span><span class="nmsub">Amazon · Roth</span></td><td>30</td><td>$7,332</td><td>7.5%</td><td class="pos">+11.7%</td><td>30.0 · 27.4</td><td>$244.39</td><td><span class="read fair">Fair</span></td></tr>
-          <tr><td><span class="tk">PLTR</span><span class="nmsub">Palantir · Indiv</span></td><td>25</td><td>$3,212</td><td>3.3%</td><td class="pos">+4.0%</td><td>136 · 92</td><td>$128.47</td><td><span class="read exp">Expensive</span></td></tr>
-          <tr><td><span class="tk">BYDDY</span><span class="nmsub">BYD ADR · Indiv</span></td><td>300</td><td>$3,087</td><td>3.2%</td><td class="neg">−23.0%</td><td>22.3 · 20.7</td><td>$10.29</td><td><span class="read fair">Fair</span></td></tr>
-          <tr><td><span class="tk">TSLA</span><span class="nmsub">Tesla · Roth</span></td><td>7</td><td>$2,803</td><td>2.9%</td><td class="pos">+21.5%</td><td>334 · 206</td><td>$400.49</td><td><span class="read exp">Expensive</span></td></tr>
-          <tr><td><span class="tk">ALLO</span><span class="nmsub">Allogene · Indiv</span></td><td>1,300</td><td>$2,600</td><td>2.7%</td><td class="neg">−3.3%</td><td>neg</td><td>$2.00</td><td><span class="read spec">Speculative</span></td></tr>
-          <tr class="tot"><td>Equities</td><td>—</td><td>$97,267</td><td>100%</td><td class="pos">+$13.3K</td><td>—</td><td>—</td><td>49% of retail</td></tr>
-        </tbody>
-      </table>
-      </div>
-      <div class="subhead" style="margin-top:14px">Funds, 529 &amp; cash <span class="sub" style="font-weight:400">· other holdings (Jun 21)</span></div>
-      <div class="hold-scroll">
-      <table class="hold-tbl">
-        <thead>
-          <tr><th>Holding</th><th>Account</th><th>Shares</th><th>Mkt value</th><th>Cost basis</th><th>Unreal G/L</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="tk">FCNTX</span><span class="nmsub">Fidelity Contrafund</span></td><td>Rollover IRA</td><td>968.356</td><td>$26,068</td><td>$17,845</td><td class="pos">+$8,223</td></tr>
-          <tr><td><span class="tk">NH 2042</span><span class="nmsub">NH Portfolio 2042 (target-date)</span></td><td>529 (UTMA)</td><td>861.97</td><td>$17,093</td><td>$10,000</td><td class="pos">+$7,093</td></tr>
-          <tr><td><span class="tk">FCNKX</span><span class="nmsub">Contrafund · Class K</span></td><td><b>HSA</b></td><td>290.415</td><td>$7,853</td><td>$4,666</td><td class="pos">+$3,187</td></tr>
-          <tr><td><span class="tk">TBCIX</span><span class="nmsub">T. Rowe Price Blue Chip Gr</span></td><td><b>HSA</b></td><td>9.78</td><td>$2,112</td><td>$1,385</td><td class="pos">+$727</td></tr>
-          <tr><td><span class="tk">Cash</span><span class="nmsub">Money market</span></td><td>Indiv+Roth+Roll+HSA</td><td>—</td><td>$47,033</td><td>—</td><td>—</td></tr>
-          <tr class="tot"><td>Funds + cash</td><td>—</td><td>—</td><td>$100,159</td><td>—</td><td class="pos">+$19.2K</td></tr>
-        </tbody>
-      </table>
-      </div>
-      <div class="note" style="margin-top:9px">
-        <b>How to read:</b> shares, market value &amp; cost basis are from your <b>Fidelity.com positions page (Jun 21 2026)</b>; P/E and "Px now" on the equity table are <b>live as of Jun 22 2026</b> (web). *Weight = share of the equity sleeve (~$97.3K), which is ~49% of the <b>$197.4K retail portfolio</b> (5 accounts: Individual, Roth, Rollover, 529, HSA). "Read" is the stock-analysis framework's valuation posture (TTM/forward P/E vs history &amp; peers) — <b>not</b> buy/sell advice.<br>
-        <b>Takeaways:</b> concentrated in mega-cap tech (NVDA + NFLX + GOOGL ≈ 53% of equities). Megacaps screen <i>fair</i> on forward P/E (NVDA 23×, MSFT 20×, GOOGL 26×); <b>TSLA (206× fwd)</b> and <b>PLTR (92× fwd)</b> are the priciest by far; <b>NFLX</b> is cheap vs its own history (25×) but near its 52-wk low; <b>AMC</b> and <b>ALLO</b> are unprofitable, speculative positions. Equities ($97.3K) + funds/cash ($100.2K) = the <b>$197.4K retail</b> total; add the Omnicom 401(k) (~$72.1K) for <b>$269.5K all-in</b>.<br>
-        <b>HSA (235338100) = $10,162:</b> FCNKX $7,853 · TBCIX $2,112 · cash $197.
-      </div>
-    </section>
-
-    <!-- INVESTING TO-DOS -->
    </div>
   </div>
 
@@ -822,16 +775,33 @@
       <h2>🏦 Mortgage detail</h2>
       <div class="grid" style="margin-top:8px">
         <div class="col4"><div class="subhead">Where the payment goes</div><div style="position:relative;height:170px"><canvas id="cPaySplit" role="img" aria-label="Monthly mortgage payment split between interest, principal and escrow"></canvas></div></div>
-        <div class="col4"><div class="subhead">Amortization — balance to payoff (~2062)</div><div style="position:relative;height:170px"><canvas id="cAmort" role="img" aria-label="Projected mortgage balance declining to zero by payoff around 2062"></canvas></div></div>
+        <div class="col4"><div class="subhead">Amortization — balance &amp; interest to payoff</div><div style="position:relative;height:170px"><canvas id="cAmort" role="img" aria-label="Projected mortgage balance declining to zero with cumulative interest rising, to payoff around 2062"></canvas></div></div>
         <div class="col4"><div class="subhead">Home equity vs debt (≈$1.8M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
       </div>
       <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal. On the current schedule the loan pays off <b>~2062</b> with <b>~$322K</b> interest still to come — but at 3.5% this is cheap debt, so accelerating it isn't the priority vs. investing. Equity (~$1.37M) is almost the entire net worth.</div>
     </section>
 
-    <section class="card col12">
-      <h2>📉 Mortgage paydown</h2>
-      <div style="position:relative;height:150px"><canvas id="cMort" role="img" aria-label="Mortgage principal balance by year"></canvas></div>
-      <div class="note" style="margin-top:8px">Truist · 3.5% fixed · $1,911/mo · ~$427K principal (Jun 2026) on a ~$1.8M home. Balance is exact from statements; home value still an estimate.</div>
+    <section class="card col6">
+      <h2>📋 Amortization schedule <span class="sub" style="font-weight:400">· by year · principal vs interest</span></h2>
+      <div class="hold-scroll" style="max-height:300px;overflow-y:auto;margin-top:8px">
+      <table class="hold-tbl">
+        <thead><tr><th>Year</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+        <tbody id="amortBody"></tbody>
+        <tfoot id="amortFoot"></tfoot>
+      </table>
+      </div>
+      <div class="note" style="margin-top:8px" id="amortNote"></div>
+    </section>
+
+    <section class="card col6">
+      <h2>⚡ Payoff calculator <span class="sub" style="font-weight:400">· extra principal / month</span></h2>
+      <div class="addrow" style="align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px">
+        <span style="font-size:12px">Extra principal&nbsp;$/mo</span>
+        <input id="mcExtra" type="number" min="0" step="50" value="0" style="max-width:110px">
+        <span class="chip" style="cursor:pointer" id="mcQ200">+$200</span><span class="chip" style="cursor:pointer" id="mcQ500">+$500</span><span class="chip" style="cursor:pointer" id="mcQ1000">+$1,000</span><span class="chip" style="cursor:pointer" id="mcQ0">reset</span>
+      </div>
+      <div id="mcResult" style="margin-top:10px"></div>
+      <div class="note" style="margin-top:8px" id="mcRec"></div>
     </section>
    </div>
   </div>
@@ -1144,6 +1114,32 @@
     const { error }=await sb.from('ui_prefs').upsert({key:JOB_NOTES_KEY, value:ta.value, updated_at:new Date().toISOString()},{onConflict:'key'});
     if(st) st.textContent=error?('save failed'):('saved '+new Date().toLocaleTimeString());
   }
+
+  /* ---------- INVESTING NOTES (editable, persisted to ui_prefs) ---------- */
+  const INV_NOTES_KEY='investing-notes';
+  let invNotesWired=false, invNotesTimer=null;
+  async function loadInvNotes(){
+    const ta=el('invNotes'); if(!ta) return;
+    const { data, error }=await sb.from('ui_prefs').select('value').eq('key',INV_NOTES_KEY).maybeSingle();
+    if(!error && data && typeof data.value==='string' && document.activeElement!==ta) ta.value=data.value;
+    if(!invNotesWired){
+      invNotesWired=true;
+      const st=el('invNotesStatus');
+      ta.addEventListener('input',()=>{
+        if(st) st.textContent='saving…';
+        clearTimeout(invNotesTimer);
+        invNotesTimer=setTimeout(saveInvNotes,700);
+      });
+      ta.addEventListener('blur',saveInvNotes);
+    }
+  }
+  async function saveInvNotes(){
+    const ta=el('invNotes'); if(!ta) return;
+    clearTimeout(invNotesTimer);
+    const st=el('invNotesStatus');
+    const { error }=await sb.from('ui_prefs').upsert({key:INV_NOTES_KEY, value:ta.value, updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(st) st.textContent=error?('save failed'):('saved '+new Date().toLocaleTimeString());
+  }
   async function saveTabOrder(){
     const order=tabAnchors().map(a=>a.dataset.page);
     const { error }=await sb.from('ui_prefs').upsert({key:TAB_ORDER_KEY, value:order, updated_at:new Date().toISOString()},{onConflict:'key'});
@@ -1213,7 +1209,8 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes();
+    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes();
+    BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
   }
@@ -1792,6 +1789,92 @@
   /* ---------- CHARTS (data from DB, built lazily per page) ---------- */
   const charts={};
 
+  /* ---------- MORTGAGE / AMORTIZATION (Truist, computed client-side) ---------- */
+  // Balance, rate & P&I from statements (note: total $1,911.14/mo ≈ $1,748 P&I + ~$163 escrow).
+  // These reproduce the known schedule: payoff ~2062 with ~$322K interest remaining.
+  const MORT={ balance:427000, rate:0.035, pi:1748, startY:2026, startM:5 }; // startM 5 = June (0-indexed)
+  function mortSchedule(extra){
+    extra=Math.max(0, +extra||0);
+    const i=MORT.rate/12, pmt=MORT.pi+extra;
+    let bal=MORT.balance, m=0, totInt=0;
+    const yearMap={}; let d=new Date(MORT.startY, MORT.startM, 1);
+    while(bal>0.005 && m<1200){
+      const interest=bal*i; let principal=pmt-interest;
+      if(principal<=0) return {never:true, months:Infinity, totalInterest:Infinity, byYear:[], payoff:null};
+      if(principal>bal) principal=bal;
+      bal-=principal; totInt+=interest; m++;
+      const yr=d.getFullYear(); const e=yearMap[yr]||(yearMap[yr]={principal:0,interest:0,balance:0});
+      e.principal+=principal; e.interest+=interest; e.balance=bal;
+      d.setMonth(d.getMonth()+1);
+    }
+    const byYear=Object.keys(yearMap).map(Number).sort((a,b)=>a-b).map(yr=>({year:yr, ...yearMap[yr]}));
+    const payoff=new Date(MORT.startY, MORT.startM, 1); payoff.setMonth(payoff.getMonth()+m);
+    return {never:false, months:m, totalInterest:totInt, byYear, payoff};
+  }
+  let BASE=null;
+  const moname=dt=>dt?dt.toLocaleString('en-US',{month:'short',year:'numeric'}):'—';
+  const dollr=v=>'$'+Math.round(v).toLocaleString();
+  function dur(months){ const y=Math.floor(months/12), mo=months%12; return (y?y+'y ':'')+(mo?mo+'mo':(y?'':'0mo')); }
+  function amortChartData(sch){
+    const labels=sch.byYear.map(r=>String(r.year));
+    const bal=sch.byYear.map(r=>+(r.balance/1000).toFixed(1));
+    let cum=0; const ci=sch.byYear.map(r=>{ cum+=r.interest; return +(cum/1000).toFixed(1); });
+    return {labels, bal, ci};
+  }
+  function buildAmortChart(){
+    if(!window.Chart) return; const e=el('cAmort'); if(!e) return;
+    if(!BASE) BASE=mortSchedule(0);
+    if(charts['cAmort']){ charts['cAmort'].destroy(); delete charts['cAmort']; }
+    const gridc='rgba(127,127,127,.15)';
+    const ax={grid:{color:gridc},ticks:{font:{size:9}}};
+    const base=amortChartData(BASE);
+    const extra=Math.max(0, +((el('mcExtra')||{}).value)||0);
+    const datasets=[
+      {label:'Balance',data:base.bal,borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.1,pointRadius:0,borderWidth:2},
+      {label:'Interest paid',data:base.ci,borderColor:'#ef9f27',backgroundColor:'transparent',fill:false,tension:.1,pointRadius:0,borderWidth:2,borderDash:[5,3]}
+    ];
+    if(extra>0){ const acc=amortChartData(mortSchedule(extra));
+      datasets.push({label:'Balance +'+dollr(extra)+'/mo',data:acc.bal,borderColor:'#1d9e75',backgroundColor:'transparent',fill:false,tension:.1,pointRadius:0,borderWidth:2}); }
+    charts['cAmort']=new Chart(e,{type:'line',data:{labels:base.labels,datasets},
+      options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:8}}},
+        tooltip:{callbacks:{title:c=>c[0].label,label:c=>c.dataset.label+': $'+c.parsed.y+'K'}}},
+        scales:{x:{...ax,ticks:{font:{size:9},maxTicksLimit:8,autoSkip:true}},y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+  }
+  function renderAmortTable(){
+    const body=el('amortBody'); if(!body) return;
+    if(!BASE) BASE=mortSchedule(0);
+    body.innerHTML=BASE.byYear.map(r=>'<tr><td>'+r.year+'</td><td>'+dollr(r.principal)+'</td><td>'+dollr(r.interest)+'</td><td>'+dollr(r.balance)+'</td></tr>').join('');
+    el('amortFoot').innerHTML='<tr class="tot"><td>Total</td><td>'+dollr(MORT.balance)+'</td><td>'+dollr(BASE.totalInterest)+'</td><td>$0</td></tr>';
+    el('amortNote').innerHTML='Truist · 3.5% fixed · $1,911/mo (≈$1,748 P&amp;I + escrow) · '+dollr(MORT.balance)+' balance (Jun 2026) on a ~$1.8M home. On schedule: payoff <b>'+moname(BASE.payoff)+'</b> with <b>'+dollr(BASE.totalInterest)+'</b> total interest. Balance exact from statements; home value still an estimate.';
+  }
+  function renderMortCalc(){
+    const inp=el('mcExtra'); if(!inp) return;
+    if(!BASE) BASE=mortSchedule(0);
+    const extra=Math.max(0, +inp.value||0);
+    const res=el('mcResult');
+    const cell=(lbl,val,cls)=>'<div style="flex:1;min-width:90px"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)">'+lbl+'</div><div style="font-size:15px;font-weight:700'+(cls?';color:'+cls:'')+'">'+val+'</div></div>';
+    if(extra<=0){
+      res.innerHTML='<div style="display:flex;gap:12px;flex-wrap:wrap">'+
+        cell('Payoff', moname(BASE.payoff))+cell('Total interest', dollr(BASE.totalInterest))+cell('Monthly P&amp;I','$1,748')+'</div>';
+    } else {
+      const s=mortSchedule(extra);
+      const moSaved=BASE.months-s.months, intSaved=BASE.totalInterest-s.totalInterest;
+      res.innerHTML='<div style="display:flex;gap:12px;flex-wrap:wrap">'+
+        cell('New payoff', moname(s.payoff), 'var(--good)')+
+        cell('Time saved', dur(moSaved), 'var(--good)')+
+        cell('Interest saved', dollr(intSaved), 'var(--good)')+'</div>'+
+        '<div style="font-size:11px;color:var(--muted);margin-top:6px">New P&amp;I '+dollr(MORT.pi+extra)+'/mo · total interest '+dollr(s.totalInterest)+' (vs '+dollr(BASE.totalInterest)+').</div>';
+    }
+    el('mcRec').innerHTML='<b>Paying it off faster:</b> on a fixed loan the only lever is extra principal — each extra dollar erases all of its future interest. Best moves: round the payment up every month, throw windfalls (tax refund, bonus) straight at principal, or split the payment biweekly (= one extra payment a year). <b>The trade-off:</b> at 3.5% this is cheap debt, so every prepaid dollar earns a guaranteed 3.5% — less than the ~7% the same dollar has historically earned invested. So accelerating is the safe, lower-return choice: worth it if being debt-free matters to you or you\'re near retirement, less so if you\'d rather grow the portfolio. <i>Not financial advice.</i>';
+  }
+  function wireMortCalc(){
+    const inp=el('mcExtra'); if(!inp || inp._wired) return; inp._wired=true;
+    const upd=()=>{ renderMortCalc(); buildAmortChart(); };
+    inp.addEventListener('input', upd);
+    const q=(id,v)=>{ const b=el(id); if(b) b.onclick=()=>{ inp.value=v; upd(); }; };
+    q('mcQ200',200); q('mcQ500',500); q('mcQ1000',1000); q('mcQ0',0);
+  }
+
   /* ---------- SPEND vs BUDGET (baked from vault 2026-Money-Tracker) ---------- */
   const SP_MONTHS=['Jan','Feb','Mar','Apr','May','Jun'];
   // byMonth[i] = real per-month merchant breakdown (Jan..Jun), from monthly notes (Citi + …4394) AND BofA main checking …3326 statements. June …3326 not yet ingested (statement pending).
@@ -1831,7 +1914,9 @@
     {name:'Child support (CASDU)', m:[1776.45,1184.30,4853.25,1184.30,1184.30,0]},
     {name:'Tax refund', m:[0,0,0,4715.82,0,0]}
   ];
-  let spIdx=5, spMode='month'; // 'month' | 'total' | 'avg'
+  // Default to the most recent month that has ingested income (avoids landing on an empty/not-yet-ingested month)
+  let spIdx=(function(){ for(let i=SP_MONTHS.length-1;i>=0;i--){ if(INCOME.some(s=>s.m[i]>0)) return i; } return SP_MONTHS.length-1; })();
+  let spMode='month'; // 'month' | 'total' | 'avg'
   const spOpen={};
   const spMoney=v=>(v<0?'-$':'$')+Math.abs(Math.round(v)).toLocaleString();
   function spGetBud(c){ const v=localStorage.getItem('spbud:'+c.name); return v==null?c.bud:+v; }
@@ -2027,20 +2112,11 @@
           scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>(v<0?'-$':'$')+Math.abs(v/1000)+'K'}}}}});
     }
     if(page==='realestate'){
-      const m=SNAP.chart_mort;
-      if(m) C('cMort',{type:'line',data:{labels:m.labels,
-        datasets:[{data:m.data,borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.25,pointRadius:0,borderWidth:2}]},
-        options:{plugins:{tooltip:{callbacks:{label:c=>'$'+c.parsed.y+'K'}}},scales:{x:ax,y:{...ax,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
       const ps=SNAP.chart_paysplit;
       if(ps) C('cPaySplit',{type:'doughnut',data:{labels:ps.labels,
         datasets:[{data:ps.data,backgroundColor:['#e24b4a','#1d9e75','#ef9f27'],borderWidth:0}]},
         options:{cutout:'58%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'/mo'}}}}});
-      const am=SNAP.chart_amort;
-      if(am) C('cAmort',{type:'line',data:{labels:am.labels,datasets:[
-          {data:am.balance,borderColor:'#e24b4a',backgroundColor:'rgba(226,75,74,.12)',fill:true,tension:.1,pointRadius:0,borderWidth:2}
-        ]},
-        options:{plugins:{tooltip:{callbacks:{title:c=>c[0].label,label:c=>'$'+c.parsed.y+'K remaining'}}},
-          scales:{x:{...ax,ticks:{font:{size:9},maxTicksLimit:8,autoSkip:true}},y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
+      buildAmortChart();
       const eq=SNAP.chart_equity;
       if(eq) C('cEquity',{type:'doughnut',data:{labels:eq.labels,
         datasets:[{data:eq.data,backgroundColor:['#1d9e75','#e24b4a'],borderWidth:0}]},
