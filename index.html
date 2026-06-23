@@ -523,33 +523,6 @@
   <!-- ============================= MONEY ============================= -->
   <div class="page" id="page-money">
    <div class="grid">
-    <!-- Profit & loss — top of page -->
-    <section class="card col12">
-      <h2>📈 Profit &amp; loss — 2026</h2>
-      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
-      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
-      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
-    </section>
-    <!-- 1 ▸ GOAL HERO (the decision layer) -->
-    <section class="card col12">
-      <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
-      <div class="goal" style="margin:2px 0 0">
-        <div class="top"><span id="gbHead">loading…</span><span>target $70K</span></div>
-        <div class="bar"><i id="gbBar" style="width:0%"></i></div>
-      </div>
-      <div class="mmsum" style="margin-top:14px;border-top:0;padding-top:4px">
-        <div class="cell"><div class="lbl">Saved so far (of +$50K)</div><div class="val pos" id="gbAdded">•••</div></div>
-        <div class="cell"><div class="lbl">Pace now / needed per mo</div><div class="val" id="gbPace">•••</div></div>
-        <div class="cell"><div class="lbl">Projected added by Dec</div><div class="val" id="gbProj">•••</div></div>
-      </div>
-      <div class="grid" style="margin-top:10px">
-        <div class="col12">
-          <div class="subhead">📈 Path to +$50K — shaded band is the projected shortfall vs the pace you need</div>
-          <div style="position:relative;height:150px"><canvas id="cGoalProj" role="img" aria-label="Cumulative savings needed versus current pace to reach plus fifty thousand by December"></canvas></div>
-        </div>
-      </div>
-      <div class="note" id="gbLeaks" style="margin-top:10px"></div>
-    </section>
     <!-- 2 ▸ NET WORTH SNAPSHOT (this-month flow moved to Budget page) -->
     <section class="card col6">
       <h2>💰 Net worth snapshot</h2>
@@ -597,6 +570,33 @@
       <div class="sharebar"><i id="acDebtBar" style="width:0%"></i></div>
       <div class="meta"><span id="acDebtNote">share of gross assets owed</span><span><b id="acDebtPct">—</b> of assets</span></div>
     </section>
+    <!-- Profit & loss — top of page -->
+    <section class="card col12">
+      <h2>📈 Profit &amp; loss — 2026</h2>
+      <div class="subhead" style="margin-top:4px">Income vs spending &amp; monthly surplus (Jan–May, banks + cards combined)</div>
+      <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
+      <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
+    </section>
+    <!-- 1 ▸ GOAL HERO (the decision layer) -->
+    <section class="card col12">
+      <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
+      <div class="goal" style="margin:2px 0 0">
+        <div class="top"><span id="gbHead">loading…</span><span>target $70K</span></div>
+        <div class="bar"><i id="gbBar" style="width:0%"></i></div>
+      </div>
+      <div class="mmsum" style="margin-top:14px;border-top:0;padding-top:4px">
+        <div class="cell"><div class="lbl">Saved so far (of +$50K)</div><div class="val pos" id="gbAdded">•••</div></div>
+        <div class="cell"><div class="lbl">Pace now / needed per mo</div><div class="val" id="gbPace">•••</div></div>
+        <div class="cell"><div class="lbl">Projected added by Dec</div><div class="val" id="gbProj">•••</div></div>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="col12">
+          <div class="subhead">📈 Path to +$50K — shaded band is the projected shortfall vs the pace you need</div>
+          <div style="position:relative;height:150px"><canvas id="cGoalProj" role="img" aria-label="Cumulative savings needed versus current pace to reach plus fifty thousand by December"></canvas></div>
+        </div>
+      </div>
+      <div class="note" id="gbLeaks" style="margin-top:10px"></div>
+    </section>
     <!-- 6 ▸ TAXES gather -->
     <section class="card col6">
       <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
@@ -609,7 +609,7 @@
       <div class="progress" id="annualProg">Set-aside: $0/mo</div>
     </section>
     <!-- OWED BY EX — reimbursement tracker -->
-    <section class="card col6">
+    <section class="card col12">
       <h2><span>💸 Owed by ex — reimbursement tracker</span><span class="sub" style="font-weight:400">· outstanding <b id="exoOut">$0</b> · syncs</span></h2>
       <div class="note" style="margin-top:2px">Per <b>MSA §3.10</b>, uninsured medical/therapy splits 50/50, due within 30 days of proof. Mark <b>Demanded</b> when you send the invoice via TalkingParents (starts the clock) and <b>Paid</b> when reimbursed. <i>Tutoring standing isn't confirmed by existing orders — track it, but get attorney sign-off before a formal demand.</i></div>
       <div class="exo-scroll" style="margin-top:8px">
