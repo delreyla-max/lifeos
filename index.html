@@ -49,6 +49,26 @@
   @keyframes livedot{0%{box-shadow:0 0 0 0 rgba(0,122,255,.45)}70%{box-shadow:0 0 0 6px rgba(0,122,255,0)}100%{box-shadow:0 0 0 0 rgba(0,122,255,0)}}
   .authbar{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
   .authbar input{background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--text);font:inherit;padding:3px 6px;width:120px}
+  /* Privacy mode — blur all money figures for screen-sharing */
+  body.privacy .nw-hero .big,
+  body.privacy .nw-ledger .v,
+  body.privacy .acct .bal,
+  body.privacy .acct .meta b,
+  body.privacy .metric,
+  body.privacy .val,
+  body.privacy .row .v,
+  body.privacy #catLegend .cv,
+  body.privacy #gbHead,
+  body.privacy #gbLeaks,
+  body.privacy .sp-tbl td:not(:first-child),
+  body.privacy .hold-tbl td:not(:first-child),
+  body.privacy #page-money canvas,
+  body.privacy #page-spend canvas,
+  body.privacy #page-investing canvas,
+  body.privacy #page-realestate canvas{
+    filter:blur(8px);user-select:none;-webkit-user-select:none;transition:filter .15s;
+  }
+  .authbar .priv-toggle.on{color:var(--accent);border-color:var(--accent)}
   /* signature: frosted, sticky segmented control — the iOS toolbar that unifies every page */
   .tabs{display:flex;gap:3px;flex-wrap:wrap;margin:10px 0 0;padding:5px;background:var(--glass);border:1px solid var(--line);border-radius:16px;position:sticky;top:8px;z-index:30;backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);box-shadow:var(--shadow-sm)}
   .tabs a{display:inline-flex;align-items:center;gap:6px;font-family:var(--body);font-size:12px;font-weight:500;letter-spacing:-.1px;color:var(--muted);text-decoration:none;padding:7px 13px;border-radius:11px;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
@@ -65,8 +85,9 @@
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:16px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 18px 16px;box-shadow:var(--shadow-sm)}
   .card h2{font-family:var(--display);font-size:14px;letter-spacing:-.2px;color:var(--text);margin:0 0 11px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .col4{grid-column:span 4}.col6{grid-column:span 6}.col8{grid-column:span 8}.col12{grid-column:span 12}
-  @media(max-width:820px){.col4,.col6,.col8{grid-column:span 12}}
+  .col3{grid-column:span 3}.col4{grid-column:span 4}.col6{grid-column:span 6}.col8{grid-column:span 8}.col12{grid-column:span 12}
+  @media(max-width:980px){.col3{grid-column:span 6}}
+  @media(max-width:820px){.col3,.col4,.col6,.col8{grid-column:span 12}}
   ul{list-style:none;margin:0;padding:0}
   .task{display:flex;gap:6px;align-items:flex-start;padding:3px 0;border-bottom:1px dashed var(--line)}
   .task:last-child{border-bottom:0}
@@ -505,7 +526,6 @@
       <div style="position:relative;height:210px"><canvas id="cPnl" role="img" aria-label="Monthly income versus total spending with net surplus line, 2026"></canvas></div>
       <div class="note" style="margin-top:8px">Income ≈ $12.2K/mo (payroll + ADU rent + child support). Spending blends cards with direct bank outflow (mortgage, property tax, utilities, reno). March–April dipped negative on property tax + renovation; surplus months feed the goal.</div>
     </section>
-
     <!-- 1 ▸ GOAL HERO (the decision layer) -->
     <section class="card col12">
       <h2><span>🎯 2026 goal — +$50K in the bank</span><span class="sub" id="gbAsof" style="font-weight:400"></span></h2>
@@ -526,9 +546,8 @@
       </div>
       <div class="note" id="gbLeaks" style="margin-top:10px"></div>
     </section>
-
     <!-- 2 ▸ NET WORTH SNAPSHOT (this-month flow moved to Budget page) -->
-    <section class="card col4">
+    <section class="card col6">
       <h2>💰 Net worth snapshot</h2>
       <div class="nw-hero">
         <span class="big" id="nw">•••</span>
@@ -544,38 +563,69 @@
       </div>
       <span style="display:none" id="nwIn"></span><span style="display:none" id="nwOut"></span>
     </section>
-
     <!-- 3 ▸ NET WORTH COMPOSITION -->
-    <section class="card col4">
+    <section class="card col6">
       <h2>🍩 What net worth is made of</h2>
       <div style="position:relative;height:170px;margin-top:10px"><canvas id="cComp" role="img" aria-label="Net worth composition"></canvas></div>
     </section>
-
     <!-- 2b ▸ ACCOUNT BALANCES STRIP (same snapshot data, per-account) -->
-    <section class="card acct cash col4">
+    <section class="card acct cash col3">
       <div class="top"><span class="ico">🏦</span><span class="lbl">Bank cash<small>checking + everyday</small></span></div>
       <div class="bal" id="acBank">•••</div>
       <div class="sharebar"><i id="acBankBar" style="width:0%"></i></div>
       <div class="meta"><span>liquid</span><span><b id="acBankPct">—</b> of assets</span></div>
     </section>
-    <section class="card acct fid col4">
+    <section class="card acct fid col3">
       <div class="top"><span class="ico">📈</span><span class="lbl">Fidelity<small>401k · brokerage · HSA</small></span></div>
       <div class="bal" id="acFid">•••</div>
       <div class="sharebar"><i id="acFidBar" style="width:0%"></i></div>
       <div class="meta"><span>invested</span><span><b id="acFidPct">—</b> of assets</span></div>
     </section>
-    <section class="card acct equity col4">
+    <section class="card acct equity col3">
       <div class="top"><span class="ico">🏠</span><span class="lbl">Home equity<small id="acEqSub">value − mortgage</small></span></div>
       <div class="bal" id="acEq">•••</div>
       <div class="sharebar"><i id="acEqBar" style="width:0%"></i></div>
       <div class="meta"><span>illiquid</span><span><b id="acEqPct">—</b> of assets</span></div>
     </section>
-    <section class="card acct debt col12">
+    <section class="card acct debt col3">
       <div class="top"><span class="ico">💳</span><span class="lbl">Debts<small id="acDebtSub">credit cards + gas past-due</small></span></div>
       <div class="bal" id="acDebt">•••</div>
       <div class="sharebar"><i id="acDebtBar" style="width:0%"></i></div>
       <div class="meta"><span id="acDebtNote">share of gross assets owed</span><span><b id="acDebtPct">—</b> of assets</span></div>
     </section>
+    <!-- 6 ▸ TAXES gather -->
+    <section class="card col6">
+      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <ul class="cklist" id="ck-taxes"></ul>
+      <div class="addrow"><input id="ckadd-taxes" placeholder="Add a tax item…" autocomplete="off"></div>
+    </section>
+    <section class="card col6">
+      <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
+      <ul id="annual"></ul>
+      <div class="progress" id="annualProg">Set-aside: $0/mo</div>
+    </section>
+    <!-- OWED BY EX — reimbursement tracker -->
+    <section class="card col6">
+      <h2><span>💸 Owed by ex — reimbursement tracker</span><span class="sub" style="font-weight:400">· outstanding <b id="exoOut">$0</b> · syncs</span></h2>
+      <div class="note" style="margin-top:2px">Per <b>MSA §3.10</b>, uninsured medical/therapy splits 50/50, due within 30 days of proof. Mark <b>Demanded</b> when you send the invoice via TalkingParents (starts the clock) and <b>Paid</b> when reimbursed. <i>Tutoring standing isn't confirmed by existing orders — track it, but get attorney sign-off before a formal demand.</i></div>
+      <div class="exo-scroll" style="margin-top:8px">
+      <table class="hold-tbl exo-tbl">
+        <thead><tr><th>Item</th><th>Date</th><th>Total</th><th>Owes</th><th>Status</th><th></th></tr></thead>
+        <tbody id="exoBody"></tbody>
+        <tfoot id="exoFoot"></tfoot>
+      </table>
+      </div>
+      <div class="addrow" style="flex-wrap:wrap;margin-top:9px">
+        <select id="exo-cat" class="cinput"><option>Medical</option><option>Therapy</option><option>Tutoring</option><option>Other</option></select>
+        <input id="exo-prov" placeholder="Provider" style="flex:2;min-width:120px" autocomplete="off">
+        <input id="exo-desc" placeholder="Description" style="flex:2;min-width:120px" autocomplete="off">
+        <input id="exo-date" type="date" class="cinput">
+        <input id="exo-total" type="number" min="0" step="0.01" placeholder="Total $" style="max-width:90px">
+        <button class="btn" id="exo-add">Add</button>
+      </div>
+    </section>
+
+   <div class="subhead col12">📅 Long-term &amp; annual <span class="sub" style="font-weight:400">income, taxes &amp; net worth · 2010+</span></div>
 
     <!-- 4 ▸ NET WORTH & INCOME TRENDS (3-col) -->
     <section class="card col4">
@@ -602,20 +652,11 @@
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cEffTax" role="img" aria-label="Total tax bars and effective tax rate line by year"></canvas></div>
       <div class="note" style="margin-top:6px;font-size:11px"><b>Tax paid</b> = total federal tax owed for the year (bars). <b>Effective rate</b> = that tax ÷ total income (line) — your real average rate. It jumps in property-sale years (2019, 2023), not with raises.</div>
     </section>
-
     <section class="card col6">
       <h2>📊 Tax-return P&amp;L <span class="sub" style="font-weight:400">· after-tax income, 2010+</span></h2>
       <div style="position:relative;height:140px;margin-top:8px"><canvas id="cTaxPnl" role="img" aria-label="Annual after-tax income and tax stacked to total income, from tax returns"></canvas></div>
       <div class="note" style="margin-top:6px;font-size:11px">Each bar = that year's total income, split into what you <b>kept</b> (after-tax) vs <b>federal tax</b>. A return only records income and tax, so this is a tax-level P&amp;L, not living expenses. 2014 (tax unverified) &amp; 2017 (no total-income line) omitted.</div>
     </section>
-
-    <!-- 6 ▸ TAXES gather -->
-    <section class="card col6">
-      <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <ul class="cklist" id="ck-taxes"></ul>
-      <div class="addrow"><input id="ckadd-taxes" placeholder="Add a tax item…" autocomplete="off"></div>
-    </section>
-
     <!-- Deeper analysis: income drivers since 2010 (finance variance analysis) -->
     <section class="card col12">
       <h2>🔎 Deeper analysis — income drivers since 2010 <span class="sub" style="font-weight:400">· variance decomposition</span></h2>
@@ -640,32 +681,7 @@
         </div>
       </div>
     </section>
-    <section class="card col6">
-      <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
-      <ul id="annual"></ul>
-      <div class="progress" id="annualProg">Set-aside: $0/mo</div>
-    </section>
 
-    <!-- OWED BY EX — reimbursement tracker -->
-    <section class="card col6">
-      <h2><span>💸 Owed by ex — reimbursement tracker</span><span class="sub" style="font-weight:400">· outstanding <b id="exoOut">$0</b> · syncs</span></h2>
-      <div class="note" style="margin-top:2px">Per <b>MSA §3.10</b>, uninsured medical/therapy splits 50/50, due within 30 days of proof. Mark <b>Demanded</b> when you send the invoice via TalkingParents (starts the clock) and <b>Paid</b> when reimbursed. <i>Tutoring standing isn't confirmed by existing orders — track it, but get attorney sign-off before a formal demand.</i></div>
-      <div class="exo-scroll" style="margin-top:8px">
-      <table class="hold-tbl exo-tbl">
-        <thead><tr><th>Item</th><th>Date</th><th>Total</th><th>Owes</th><th>Status</th><th></th></tr></thead>
-        <tbody id="exoBody"></tbody>
-        <tfoot id="exoFoot"></tfoot>
-      </table>
-      </div>
-      <div class="addrow" style="flex-wrap:wrap;margin-top:9px">
-        <select id="exo-cat" class="cinput"><option>Medical</option><option>Therapy</option><option>Tutoring</option><option>Other</option></select>
-        <input id="exo-prov" placeholder="Provider" style="flex:2;min-width:120px" autocomplete="off">
-        <input id="exo-desc" placeholder="Description" style="flex:2;min-width:120px" autocomplete="off">
-        <input id="exo-date" type="date" class="cinput">
-        <input id="exo-total" type="number" min="0" step="0.01" placeholder="Total $" style="max-width:90px">
-        <button class="btn" id="exo-add">Add</button>
-      </div>
-    </section>
 
    </div>
   </div>
@@ -1246,6 +1262,13 @@
   /* ---------- AUTH ---------- */
   function renderAuth(user){
     const bar=el('authbar'); bar.innerHTML='<span>🔓 '+user.email+'</span>';
+    const pv=document.createElement('button'); pv.className='btn priv-toggle';
+    const setPv=on=>{ document.body.classList.toggle('privacy',on); pv.classList.toggle('on',on);
+      pv.textContent=on?'🙈 Money hidden':'👁 Hide money'; try{localStorage.setItem('lifeos-privacy',on?'1':'0');}catch(e){} };
+    pv.onclick=()=>setPv(!document.body.classList.contains('privacy'));
+    let pvInit=false; try{ pvInit=localStorage.getItem('lifeos-privacy')==='1'; }catch(e){}
+    setPv(pvInit);
+    bar.appendChild(pv);
     const b=document.createElement('button'); b.className='btn'; b.textContent='Sign out';
     b.onclick=async()=>{ await sb.auth.signOut(); location.reload(); };
     bar.appendChild(b);
