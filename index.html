@@ -385,10 +385,6 @@
   #gate .err{color:var(--bad);font-size:11px;min-height:14px;margin-top:8px}
   body.authed #gate{display:none}
   body:not(.authed) .wrap{display:none}
-  /* child mode — hide every tab except child, hide reorder + privacy toggle */
-  body.child-mode .tabs a:not([data-page="child"]){display:none}
-  body.child-mode .tabs .reorder-toggle{display:none}
-  body.child-mode .authbar .priv-toggle{display:none}
 </style>
 </head>
 <body>
@@ -606,11 +602,6 @@
       <h2>🧾 Taxes 2026 — gather &amp; file <span class="sub" style="font-weight:400">checks sync</span></h2>
       <ul class="cklist" id="ck-taxes"></ul>
       <div class="addrow"><input id="ckadd-taxes" placeholder="Add a tax item…" autocomplete="off"></div>
-    </section>
-    <section class="card col6">
-      <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
-      <ul id="annual"></ul>
-      <div class="progress" id="annualProg">Set-aside: $0/mo</div>
     </section>
     <!-- OWED BY EX — reimbursement tracker -->
     <section class="card col12">
@@ -845,6 +836,20 @@
         <div class="col4"><div class="subhead">💵 Income</div><ul id="inc"></ul>
           <div class="addrow"><input id="addIncNm" placeholder="Add income source…" autocomplete="off"><input id="addIncAmt" type="number" min="0" step="1" placeholder="$" style="flex:0 0 64px"><button class="btn" id="addIncBtn">Add</button></div>
           <div class="progress" id="incProg">Received: $0</div></div>
+        <div class="col4"><div class="subhead" style="display:flex;justify-content:space-between;align-items:center">📆 Annual<span style="font-size:11px;color:var(--muted);font-weight:400"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></div><ul id="annual"></ul>
+          <div class="addrow" style="flex-wrap:wrap">
+            <input id="addAnnNm" placeholder="Add annual expense…" autocomplete="off">
+            <input id="addAnnAmt" type="number" min="0" step="1" placeholder="$" style="flex:0 0 64px">
+            <select id="addAnnMonth" class="cinput" style="flex:0 0 auto">
+              <option value="">Month…</option>
+              <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+              <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+              <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+              <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+            <button class="btn" id="addAnnBtn">Add</button>
+          </div>
+          <div class="progress" id="annualProg">Set-aside: $0/mo</div></div>
       </div>
     </section>
    </div>
@@ -1301,21 +1306,11 @@
   async function boot(){
     const { data:{ session } }=await sb.auth.getSession();
     if(session && session.user){
-      const isOwner = session.user.email === 'gyipla@gmail.com';
-      const isChild = session.user.email === 'ayipla15@gmail.com';
       document.body.classList.add('authed');
-      if(!isOwner) document.body.classList.add('child-mode');
       renderAuth(session.user);
-      if(isOwner) setupTabReorder();
-      showPage(isOwner ? (location.hash||'#today').slice(1) : 'child');
-      if(isOwner){
-        load();
-      } else {
-        // child login — only load child-relevant data, skip owner-only tables
-        loadChecklist();
-        loadChild();
-        wireChild();
-      }
+      setupTabReorder();
+      showPage((location.hash||'#today').slice(1));
+      load();
     } else {
       setupGate();
     }
@@ -1483,10 +1478,21 @@
     const annualEl=el('annual'); annualEl.innerHTML=''; let annualYear=0;
     annual.forEach(it=>{ const s=stY(it.id); annualYear+=Number(it.amount);
       const dueNow=it.due_month===curMonthNum && curYear===now.getFullYear();
-      const dueLbl=it.due_month?MONTHS[it.due_month-1]:'yearly';
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
-      li.innerHTML='<span class="box">✓</span><span class="nm">'+it.name+' <small style="color:var('+(dueNow?'--warn':'--muted')+')">'+dueLbl+(dueNow?' · due now':'')+'</small></span><span class="amt">'+money(it.amount)+'</span>';
-      li.onclick=()=>setAnnualPaid(it.id, !stY(it.id).paid); annualEl.appendChild(li); });
+      const box=document.createElement('span'); box.className='box'; box.textContent='✓'; box.title='Mark paid this year';
+      box.onclick=()=>setAnnualPaid(it.id, !stY(it.id).paid);
+      const nm=document.createElement('input'); nm.className='enm'; nm.value=it.name; nm.title='Edit name';
+      nm.onchange=()=>updateFinanceItem(it.id,{name:nm.value.trim()||it.name});
+      const amt=document.createElement('input'); amt.className='eamt'; amt.type='number'; amt.min=0; amt.step='1'; amt.value=Number(it.amount); amt.title='Edit annual amount';
+      amt.onchange=()=>updateFinanceItem(it.id,{amount:Math.max(0,+amt.value||0)});
+      const mon=document.createElement('select'); mon.className='cinput'; mon.title='Due month'; mon.style.cssText='font-size:11px;padding:2px 4px';
+      mon.innerHTML='<option value="">yearly</option>'+MONTHS.map((m,i)=>'<option value="'+(i+1)+'"'+(it.due_month===(i+1)?' selected':'')+'>'+m+'</option>').join('');
+      mon.onchange=()=>updateFinanceItem(it.id,{due_month:+mon.value||null});
+      if(dueNow){ const badge=document.createElement('small'); badge.style.cssText='color:var(--warn);white-space:nowrap'; badge.textContent='due now'; li.append(box,nm,amt,mon,badge); }
+      else li.append(box,nm,amt,mon);
+      const del=document.createElement('button'); del.className='del'; del.textContent='✕'; del.title='Remove annual expense';
+      del.onclick=()=>{ if(confirm('Remove "'+it.name+'"?')) delFinanceItem(it.id); };
+      li.appendChild(del); annualEl.appendChild(li); });
     const annualMonthly=annualYear/12;
     el('annualProg').textContent='Set-aside: '+money(annualMonthly)+'/mo (annual '+money(annualYear)+'/yr)';
 
@@ -1522,6 +1528,20 @@
   if(el('mNext2')) el('mNext2').onclick=()=>shift(1);
   if(el('yPrev')) el('yPrev').onclick=()=>{ curYear--; renderFinance(); };
   if(el('yNext')) el('yNext').onclick=()=>{ curYear++; renderFinance(); };
+  async function addAnnualItem(){
+    const nmEl=el('addAnnNm'), amtEl=el('addAnnAmt'), monEl=el('addAnnMonth');
+    const name=(nmEl.value||'').trim(); if(!name) return;
+    const amount=Math.max(0,+amtEl.value||0);
+    const due_month=+monEl.value||null;
+    const sort_order=Math.max(0,...items.filter(i=>i.kind==='annual_expense').map(i=>Number(i.sort_order)||0))+1;
+    const { data, error }=await sb.from('finance_items').insert({kind:'annual_expense',name,amount,due_month,sort_order}).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) items.push(data[0]);
+    nmEl.value=''; amtEl.value=''; monEl.value=''; renderFinance(); setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  if(el('addAnnBtn')) el('addAnnBtn').onclick=addAnnualItem;
+  if(el('addAnnNm')) el('addAnnNm').addEventListener('keydown',e=>{ if(e.key==='Enter') el('addAnnAmt').focus(); });
+  if(el('addAnnAmt')) el('addAnnAmt').addEventListener('keydown',e=>{ if(e.key==='Enter') addAnnualItem(); });
   [['addExpBtn','fixed_expense','addExpNm','addExpAmt'],['addSubBtn','subscription','addSubNm','addSubAmt'],['addIncBtn','income','addIncNm','addIncAmt']].forEach(([btn,kind,nmId,amtId])=>{
     if(el(btn)) el(btn).onclick=()=>addFinanceItem(kind,nmId,amtId);
     if(el(amtId)) el(amtId).addEventListener('keydown',e=>{ if(e.key==='Enter') addFinanceItem(kind,nmId,amtId); });
