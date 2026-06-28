@@ -412,6 +412,69 @@
   .bg-url-in:focus{border-color:var(--accent)}
   .bg-url-apply{background:var(--accent);border:none;border-radius:7px;color:#fff;cursor:pointer;font:600 11px var(--body);padding:7px 11px;white-space:nowrap}
   #bg-reset{width:100%;background:rgba(255,255,255,.08);color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:7px;font:inherit;font-size:11px;cursor:pointer}
+  /* ── Child calendar ── */
+  .cal-nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .cal-nav b{flex:1;text-align:center;font-size:13px;font-weight:600}
+  .cal-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+  .cal-hdr div{text-align:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:3px 0}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+  /* Med quick-record card */
+  .medq-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .medq-info{min-width:0}
+  .medq-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .medq-btn{font-size:15px;font-weight:700;padding:12px 28px;border-radius:12px}
+  .medq-btn.med-on{background:var(--good)}
+  .medq-link{font-size:11px;color:var(--muted);text-decoration:none}
+  .medq-link:hover{color:var(--accent);text-decoration:underline}
+  @media(max-width:560px){.medq-actions{align-items:stretch;width:100%}.medq-btn{width:100%}.medq-link{text-align:center}}
+  .cal-twomonth{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.cal-twomonth{grid-template-columns:1fr}}
+  .cal-mlabel{font-size:11px;font-weight:700;text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .cal-day{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 6px;min-height:64px;transition:border-color .15s}
+  .cal-day.today{border-color:var(--accent);background:rgba(10,132,255,.08)}
+  .cal-day.past{background:rgba(0,0,0,.18);border-color:rgba(255,255,255,.06)}
+  .cal-day.past .cal-dn span{color:var(--muted)}
+  .cal-day.empty{background:transparent;border-color:transparent;min-height:0}
+  .cal-dn{font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+  .cal-med{display:inline-flex;align-items:center;gap:2px;font-size:8px;font-weight:700;color:var(--muted);cursor:pointer;border:1px solid var(--line);border-radius:20px;padding:1px 5px;background:transparent;transition:all .12s;line-height:1.4}
+  .cal-med.on{background:var(--good);color:#fff;border-color:var(--good)}
+  .cal-evt{font-size:9px;color:var(--text);background:rgba(10,132,255,.14);border-radius:4px;padding:2px 5px;margin-top:2px;display:flex;align-items:center;gap:3px;line-height:1.3}
+  .cal-evt .x{color:var(--muted);cursor:pointer;opacity:.5;font-size:8px;flex:0 0 auto;margin-left:auto}
+  .cal-evt .x:hover{opacity:1;color:var(--bad)}
+  .cal-add{font-size:8.5px;color:var(--muted);cursor:pointer;margin-top:2px;opacity:.55;display:inline-block}
+  .cal-add:hover{opacity:1;color:var(--accent)}
+  .cal-addinput{width:100%;background:var(--panel2);border:1px solid var(--muted);border-radius:4px;color:var(--text);font:10px var(--body);padding:2px 4px;margin-top:2px}
+  .cal-addinput:focus{outline:none;border-color:var(--accent)}
+  .cal-sep{height:1px;background:var(--line);margin:3px 0}
+  .cal-chore{display:flex;align-items:center;gap:4px;font-size:9px;margin-top:2px;cursor:pointer;line-height:1.3}
+  .cal-chore .cbox{width:11px;height:11px;border:1.5px solid var(--muted);border-radius:3px;flex:0 0 auto;display:grid;place-items:center;font-size:7px;color:transparent;transition:all .1s}
+  .cal-chore.done .cbox{background:var(--accent);border-color:var(--accent);color:#fff}
+  .cal-chore.done .cnm{color:var(--muted);text-decoration:line-through}
+  .cal-chore .cnm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cal-chore .wbadge{font-size:7px;font-weight:700;color:var(--warn);background:rgba(255,159,10,.15);border-radius:3px;padding:0 3px;flex:0 0 auto}
+  /* Chore template manager */
+  .chore-tmpl-row{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--line);font-size:11px}
+  .chore-tmpl-row:last-child{border-bottom:0}
+  .chore-tmpl-row .cnm{flex:1}
+  .chore-tmpl-row .freq{font-size:9px;font-weight:700;padding:1px 7px;border-radius:20px;background:var(--chip);color:var(--muted)}
+  .chore-tmpl-row .freq.weekly{background:rgba(255,159,10,.15);color:var(--warn)}
+  .chore-tmpl-row .del{border:0;background:transparent;color:var(--muted);cursor:pointer;opacity:.4;font-size:11px;padding:0 2px}
+  .chore-tmpl-row .del:hover{opacity:1;color:var(--bad)}
+  /* ── Card arrange mode ── */
+  #cardArrangeBtn{background:rgba(255,255,255,.12);border:1px solid var(--line);border-radius:9px;color:var(--muted);cursor:pointer;font:600 11px var(--body);padding:5px 10px;transition:background .15s,color .15s,border-color .15s;white-space:nowrap}
+  #cardArrangeBtn:hover{background:rgba(255,255,255,.2);color:var(--text)}
+  #cardArrangeBtn.on{color:var(--accent);border-color:var(--accent);background:var(--accent-dim)}
+  .grid>section[draggable="true"]{cursor:grab;box-shadow:var(--shadow),0 0 0 1px var(--line)}
+  .grid>section.card-dragging{opacity:.35;cursor:grabbing}
+  .grid>section.card-dragover{outline:2px solid var(--accent);outline-offset:2px}
+  /* ── Med history ── */
+  .med-hist-row{display:flex;align-items:baseline;gap:8px;padding:3px 0;border-bottom:1px solid var(--line);font-size:9px}
+  .med-hist-row:last-child{border-bottom:0}
+  .med-hist-row .mlbl{min-width:68px;color:var(--muted);font-weight:600;white-space:nowrap}
+  .med-hist-row .mdots{display:flex;flex-wrap:wrap;gap:2px;line-height:1}
+  .med-dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex:0 0 auto;display:inline-block}
+  .med-dot.on{background:var(--good)}
+  .med-hist-row .mcnt{color:var(--muted);margin-left:4px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -432,6 +495,7 @@
       <div class="sub">Owner · Culver City · <span id="status">loading…</span></div>
     </div>
     <div class="authbar" id="authbar"></div>
+    <button id="cardArrangeBtn" title="Drag cards to rearrange on current page">⇄ Cards</button>
     <button id="bg-btn" title="Customize background">🎨</button>
   </header>
   <!-- Background customizer panel -->
@@ -496,6 +560,7 @@
     <a href="#jobs" data-page="jobs">🔎 Career</a>
     <a href="#realestate" data-page="realestate">🏠 Real Estate</a>
     <a href="#child" data-page="child">🧒 Child</a>
+    <a href="#girlfriend" data-page="girlfriend">💞 Girlfriend</a>
     <a href="#projects" data-page="projects">🚀 Projects</a>
     <button class="reorder-toggle" id="reorderToggle" title="Drag tabs to reorder, then click Done">⇄ Reorder</button>
   </nav>
@@ -1139,28 +1204,88 @@
    </div>
   </div>
 
+  <!-- ============================= GIRLFRIEND ============================= -->
+  <div class="page" id="page-girlfriend">
+   <div class="grid">
+
+    <!-- UPCOMING EVENTS -->
+    <section class="card col6">
+      <h2>📅 Upcoming events <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <ul class="cklist" id="ck-gf-events"></ul>
+      <div class="addrow" style="flex-wrap:wrap">
+        <input id="ckadd-gf-events" placeholder="Add an event…" autocomplete="off" style="flex:2;min-width:120px">
+        <input id="ckadd-gf-events-detail" placeholder="Date / detail" style="max-width:130px" autocomplete="off">
+        <button class="btn" id="ckaddbtn-gf-events">Add</button>
+      </div>
+    </section>
+
+    <!-- TODOS -->
+    <section class="card col6">
+      <h2>✅ To-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <ul class="cklist" id="ck-gf-todos"></ul>
+      <div class="addrow"><input id="ckadd-gf-todos" placeholder="Add a to-do…" autocomplete="off"></div>
+    </section>
+
+   </div>
+  </div>
+
   <!-- ============================= CHILD ============================= -->
   <div class="page" id="page-child">
    <div class="grid">
-    <!-- HEALTH -->
-    <section class="card col6">
-      <h2>🩺 Health to-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="child-psych"><span class="box">✓</span><span class="nm">Book psychiatrist (Aetna, 1–3 mo wait)</span></div>
-      <div class="chk" data-key="child-therapist"><span class="box">✓</span><span class="nm">Find a therapist (start in parallel)</span></div>
-      <div class="chk" data-key="child-pediatrician"><span class="box">✓</span><span class="nm">Call Dr. DiMundo (pediatrician)</span></div>
-      <div class="chk" data-key="child-cardiac"><span class="box">✓</span><span class="nm">Cardiac Dr — follow-up visit</span></div>
-      <div class="chk" data-key="child-dentist"><span class="box">✓</span><span class="nm">Dentist — make appointment</span></div>
+
+    <!-- MED QUICK RECORD -->
+    <section class="card col12" id="med-quick">
+      <div class="medq-row">
+        <div class="medq-info">
+          <h2 style="margin:0">💊 Medication</h2>
+          <div class="note" id="medQuickStatus" style="margin-top:3px">—</div>
+        </div>
+        <div class="medq-actions">
+          <button class="btn medq-btn" id="medTakenBtn">Med Taken Today</button>
+          <a href="#child" id="viewCalLink" class="medq-link">View calendar →</a>
+        </div>
+      </div>
     </section>
 
-    <!-- MILESTONES -->
-    <section class="card col6">
-      <h2>📅 Milestones <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <div class="chk" data-key="child-permit"><span class="box">✓</span><span class="nm">Driver's permit → license</span><span class="det">summer</span></div>
-      <div class="chk" data-key="child-prius"><span class="box">✓</span><span class="nm">Hand over Prius-V once licensed</span></div>
-      <div class="chk" data-key="child-college"><span class="box">✓</span><span class="nm">Visit at least one college</span></div>
-      <div class="chk" data-key="child-japan"><span class="box">✓</span><span class="nm">Japan trip (return before Aug 19)</span><span class="det">summer</span></div>
-      <div class="chk" data-key="child-summer"><span class="box">✓</span><span class="nm">Line up summer activities</span></div>
+    <!-- CALENDAR -->
+    <section class="card col12" id="childCalCard">
+      <h2>📅 Calendar</h2>
+      <div class="cal-nav">
+        <button class="navbtn" id="childCalPrev">◀</button>
+        <b id="childCalLabel">—</b>
+        <button class="navbtn" id="childCalNext">▶</button>
+      </div>
+      <div id="childCalWrap"></div>
+
+      <!-- Med history log -->
+      <details style="margin-top:14px">
+        <summary style="cursor:pointer;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.3px;user-select:none">📋 Med history — all months</summary>
+        <div id="medHistWrap" style="margin-top:8px"><div class="note">loading…</div></div>
+      </details>
+
     </section>
+
+    <!-- TODOS (health + school combined) -->
+    <section class="card col6">
+      <h2>✅ To-dos <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <ul class="cklist" id="ck-child-todos"></ul>
+      <div class="addrow"><input id="ckadd-child-todos" placeholder="Add a to-do…" autocomplete="off"></div>
+    </section>
+
+    <!-- CHORES CARD -->
+    <section class="card col6">
+      <h2>🧹 Chores <span class="sub" style="font-weight:400">daily &amp; weekly template · syncs to calendar</span></h2>
+      <div id="choreTmplList"><div class="note">loading…</div></div>
+      <div class="addrow" style="flex-wrap:wrap;margin-top:8px">
+        <input id="chore-name-inp" placeholder="Chore name…" autocomplete="off" style="flex:2;min-width:120px">
+        <select id="chore-freq-inp" class="cinput">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+        </select>
+        <button class="btn" id="chore-add-btn">Add</button>
+      </div>
+    </section>
+
 
     <!-- DRIVER'S PERMIT -->
     <section class="card col6">
@@ -1267,12 +1392,25 @@
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','spend','adu','money','investing','jobs','realestate','child','projects'];
+  const PAGES=['today','spend','adu','money','investing','jobs','realestate','child','girlfriend','projects'];
+  const CHILD_EMAILS=['ayipla15@gmail.com'];
+  let childLock=false;
+  function isChildUser(u){ return !!u && CHILD_EMAILS.includes((u.email||'').toLowerCase()); }
+  function applyChildLock(){
+    childLock=true;
+    document.body.classList.add('child-only');
+    document.querySelectorAll('#tabs a[data-page]').forEach(a=>{ if(a.dataset.page!=='child') a.style.display='none'; });
+    const rt=el('reorderToggle'); if(rt) rt.style.display='none';
+    if(location.hash!=='#child') location.hash='#child';
+    showPage('child');
+  }
   function showPage(p){
+    if(childLock) p='child';
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
     document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('active', a.dataset.page===p));
     buildCharts(p);
+    if(cardArrangeOn) setTimeout(applyCardArrange, 0);
   }
   window.addEventListener('hashchange',()=>showPage((location.hash||'#today').slice(1)));
 
@@ -1398,7 +1536,8 @@
       document.body.classList.add('authed');
       renderAuth(session.user);
       setupTabReorder();
-      showPage((location.hash||'#today').slice(1));
+      if(isChildUser(session.user)) applyChildLock();
+      else showPage((location.hash||'#today').slice(1));
       load();
     } else {
       setupGate();
@@ -1419,7 +1558,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes();
+    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes(); loadChildCal(); loadCardOrders(); loadMedHistory();
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
@@ -1763,7 +1902,7 @@
   }
 
   /* ---------- EDITABLE CHECKLISTS (DB-backed: add / delete / rename / check) ---------- */
-  const CKLISTS=['documents','taxes','taxes2025','property','adu'];
+  const CKLISTS=['documents','taxes','taxes2025','property','adu','gf-events','gf-todos','child-todos'];
   let ckItems=[];
   async function loadCkItems(){
     const { data, error }=await sb.from('checklist_items').select('*');
@@ -1782,6 +1921,13 @@
         nm.onchange=()=>{ const v=nm.value.trim(); if(v&&v!==it.label) updateCk(it,{label:v}); else nm.value=it.label; };
         li.append(box,nm);
         if(it.detail){ const d=document.createElement('span'); d.className='det'; d.textContent=it.detail; li.append(d); }
+        if(list==='child-todos'){
+          const pri=document.createElement('input'); pri.type='number'; pri.min=1; pri.className='pri';
+          pri.placeholder='–'; pri.value=it.sort_order?it.sort_order:''; pri.title='Priority (1 = top)';
+          pri.onclick=e=>e.stopPropagation();
+          pri.onchange=()=>{ const v=parseInt(pri.value,10); updateCk(it,{sort_order:isNaN(v)?9999:Math.max(1,v)}); };
+          li.append(pri);
+        }
         const del=document.createElement('button'); del.className='del'; del.textContent='✕'; del.title='Delete';
         del.onclick=()=>{ if(confirm('Delete “'+it.label+'”?')) delCk(it); };
         li.append(del); ul.appendChild(li);
@@ -1810,6 +1956,21 @@
     if(data&&data[0]) ckItems.push(data[0]); renderCk(list);
   }
   CKLISTS.forEach(list=>{ const a=el('ckadd-'+list); if(a) a.addEventListener('keydown',e=>{ if(e.key==='Enter') addCk(list); }); });
+  /* gf-events has an extra detail field + Add button */
+  async function addCkWithDetail(list){
+    const inp=el('ckadd-'+list); const det=el('ckadd-'+list+'-detail');
+    const label=inp.value.trim(); if(!label) return; inp.value='';
+    const detail=det?det.value.trim():''; if(det) det.value='';
+    const ord=Math.max(0,...ckItems.filter(i=>i.list===list).map(i=>i.sort_order||0))+1;
+    const row={list,label,sort_order:ord}; if(detail) row.detail=detail;
+    const { data, error }=await sb.from('checklist_items').insert(row).select();
+    if(error){ setStatus('Add failed: '+error.message,true); return; }
+    if(data&&data[0]) ckItems.push(data[0]); renderCk(list);
+  }
+  const gfEvtBtn=el('ckaddbtn-gf-events');
+  if(gfEvtBtn) gfEvtBtn.onclick=()=>addCkWithDetail('gf-events');
+  const gfEvtDet=el('ckadd-gf-events-detail');
+  if(gfEvtDet) gfEvtDet.addEventListener('keydown',e=>{ if(e.key==='Enter') addCkWithDetail('gf-events'); });
 
   /* ---------- CHILD / UC TRACKING ---------- */
   let cCourses=[], cVol=[], cActs=[], childWired=false;
@@ -1887,6 +2048,291 @@
       addChild('child_activities',{name,role:el('a-role').value.trim()},cActs);
       el('a-name').value=''; el('a-role').value=''; };
   }
+
+  /* ---------- CHILD CALENDAR ---------- */
+  const CAL_PREFS_KEY = d => 'child-cal-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  const WEEK_KEY = d => { const dt=new Date(d); const day=dt.getDay(); dt.setDate(dt.getDate()-day+(day===0?-6:1)); return 'child-week-'+dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); };
+  const CHORE_TMPL_KEY = 'child-chores-template';
+  let childCalMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1); // base (first) month of the 2-month view
+  let monthCache = {};      // { "y-m": { "5": { med:bool, events:[] } } }
+  let childWeekData = {};   // { "choreName": bool } — keyed by week Monday
+  let choreTemplate = [];   // [{ name, freq }]
+  let calNavWired = false;
+
+  const calKey = d => d.getFullYear()+'-'+d.getMonth();
+  const dateFromCalKey = k => { const [y,m]=k.split('-').map(Number); return new Date(y,m,1); };
+  function monthData(k){ if(!monthCache[k]) monthCache[k]={}; return monthCache[k]; }
+  async function fetchMonth(d){
+    const r=await sb.from('ui_prefs').select('value').eq('key',CAL_PREFS_KEY(d)).maybeSingle();
+    monthCache[calKey(d)]=(r.data&&typeof r.data.value==='object')?(r.data.value||{}):{};
+  }
+  function viewMonths(){
+    const base=childCalMonth;
+    return [base, new Date(base.getFullYear(), base.getMonth()+1, 1)];
+  }
+
+  async function loadChildCal(){
+    const [m1,m2]=viewMonths();
+    const [r1, r2, weekRes, tmplRes] = await Promise.all([
+      sb.from('ui_prefs').select('value').eq('key', CAL_PREFS_KEY(m1)).maybeSingle(),
+      sb.from('ui_prefs').select('value').eq('key', CAL_PREFS_KEY(m2)).maybeSingle(),
+      sb.from('ui_prefs').select('value').eq('key', WEEK_KEY(new Date())).maybeSingle(),
+      sb.from('ui_prefs').select('value').eq('key', CHORE_TMPL_KEY).maybeSingle()
+    ]);
+    monthCache[calKey(m1)] = (r1.data && typeof r1.data.value==='object') ? (r1.data.value||{}) : {};
+    monthCache[calKey(m2)] = (r2.data && typeof r2.data.value==='object') ? (r2.data.value||{}) : {};
+    childWeekData = (weekRes.data && typeof weekRes.data.value==='object') ? (weekRes.data.value||{}) : {};
+    choreTemplate = (tmplRes.data && Array.isArray(tmplRes.data.value)) ? tmplRes.data.value : [];
+    renderChildCal();
+    renderChoreTmpl();
+    wireCalNav();
+    wireChoreAdd();
+    wireMedQuick();
+  }
+
+  async function saveCalMonth(k){
+    await sb.from('ui_prefs').upsert({key:CAL_PREFS_KEY(dateFromCalKey(k)), value:monthData(k), updated_at:new Date().toISOString()},{onConflict:'key'});
+    setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function saveCalWeek(weekKey){
+    await sb.from('ui_prefs').upsert({key:weekKey, value:childWeekData, updated_at:new Date().toISOString()},{onConflict:'key'});
+    setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  async function saveChoreTemplate(){
+    await sb.from('ui_prefs').upsert({key:CHORE_TMPL_KEY, value:choreTemplate, updated_at:new Date().toISOString()},{onConflict:'key'});
+    setStatus('saved '+new Date().toLocaleTimeString());
+  }
+
+  function monthBlockHtml(monthDate){
+    const y=monthDate.getFullYear(), m=monthDate.getMonth(), k=calKey(monthDate), data=monthData(k);
+    const today=new Date();
+    const todayMid=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const firstDay=new Date(y,m,1).getDay();
+    const daysInMonth=new Date(y,m+1,0).getDate();
+    let html=`<div class="cal-month"><div class="cal-mlabel">${monthDate.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</div>`;
+    html+='<div class="cal-hdr"><div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div></div>';
+    html+='<div class="cal-grid">';
+    for(let i=0;i<firstDay;i++) html+='<div class="cal-day empty"></div>';
+    for(let d=1;d<=daysInMonth;d++){
+      const isToday=(today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d);
+      const isPast=new Date(y,m,d)<todayMid;
+      const dk=String(d);
+      const dayData=data[dk]||{};
+      const med=!!dayData.med;
+      const events=(dayData.events||[]).slice(0,2);
+      let evtHtml=events.map((e,i)=>`<div class="cal-evt">${esc(e)}<span class="x" data-cdel="${i}">✕</span></div>`).join('');
+      if(events.length<2) evtHtml+=`<div class="cal-add">+ add</div><input class="cal-addinput" placeholder="event…" style="display:none">`;
+      html+=`<div class="cal-day${isToday?' today':isPast?' past':''}" data-mk="${k}" data-d="${dk}">
+        <div class="cal-dn"><span>${d}</span><button class="cal-med${med?' on':''}" data-cmed title="Med taken today">💊</button></div>
+        ${evtHtml}
+      </div>`;
+    }
+    html+='</div></div>';
+    return html;
+  }
+
+  function renderChildCal(){
+    const wrap = el('childCalWrap'); if(!wrap) return;
+    const [m1,m2]=viewMonths();
+    const lbl = el('childCalLabel');
+    if(lbl) lbl.textContent = m1.toLocaleDateString(undefined,{month:'short'})+' – '+m2.toLocaleDateString(undefined,{month:'short',year:'numeric'});
+    wrap.innerHTML = '<div class="cal-twomonth">'+monthBlockHtml(m1)+monthBlockHtml(m2)+'</div>';
+
+    wrap.querySelectorAll('.cal-day[data-d]').forEach(cell=>{
+      const k=cell.dataset.mk, dk=cell.dataset.d;
+      // Med toggle
+      const medBtn=cell.querySelector('[data-cmed]');
+      if(medBtn) medBtn.onclick=async()=>{
+        const data=monthData(k); if(!data[dk]) data[dk]={};
+        data[dk].med=!data[dk].med;
+        await saveCalMonth(k); renderChildCal();
+      };
+      // Event delete
+      cell.querySelectorAll('[data-cdel]').forEach(x=>{
+        x.onclick=async()=>{
+          const i=Number(x.dataset.cdel), data=monthData(k);
+          if(data[dk]&&data[dk].events) data[dk].events.splice(i,1);
+          await saveCalMonth(k); renderChildCal();
+        };
+      });
+      // Event add
+      const addBtn=cell.querySelector('.cal-add'), inp=cell.querySelector('.cal-addinput');
+      if(addBtn&&inp){
+        addBtn.onclick=()=>{ addBtn.style.display='none'; inp.style.display='block'; inp.focus(); };
+        const commitEvt=async()=>{
+          const val=inp.value.trim();
+          inp.style.display='none'; addBtn.style.display=''; inp.value='';
+          if(!val) return;
+          const data=monthData(k); if(!data[dk]) data[dk]={};
+          data[dk].events=data[dk].events||[];
+          if(data[dk].events.length<2) data[dk].events.push(val);
+          await saveCalMonth(k); renderChildCal();
+        };
+        inp.onkeydown=e=>{ if(e.key==='Enter') commitEvt(); if(e.key==='Escape'){ inp.style.display='none'; addBtn.style.display=''; inp.value=''; } };
+        inp.onblur=()=>setTimeout(commitEvt,150);
+      }
+    });
+    renderMedQuick();
+  }
+
+  /* ---------- MED QUICK RECORD (top-of-page button) ---------- */
+  function todayCalRef(){
+    const d=new Date();
+    return { k: calKey(new Date(d.getFullYear(), d.getMonth(), 1)), dk: String(d.getDate()),
+             label: d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) };
+  }
+  function renderMedQuick(){
+    const btn=el('medTakenBtn'); if(!btn) return;
+    const { k, dk, label }=todayCalRef();
+    const data=monthData(k);
+    const taken=!!(data[dk] && data[dk].med);
+    btn.textContent = taken ? '✓ Taken today' : 'Med Taken Today';
+    btn.classList.toggle('med-on', taken);
+    const st=el('medQuickStatus');
+    if(st) st.textContent = taken ? ('Recorded for '+label+' · tap to undo') : ('Not recorded yet for '+label);
+  }
+  let medQuickWired=false;
+  function wireMedQuick(){
+    if(medQuickWired) return; medQuickWired=true;
+    const btn=el('medTakenBtn');
+    if(btn) btn.onclick=async()=>{
+      const { k, dk }=todayCalRef();
+      const data=monthData(k); if(!data[dk]) data[dk]={};
+      data[dk].med=!data[dk].med;
+      await saveCalMonth(k); renderChildCal();
+    };
+    const link=el('viewCalLink');
+    if(link) link.onclick=e=>{ e.preventDefault(); const c=el('childCalCard'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'}); };
+  }
+
+  function wireCalNav(){
+    if(calNavWired) return; calNavWired=true;
+    const prev=el('childCalPrev'), next=el('childCalNext');
+    const shift=async(delta)=>{
+      childCalMonth=new Date(childCalMonth.getFullYear(), childCalMonth.getMonth()+delta, 1);
+      const [m1,m2]=viewMonths();
+      await Promise.all([fetchMonth(m1), fetchMonth(m2)]);
+      renderChildCal();
+    };
+    if(prev) prev.onclick=()=>shift(-1);
+    if(next) next.onclick=()=>shift(1);
+  }
+
+  function renderChoreTmpl(){
+    const wrap=el('choreTmplList'); if(!wrap) return;
+    if(!choreTemplate.length){ wrap.innerHTML='<div class="note">No chores yet — add below.</div>'; return; }
+    wrap.innerHTML=choreTemplate.map((c,i)=>`<div class="chore-tmpl-row"><span class="cnm">${esc(c.name)}</span><span class="freq${c.freq==='weekly'?' weekly':''}">` +(c.freq==='weekly'?'Weekly':'Daily')+`</span><button class="del" data-del-chore="${i}">✕</button></div>`).join('');
+    wrap.querySelectorAll('[data-del-chore]').forEach(btn=>{
+      btn.onclick=async()=>{ choreTemplate.splice(Number(btn.dataset.delChore),1); await saveChoreTemplate(); renderChoreTmpl(); renderChildCal(); };
+    });
+  }
+
+  function wireChoreAdd(){
+    const addBtn=el('chore-add-btn'); if(!addBtn||addBtn._wired) return; addBtn._wired=true;
+    addBtn.onclick=async()=>{
+      const nm=el('chore-name-inp').value.trim(); if(!nm) return;
+      const freq=el('chore-freq-inp').value;
+      choreTemplate.push({name:nm,freq}); el('chore-name-inp').value='';
+      await saveChoreTemplate(); renderChoreTmpl(); renderChildCal();
+    };
+    el('chore-name-inp').addEventListener('keydown',e=>{ if(e.key==='Enter') addBtn.onclick(); });
+  }
+
+  /* ---------- MED HISTORY ---------- */
+  async function loadMedHistory(){
+    const wrap=el('medHistWrap'); if(!wrap) return;
+    const { data, error }=await sb.from('ui_prefs').select('key,value').like('key','child-cal-%').not('key','like','child-cal-week%').not('key','like','child-chores%');
+    if(error||!data||!data.length){ wrap.innerHTML='<div class="note">No history yet.</div>'; return; }
+    // Sort months descending
+    const months=data.filter(r=>/^child-cal-\d{4}-\d{2}$/.test(r.key))
+      .sort((a,b)=>b.key.localeCompare(a.key));
+    if(!months.length){ wrap.innerHTML='<div class="note">No history yet.</div>'; return; }
+    wrap.innerHTML=months.map(row=>{
+      const [,, y, m]=row.key.split('-');
+      const daysInMonth=new Date(Number(y),Number(m),0).getDate();
+      const val=row.value||{};
+      let taken=0;
+      let dots='';
+      for(let d=1;d<=daysInMonth;d++){
+        const on=!!(val[String(d)]||{}).med;
+        if(on) taken++;
+        dots+=`<span class="med-dot${on?' on':''}" title="${y}-${m}-${String(d).padStart(2,'0')}"></span>`;
+      }
+      const lbl=new Date(Number(y),Number(m)-1,1).toLocaleDateString(undefined,{month:'short',year:'numeric'});
+      return `<div class="med-hist-row"><span class="mlbl">${lbl}</span><span class="mdots">${dots}</span><span class="mcnt">${taken}/${daysInMonth}</span></div>`;
+    }).join('');
+  }
+
+  /* ---------- CARD DRAG-AND-DROP REARRANGE ---------- */
+  let cardArrangeOn=false, cardDragEl=null;
+  function cardId(sec){ const h=sec.querySelector('h2'); return h?h.textContent.trim().slice(0,50):sec.className; }
+
+  function applyCardArrange(){
+    const pg=document.querySelector('.page.active'); if(!pg) return;
+    const grid=pg.querySelector('.grid'); if(!grid) return;
+    const cards=[...grid.querySelectorAll(':scope > section')];
+    cards.forEach(c=>{
+      c.draggable=cardArrangeOn;
+      if(cardArrangeOn){
+        c.addEventListener('dragstart',onCardStart);
+        c.addEventListener('dragover',onCardOver);
+        c.addEventListener('dragleave',onCardLeave);
+        c.addEventListener('drop',onCardDrop);
+        c.addEventListener('dragend',onCardEnd);
+      } else {
+        c.removeEventListener('dragstart',onCardStart);
+        c.removeEventListener('dragover',onCardOver);
+        c.removeEventListener('dragleave',onCardLeave);
+        c.removeEventListener('drop',onCardDrop);
+        c.removeEventListener('dragend',onCardEnd);
+        c.classList.remove('card-dragging','card-dragover');
+      }
+    });
+  }
+
+  function onCardStart(){ cardDragEl=this; this.classList.add('card-dragging'); }
+  function onCardOver(e){ e.preventDefault(); if(this!==cardDragEl) this.classList.add('card-dragover'); }
+  function onCardLeave(){ this.classList.remove('card-dragover'); }
+  function onCardDrop(e){
+    e.preventDefault(); this.classList.remove('card-dragover');
+    if(!cardDragEl||cardDragEl===this) return;
+    const grid=this.parentNode;
+    const cards=[...grid.querySelectorAll(':scope > section')];
+    const fi=cards.indexOf(cardDragEl), ti=cards.indexOf(this);
+    grid.insertBefore(cardDragEl, fi<ti ? this.nextSibling : this);
+    saveCardOrder();
+  }
+  function onCardEnd(){ if(cardDragEl){ cardDragEl.classList.remove('card-dragging'); cardDragEl=null; } document.querySelectorAll('.card-dragover').forEach(c=>c.classList.remove('card-dragover')); }
+
+  async function saveCardOrder(){
+    const pg=document.querySelector('.page.active'); if(!pg) return;
+    const pageId=pg.id.replace('page-','');
+    const grid=pg.querySelector('.grid'); if(!grid) return;
+    const order=[...grid.querySelectorAll(':scope > section')].map(cardId);
+    await sb.from('ui_prefs').upsert({key:'card-order-'+pageId, value:order, updated_at:new Date().toISOString()},{onConflict:'key'});
+  }
+
+  async function loadCardOrders(){
+    const { data, error }=await sb.from('ui_prefs').select('key,value').like('key','card-order-%');
+    if(error||!data) return;
+    data.forEach(row=>{
+      const pageId=row.key.replace('card-order-','');
+      const pg=el('page-'+pageId); if(!pg||!Array.isArray(row.value)) return;
+      const grid=pg.querySelector('.grid'); if(!grid) return;
+      const cards=[...grid.querySelectorAll(':scope > section')];
+      const byId={}; cards.forEach(c=>{ byId[cardId(c)]=c; });
+      row.value.forEach(id=>{ if(byId[id]) grid.appendChild(byId[id]); });
+    });
+  }
+
+  // Wire the arrange button
+  const cab=el('cardArrangeBtn');
+  if(cab) cab.onclick=()=>{
+    cardArrangeOn=!cardArrangeOn;
+    cab.textContent=cardArrangeOn?'✓ Done arranging':'⇄ Cards';
+    cab.classList.toggle('on',cardArrangeOn);
+    applyCardArrange();
+  };
 
   /* ---------- PER-PAGE CUSTOM LINKS ---------- */
   let pageLinks=[];
