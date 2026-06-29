@@ -1605,7 +1605,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes(); loadChildCal(); loadCardOrders(); loadMedHistory();
+    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes(); loadChildCal(); loadCardOrders(); loadMoveState(); loadMedHistory();
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
@@ -1742,8 +1742,20 @@
           {id:'wk3', name:'Week 3 → card', amt:400},
           {id:'wk4', name:'Week 4 → card', amt:400} ]
   };
-  const moveKey=id=>'move:'+mkey(cur)+'|'+id;
-  const moveDone=id=>localStorage.getItem(moveKey(id))==='1';
+  let moveState={};   // DB-backed: { 'YYYY-MM|id': true }
+  async function loadMoveState(){
+    const { data, error }=await sb.from('ui_prefs').select('key,value').eq('key','paycheck-moves');
+    if(!error && data && data[0] && data[0].value && typeof data[0].value==='object') moveState=data[0].value;
+    renderMoves();
+  }
+  const moveDone=id=> !!moveState[mkey(cur)+'|'+id];
+  async function toggleMove(id){
+    const k=mkey(cur)+'|'+id;
+    if(moveState[k]) delete moveState[k]; else moveState[k]=true;
+    renderMoves();
+    const { error }=await sb.from('ui_prefs').upsert({key:'paycheck-moves', value:moveState, updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error) setStatus('Move save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
   function renderMoveList(elId, list, progId){
     const ul=el(elId); if(!ul) return; ul.innerHTML=''; let tot=0, done=0;
     list.forEach(m=>{ tot+=m.amt; const dn=moveDone(m.id); if(dn) done+=m.amt;
@@ -1752,7 +1764,7 @@
       const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.name;
       const amt=document.createElement('span'); amt.className='amt'; amt.textContent=money(m.amt);
       li.append(box,nm,amt);
-      li.onclick=()=>{ if(moveDone(m.id)) localStorage.removeItem(moveKey(m.id)); else localStorage.setItem(moveKey(m.id),'1'); renderMoves(); };
+      li.onclick=()=>toggleMove(m.id);
       ul.appendChild(li); });
     if(el(progId)) el(progId).textContent='Moved: '+money(done)+' of '+money(tot);
   }
@@ -2399,7 +2411,10 @@
       const grid=pg.querySelector('.grid'); if(!grid) return;
       const cards=[...grid.querySelectorAll(':scope > section')];
       const byId={}; cards.forEach(c=>{ byId[cardId(c)]=c; });
-      row.value.forEach(id=>{ if(byId[id]) grid.appendChild(byId[id]); });
+      const placed=new Set();
+      row.value.forEach(id=>{ if(byId[id]){ grid.appendChild(byId[id]); placed.add(id); } });
+      // cards added since the last save aren't in the stored order — keep them visible at the end
+      cards.forEach(c=>{ if(!placed.has(cardId(c))) grid.appendChild(c); });
     });
   }
 
