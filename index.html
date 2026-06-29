@@ -1053,9 +1053,9 @@
       <div class="grid" style="margin-top:8px">
         <div class="col4"><div class="subhead">Where the payment goes</div><div style="position:relative;height:170px"><canvas id="cPaySplit" role="img" aria-label="Monthly mortgage payment split between interest, principal and escrow"></canvas></div></div>
         <div class="col4"><div class="subhead">Amortization — balance &amp; interest to payoff</div><div style="position:relative;height:170px"><canvas id="cAmort" role="img" aria-label="Projected mortgage balance declining to zero with cumulative interest rising, to payoff around 2062"></canvas></div></div>
-        <div class="col4"><div class="subhead">Home equity vs debt (≈$1.8M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
+        <div class="col4"><div class="subhead">Home equity vs debt (≈$1.42M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
       </div>
-      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal. On the current schedule the loan pays off <b>~2062</b> with <b>~$322K</b> interest still to come — but at 3.5% this is cheap debt, so accelerating it isn't the priority vs. investing. Equity (~$1.37M) is almost the entire net worth.</div>
+      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal. On the current schedule the loan pays off <b>~2062</b> with <b>~$322K</b> interest still to come — but at 3.5% this is cheap debt, so accelerating it isn't the priority vs. investing. Equity (~$994K) is almost the entire net worth.</div>
     </section>
 
     <section class="card col6">
@@ -1200,6 +1200,26 @@
       <div class="note">Products sold on Amazon under the <b>Yips Products</b> brand.</div>
       <div class="ptasks">
         <div class="chk" data-key="proj-yips-listings"><span class="box">✓</span><span class="nm">Review Amazon listings &amp; inventory</span></div>
+      </div>
+    </section>
+
+    <!-- ── Tolerance Studio ── -->
+    <section class="card col6">
+      <div class="proj-top"><span class="proj-cat">Build · web</span><span class="pstat active">Active</span></div>
+      <h2>🎚️ Tolerance Studio</h2>
+      <div class="note">Multipage site, <b>pre-launch</b>. Folder <code>Online Income Ideas/tolerance-studio</code> — not under git yet.</div>
+      <div class="ptasks">
+        <div class="chk" data-key="proj-tolerance-launch"><span class="box">✓</span><span class="nm">Get site launch-ready</span></div>
+      </div>
+    </section>
+
+    <!-- ── RAPP Toyota Assets ── -->
+    <section class="card col6">
+      <div class="proj-top"><span class="proj-cat">Work · client</span><span class="pstat active">Active</span></div>
+      <h2>🚗 RAPP Toyota Assets</h2>
+      <div class="note">Toyota asset work for RAPP.</div>
+      <div class="ptasks">
+        <div class="chk" data-key="proj-rapp-assets"><span class="box">✓</span><span class="nm">Organize &amp; deliver Toyota assets</span></div>
       </div>
     </section>
 
@@ -2550,7 +2570,7 @@
     if(!BASE) BASE=mortSchedule(0);
     body.innerHTML=BASE.byYear.map(r=>'<tr><td>'+r.year+'</td><td>'+dollr(r.principal)+'</td><td>'+dollr(r.interest)+'</td><td>'+dollr(r.balance)+'</td></tr>').join('');
     el('amortFoot').innerHTML='<tr class="tot"><td>Total</td><td>'+dollr(MORT.balance)+'</td><td>'+dollr(BASE.totalInterest)+'</td><td>$0</td></tr>';
-    el('amortNote').innerHTML='Truist · 3.5% fixed · $1,911/mo (≈$1,748 P&amp;I + escrow) · '+dollr(MORT.balance)+' balance (Jun 2026) on a ~$1.8M home. On schedule: payoff <b>'+moname(BASE.payoff)+'</b> with <b>'+dollr(BASE.totalInterest)+'</b> total interest. Balance exact from statements; home value still an estimate.';
+    el('amortNote').innerHTML='Truist · 3.5% fixed · $1,911/mo (≈$1,748 P&amp;I + escrow) · '+dollr(MORT.balance)+' balance (Jun 2026) on a ~$1.42M home. On schedule: payoff <b>'+moname(BASE.payoff)+'</b> with <b>'+dollr(BASE.totalInterest)+'</b> total interest. Balance exact from statements; home value still an estimate.';
   }
   function renderMortCalc(){
     const inp=el('mcExtra'); if(!inp) return;
