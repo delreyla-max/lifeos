@@ -877,6 +877,7 @@
         <div class="col12"><div class="subhead">Year-end value — 2016 → 2026 (2021 missing)</div><div style="position:relative;height:170px"><canvas id="cFidYE" role="img" aria-label="Fidelity portfolio value at each year end from 2016 to 2026"></canvas></div></div>
         <div class="col6"><div class="subhead">2026 by month</div><div style="position:relative;height:150px"><canvas id="cFidM" role="img" aria-label="Fidelity portfolio value by month in 2026"></canvas></div></div>
         <div class="col6"><div class="subhead">By account (retail May + 401k Jun)</div><div style="position:relative;height:150px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account including the Omnicom 401k"></canvas></div></div>
+        <div class="col12"><div class="subhead">Each account, year-end — 2016 → 2026</div><div style="position:relative;height:210px"><canvas id="cFidAcctHist" role="img" aria-label="Each Fidelity account value at year end from 2016 to 2026, including the Omnicom 401k"></canvas></div></div>
       </div>
       <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → $138K (2021) → dip to $82K (2022) → $204K (2024) → $200K now; up ~$15K YTD (largest positions NVIDIA &amp; Alphabet, Roth). The year-end &amp; monthly lines are retail-only; the Omnicom 401(k) (~$72K) appears in the by-account ring.</div>
     </section>
@@ -1053,9 +1054,9 @@
       <div class="grid" style="margin-top:8px">
         <div class="col4"><div class="subhead">Where the payment goes</div><div style="position:relative;height:170px"><canvas id="cPaySplit" role="img" aria-label="Monthly mortgage payment split between interest, principal and escrow"></canvas></div></div>
         <div class="col4"><div class="subhead">Amortization — balance &amp; interest to payoff</div><div style="position:relative;height:170px"><canvas id="cAmort" role="img" aria-label="Projected mortgage balance declining to zero with cumulative interest rising, to payoff around 2062"></canvas></div></div>
-        <div class="col4"><div class="subhead">Home equity vs debt (≈$1.42M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
+        <div class="col4"><div class="subhead">Home equity vs debt (≈$1.5M)</div><div style="position:relative;height:170px"><canvas id="cEquity" role="img" aria-label="Home equity versus mortgage owed"></canvas></div></div>
       </div>
-      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal. On the current schedule the loan pays off <b>~2062</b> with <b>~$322K</b> interest still to come — but at 3.5% this is cheap debt, so accelerating it isn't the priority vs. investing. Equity (~$994K) is almost the entire net worth.</div>
+      <div class="note" style="margin-top:8px">At 3.5%, most of each payment is still interest (~$1,248) vs ~$500 principal. On the current schedule the loan pays off <b>~2062</b> with <b>~$322K</b> interest still to come — but at 3.5% this is cheap debt, so accelerating it isn't the priority vs. investing. Equity (~$1.07M) is almost the entire net worth.</div>
     </section>
 
     <section class="card col6">
@@ -2570,7 +2571,7 @@
     if(!BASE) BASE=mortSchedule(0);
     body.innerHTML=BASE.byYear.map(r=>'<tr><td>'+r.year+'</td><td>'+dollr(r.principal)+'</td><td>'+dollr(r.interest)+'</td><td>'+dollr(r.balance)+'</td></tr>').join('');
     el('amortFoot').innerHTML='<tr class="tot"><td>Total</td><td>'+dollr(MORT.balance)+'</td><td>'+dollr(BASE.totalInterest)+'</td><td>$0</td></tr>';
-    el('amortNote').innerHTML='Truist · 3.5% fixed · $1,911/mo (≈$1,748 P&amp;I + escrow) · '+dollr(MORT.balance)+' balance (Jun 2026) on a ~$1.42M home. On schedule: payoff <b>'+moname(BASE.payoff)+'</b> with <b>'+dollr(BASE.totalInterest)+'</b> total interest. Balance exact from statements; home value still an estimate.';
+    el('amortNote').innerHTML='Truist · 3.5% fixed · $1,911/mo (≈$1,748 P&amp;I + escrow) · '+dollr(MORT.balance)+' balance (Jun 2026) on a ~$1.5M home. On schedule: payoff <b>'+moname(BASE.payoff)+'</b> with <b>'+dollr(BASE.totalInterest)+'</b> total interest. Balance exact from statements; home value still an estimate.';
   }
   function renderMortCalc(){
     const inp=el('mcExtra'); if(!inp) return;
@@ -2925,6 +2926,11 @@
       if(fa) C('cFidAcc',{type:'doughnut',data:{labels:fa.labels,
         datasets:[{data:fa.data,backgroundColor:['#378add','#1d9e75','#ef9f27','#a06ee0','#e24b4a','#2bb4a0'],borderWidth:0}]},
         options:{cutout:'55%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.label+': $'+c.parsed+'K'}}}}});
+      const fh=SNAP.chart_fid_acct_history;
+      if(fh) C('cFidAcctHist',{type:'line',data:{labels:fh.labels,
+        datasets:fh.datasets.map(d=>({label:d.label,data:d.data,borderColor:d.color,backgroundColor:d.color,fill:false,tension:.3,pointRadius:2,borderWidth:2,spanGaps:false}))},
+        options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y==null?'—':'$'+c.parsed.y+'K')}}},
+          scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v+'K'}}}}});
     }
     Object.values(charts).forEach(c=>{ try{c.resize();}catch(e){} });
   }
