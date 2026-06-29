@@ -870,16 +870,23 @@
       <div class="note" style="margin-top:10px"><b>Why two numbers:</b> the monthly Fidelity statements (and the charts below) cover the <b>5 retail accounts</b> — Individual, Roth, Rollover, Child's 529 &amp; HSA = <b>$199,806</b> (May). Your <b>Omnicom 401(k)</b> (~<b>$72,119</b>, Fidelity NetBenefits) is <b>not</b> on those statements, so Fidelity.com shows <b>$269,544</b> all-in. Retail is up <span id="fidYtd">•••</span> YTD. 401(k) value is a live web reading (Jun 21), not a statement. Detail: vault <b>2026-Fidelity</b>, <b>Fidelity-History</b>.</div>
     </section>
 
-    <!-- FIDELITY CHARTS -->
+    <!-- FIDELITY CHARTS — one card per chart -->
+    <section class="card col4">
+      <h2>📈 Year-end value <span class="sub" style="font-weight:400">2016 → 2026 · retail</span></h2>
+      <div style="position:relative;height:175px;margin-top:6px"><canvas id="cFidYE" role="img" aria-label="Fidelity portfolio value at each year end from 2016 to 2026"></canvas></div>
+    </section>
+    <section class="card col4">
+      <h2>📅 2026 by month <span class="sub" style="font-weight:400">retail</span></h2>
+      <div style="position:relative;height:175px;margin-top:6px"><canvas id="cFidM" role="img" aria-label="Fidelity portfolio value by month in 2026"></canvas></div>
+    </section>
+    <section class="card col4">
+      <h2>🍩 By account <span class="sub" style="font-weight:400">retail May + 401k Jun</span></h2>
+      <div style="position:relative;height:175px;margin-top:6px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account including the Omnicom 401k"></canvas></div>
+    </section>
     <section class="card col12">
-      <h2>📊 Portfolio charts</h2>
-      <div class="grid" style="margin-top:8px">
-        <div class="col12"><div class="subhead">Year-end value — 2016 → 2026 (2021 missing)</div><div style="position:relative;height:170px"><canvas id="cFidYE" role="img" aria-label="Fidelity portfolio value at each year end from 2016 to 2026"></canvas></div></div>
-        <div class="col6"><div class="subhead">2026 by month</div><div style="position:relative;height:150px"><canvas id="cFidM" role="img" aria-label="Fidelity portfolio value by month in 2026"></canvas></div></div>
-        <div class="col6"><div class="subhead">By account (retail May + 401k Jun)</div><div style="position:relative;height:150px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account including the Omnicom 401k"></canvas></div></div>
-        <div class="col12"><div class="subhead">Each account, year-end — 2016 → 2026</div><div style="position:relative;height:210px"><canvas id="cFidAcctHist" role="img" aria-label="Each Fidelity account value at year end from 2016 to 2026, including the Omnicom 401k"></canvas></div></div>
-      </div>
-      <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → $138K (2021) → dip to $82K (2022) → $204K (2024) → $200K now; up ~$15K YTD (largest positions NVIDIA &amp; Alphabet, Roth). The year-end &amp; monthly lines are retail-only; the Omnicom 401(k) (~$72K) appears in the by-account ring.</div>
+      <h2>📊 Each account, year-end <span class="sub" style="font-weight:400">2016 → 2026 · incl. 401(k)</span></h2>
+      <div style="position:relative;height:230px;margin-top:6px"><canvas id="cFidAcctHist" role="img" aria-label="Each Fidelity account value at year end from 2016 to 2026, including the Omnicom 401k"></canvas></div>
+      <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → $138K (2021) → dip to $82K (2022) → $204K (2024) → $200K now; up ~$15K YTD (largest positions NVIDIA &amp; Alphabet, Roth). Year-end &amp; monthly lines are retail-only; the Omnicom 401(k) (~$72K) shows in the by-account ring and this per-account view.</div>
     </section>
 
    </div>
