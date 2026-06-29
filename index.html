@@ -1605,7 +1605,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes(); loadChildCal(); loadCardOrders(); loadMoveState(); loadMedHistory();
+    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes(); loadChildCal(); loadCardOrders(); loadMoveState(); loadMedHistory(); loadSpBudgets();
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
@@ -2708,7 +2708,18 @@
   let spMode='month'; // 'month' | 'total' | 'avg'
   const spOpen={};
   const spMoney=v=>(v<0?'-$':'$')+Math.abs(Math.round(v)).toLocaleString();
-  function spGetBud(c){ const v=localStorage.getItem('spbud:'+c.name); return v==null?c.bud:+v; }
+  let spBudgets={};   // DB-backed (ui_prefs key 'spend-budgets'): { '<category>': <amount> }
+  async function loadSpBudgets(){
+    const { data, error }=await sb.from('ui_prefs').select('key,value').eq('key','spend-budgets');
+    if(!error && data && data[0] && data[0].value && typeof data[0].value==='object') spBudgets=data[0].value;
+    renderSpend(); spBuildChart();
+  }
+  async function spSetBud(name, val){
+    spBudgets[name]=val;
+    const { error }=await sb.from('ui_prefs').upsert({key:'spend-budgets', value:spBudgets, updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error) setStatus('Budget save failed: '+error.message,true); else setStatus('saved '+new Date().toLocaleTimeString());
+  }
+  function spGetBud(c){ const v=spBudgets[c.name]; return v==null?c.bud:+v; }
   function catMonthTotal(c,i){ return c.byMonth[i].reduce((s,x)=>s+x[1],0); }
   function catH1(c){ let t=0; c.byMonth.forEach(mm=>mm.forEach(x=>t+=x[1])); return t; }
   function spActual(c){ return spMode==='total'?catH1(c):spMode==='avg'?catH1(c)/6:catMonthTotal(c,spIdx); }
@@ -2736,7 +2747,7 @@
         '<td>'+pct.toFixed(0)+'%</td>';
       const inp=tr.querySelector('.sp-bud');
       inp.onclick=e=>e.stopPropagation();
-      inp.onchange=e=>{ localStorage.setItem('spbud:'+r.c.name, Math.max(0,+e.target.value||0)); renderSpend(); spBuildChart(); };
+      inp.onchange=e=>{ spSetBud(r.c.name, Math.max(0,+e.target.value||0)); renderSpend(); spBuildChart(); };
       tr.onclick=()=>{ spOpen[r.c.name]=!spOpen[r.c.name]; renderSpend(); };
       body.appendChild(tr);
       if(spOpen[r.c.name]){
