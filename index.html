@@ -1006,6 +1006,16 @@
           <div class="progress" id="incProg">Received: $0</div></div>
       </div>
     </section>
+    <!-- Per-paycheck money moves (manual transfers to make each payday) -->
+    <section class="card col12">
+      <h2><span>💳 Per-paycheck moves — check off when you move it</span></h2>
+      <div class="note" style="margin-top:2px">Each payday, make these transfers then tick the box. Fixed bills + subs auto-pay from checking …3326 (lists above). Weekly card refills every Monday. Resets monthly · follows the month picker above. <b>Assumes HSA is moved manually</b> ($717/check); if you switch HSA to payroll, delete the two HSA rows and salary-in drops to ~$2,790/check.</div>
+      <div class="grid" style="margin-top:6px">
+        <div class="col4"><div class="subhead">1️⃣ Paycheck — the 1st <span class="sub" style="font-weight:400">· ~$6,301 in</span></div><ul id="pc1"></ul><div class="progress" id="pc1Prog"></div></div>
+        <div class="col4"><div class="subhead">2️⃣ Paycheck — the 15th <span class="sub" style="font-weight:400">· ~$4,099 in</span></div><ul id="pc2"></ul><div class="progress" id="pc2Prog"></div></div>
+        <div class="col4"><div class="subhead">🗓️ Weekly card <span class="sub" style="font-weight:400">· Mon · …3326 → …4394</span></div><ul id="pcw"></ul><div class="progress" id="pcwProg"></div></div>
+      </div>
+    </section>
     <section class="card col12">
       <h2><span>📆 Annual — set aside monthly</span><span class="mnav"><button class="navbtn" id="yPrev">◀</button><b id="yYear"></b><button class="navbtn" id="yNext">▶</button></span></h2>
       <ul id="annual"></ul>
@@ -1710,7 +1720,7 @@
     const ul=el(elId); if(!ul) return {total:0,paid:0}; ul.innerHTML=''; let total=0, paid=0;
     list.forEach(it=>{ const s=st(it.id); total+=Number(it.amount); if(s.paid) paid+=Number(it.amount);
       const li=document.createElement('li'); li.className='bud'+(s.paid?' paid':'');
-      const box=document.createElement('span'); box.className='box'; box.textContent='✓'; box.title='Mark paid this month';
+      const box=document.createElement('span'); box.className='box'; box.textContent='✓'; box.title='Mark paid this month'; box.style.cursor='pointer';
       box.onclick=()=>setStatusRow(it.id,{paid:!st(it.id).paid});
       const nm=document.createElement('input'); nm.className='enm'; nm.value=it.name; nm.title='Edit name — applies to every month';
       nm.onchange=()=>updateFinanceItem(it.id,{name:nm.value.trim()||it.name});
@@ -1720,6 +1730,36 @@
       del.onclick=()=>{ if(confirm('Remove “'+it.name+'” from the budget? It will be removed from every month.')) delFinanceItem(it.id); };
       li.append(box,nm,amt,del); ul.appendChild(li); });
     return {total, paid};
+  }
+  // ── Per-paycheck money moves (local checkboxes, reset monthly, follow the month picker) ──
+  const MOVES={
+    pc1:[ {id:'p1hsa', name:'→ HSA · Fidelity …8100', amt:717},
+          {id:'p1sav', name:'→ Savings · …1246', amt:1572} ],
+    pc2:[ {id:'p2hsa', name:'→ HSA · Fidelity …8100', amt:717},
+          {id:'p2sav', name:'→ Savings · …1246', amt:1572} ],
+    pcw:[ {id:'wk1', name:'Week 1 → card', amt:400},
+          {id:'wk2', name:'Week 2 → card', amt:400},
+          {id:'wk3', name:'Week 3 → card', amt:400},
+          {id:'wk4', name:'Week 4 → card', amt:400} ]
+  };
+  const moveKey=id=>'move:'+mkey(cur)+'|'+id;
+  const moveDone=id=>localStorage.getItem(moveKey(id))==='1';
+  function renderMoveList(elId, list, progId){
+    const ul=el(elId); if(!ul) return; ul.innerHTML=''; let tot=0, done=0;
+    list.forEach(m=>{ tot+=m.amt; const dn=moveDone(m.id); if(dn) done+=m.amt;
+      const li=document.createElement('li'); li.className='bud'+(dn?' paid':'');
+      const box=document.createElement('span'); box.className='box'; box.textContent='✓'; box.title='Mark moved this month'; box.style.cursor='pointer';
+      const nm=document.createElement('span'); nm.className='nm'; nm.textContent=m.name;
+      const amt=document.createElement('span'); amt.className='amt'; amt.textContent=money(m.amt);
+      li.append(box,nm,amt);
+      li.onclick=()=>{ if(moveDone(m.id)) localStorage.removeItem(moveKey(m.id)); else localStorage.setItem(moveKey(m.id),'1'); renderMoves(); };
+      ul.appendChild(li); });
+    if(el(progId)) el(progId).textContent='Moved: '+money(done)+' of '+money(tot);
+  }
+  function renderMoves(){ if(!el('pc1')) return;
+    renderMoveList('pc1', MOVES.pc1, 'pc1Prog');
+    renderMoveList('pc2', MOVES.pc2, 'pc2Prog');
+    renderMoveList('pcw', MOVES.pcw, 'pcwProg');
   }
   function renderFinance(){
     if(!el('exp')) return;
@@ -1785,6 +1825,7 @@
     el('incTotal').textContent=money(incRes.total);
     el('incProg').textContent='Received: '+money(incRes.paid)+' of '+money(incRes.total);
     el('sumSave').textContent=money(incRes.total-totalBudget);
+    renderMoves();
   }
   function shift(d){ cur=new Date(cur.getFullYear(), cur.getMonth()+d, 1); renderFinance(); }
   if(el('mPrev')) el('mPrev').onclick=()=>shift(-1);
