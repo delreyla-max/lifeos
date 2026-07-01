@@ -305,25 +305,35 @@ function renderCourses(){
   const wrap=el('coursesWrap');
   if(!courses.length){wrap.innerHTML='<div class="empty">No courses yet — add one below.</div>';updateSnapshot();return;}
   const years=['Freshman','Sophomore','Junior','Senior'];
+  const terms=['Sem 1','Sem 2','Full year'];
   const byYear={};
-  years.forEach(y=>byYear[y]=[]);
-  courses.forEach(c=>{(byYear[c.school_year]||byYear['Freshman']).push(c);});
+  years.forEach(y=>{byYear[y]={};terms.forEach(t=>byYear[y][t]=[]);});
+  courses.forEach(c=>{
+    const yr=byYear[c.school_year]||byYear['Freshman'];
+    const t=terms.includes(c.term)?c.term:'Sem 1';
+    yr[t].push(c);
+  });
   let html='';
   years.forEach(yr=>{
-    const rows=byYear[yr];
-    if(!rows.length)return;
+    const yrBucket=byYear[yr];
+    const hasAny=terms.some(t=>yrBucket[t].length);
+    if(!hasAny)return;
     html+=`<div class="yr-label">${yr}</div>`;
-    html+='<table><thead><tr><th>Subject</th><th>Course</th><th>Term</th><th>Grade</th><th></th></tr></thead><tbody>';
-    rows.sort((a,b)=>a.sort_order-b.sort_order).forEach(c=>{
-      html+=`<tr>
-        <td style="color:var(--muted);font-size:11px">${c.subject||'—'}</td>
-        <td>${c.course||''}</td>
-        <td style="color:var(--muted);font-size:11px">${c.term||'—'}</td>
-        <td><span class="grade-chip ${gradeClass(c.grade)}">${c.grade||'—'}</span></td>
-        <td><button class="del-btn" data-id="${c.id}" data-tbl="child_courses">✕</button></td>
-      </tr>`;
+    terms.forEach(t=>{
+      const rows=yrBucket[t];
+      if(!rows.length)return;
+      html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);margin:8px 0 4px;padding-left:2px">${t}</div>`;
+      html+='<table><thead><tr><th>Subject</th><th>Course</th><th>Grade</th><th></th></tr></thead><tbody>';
+      rows.sort((a,b)=>a.sort_order-b.sort_order).forEach(c=>{
+        html+=`<tr>
+          <td style="color:var(--muted);font-size:11px">${c.subject||'—'}</td>
+          <td>${c.course||''}</td>
+          <td><span class="grade-chip ${gradeClass(c.grade)}">${c.grade||'—'}</span></td>
+          <td><button class="del-btn" data-id="${c.id}" data-tbl="child_courses">✕</button></td>
+        </tr>`;
+      });
+      html+='</tbody></table>';
     });
-    html+='</tbody></table>';
   });
   wrap.innerHTML=html;
   wrap.querySelectorAll('.del-btn').forEach(b=>b.onclick=()=>del(b.dataset.tbl,b.dataset.id));
