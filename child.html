@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f5f7; --panel:#ffffff; --panel2:#f1f2f5; --line:#e4e4ea;
+    --text:#1d1d1f; --muted:#6e6e73; --accent:#007aff; --accent-dim:#cfe5ff;
+    --good:#34c759; --warn:#ff9500; --bad:#ff3b30; --chip:#eef0f4;
+    --radius:18px; --radius-sm:11px;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.06);
+    --body:-apple-system,BlinkMacSystemFont,"Inter",system-ui,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+  }
+  @media(prefers-color-scheme:dark){
+    :root{ --bg:#000; --panel:#1c1c1e; --panel2:#2c2c2e; --line:#38383a;
+      --text:#f5f5f7; --muted:#98989d; --accent:#0a84ff; --accent-dim:#0a3a66; --chip:#2c2c2e;
+      --good:#30d158; --warn:#ff9f0a; --bad:#ff453a;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.5);
+      --shadow-sm:0 1px 2px rgba(0,0,0,.4); }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+
+  /* gate */
+  #gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:12px}
+  .g-box{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px 28px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px}
+  .g-box h1{font-size:20px;font-weight:700;margin:0 0 2px}
+  .g-box p{color:var(--muted);font-size:13px;margin:0 0 4px}
+  .g-box input{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);font:14px var(--body);padding:9px 12px;width:100%;outline:none}
+  .g-box input:focus{border-color:var(--accent)}
+  .g-box .err{color:var(--bad);font-size:12px;min-height:16px}
+
+  /* app */
+  #app{display:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:14px 16px 48px}
+  header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:4px 2px 14px}
+  header h1{font-size:20px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;letter-spacing:-.4px}
+  header h1 .chip{font-size:10px;font-weight:600;background:var(--accent-dim);color:var(--accent);padding:2px 7px;border-radius:20px;letter-spacing:0}
+  .user-tag{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
+
+  /* grid + cards */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .col6{grid-column:span 6} .col12{grid-column:span 12}
+  @media(max-width:680px){.col6,.col12{grid-column:span 12}}
+  .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:18px 20px}
+  .card h2{font-size:14px;font-weight:600;margin:0 0 12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .card h2 .sub{font-size:10px;font-weight:400;color:var(--muted)}
+
+  /* checklists */
+  .chk{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:12px;cursor:pointer}
+  .chk:last-child{border-bottom:0}
+  .chk .box{width:15px;height:15px;border:2px solid var(--muted);border-radius:4px;flex:0 0 auto;display:grid;place-items:center;font-size:9px;color:transparent}
+  .chk.done .box{background:var(--good);border-color:var(--good);color:#fff}
+  .chk .nm{flex:1}
+  .chk.done .nm{color:var(--muted);text-decoration:line-through}
+  .chk .det{color:var(--muted);font-variant-numeric:tabular-nums;font-size:11px;white-space:nowrap;background:var(--chip);padding:1px 7px;border-radius:20px;font-size:9px;text-transform:uppercase;letter-spacing:.4px}
+
+  /* UC snapshot */
+  .mmsum{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--line);padding-top:10px}
+  .mmsum .cell{flex:1;min-width:100px;padding:4px 12px 4px 0}
+  .mmsum .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+  .mmsum .val{font-size:18px;font-weight:700;margin-top:1px}
+  .mmsum .val.pos{color:var(--good)}
+  .bar{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--good);border-radius:3px;transition:width .4s}
+  .note{font-size:12px;color:var(--muted);line-height:1.5}
+
+  /* courses table */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding:0 8px 7px 0;border-bottom:1px solid var(--line)}
+  td{padding:7px 8px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .grade-chip{display:inline-block;padding:1px 8px;border-radius:20px;font-weight:600;font-size:12px}
+  .grade-A{background:#d1fae5;color:#065f46} .grade-B{background:#dbeafe;color:#1e40af}
+  .grade-C{background:#fef3c7;color:#92400e} .grade-D,.grade-F{background:#fee2e2;color:#991b1b}
+  @media(prefers-color-scheme:dark){
+    .grade-A{background:#052e16;color:#34d399} .grade-B{background:#1e3a5f;color:#93c5fd}
+    .grade-C{background:#451a03;color:#fcd34d} .grade-D,.grade-F{background:#450a0a;color:#fca5a5}
+  }
+  .yr-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:12px 0 6px}
+
+  /* volunteer list */
+  .vol-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}
+  .vol-row:last-child{border-bottom:none}
+  .vol-row .hrs{font-weight:600;color:var(--good);white-space:nowrap;margin-left:8px}
+  .vol-row .date{color:var(--muted);font-size:10px}
+
+  /* activities list */
+  .act-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--line);font-size:12px}
+  .act-row:last-child{border-bottom:none}
+  .act-row .role{color:var(--muted);font-size:11px}
+
+  /* add row */
+  .addrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+  .cinput,.addrow input,.addrow select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);font:12px var(--body);padding:6px 9px;outline:none;min-width:70px}
+  .cinput:focus,.addrow input:focus,.addrow select:focus{border-color:var(--accent)}
+
+  /* buttons */
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:8px;font:600 12px var(--body);padding:7px 16px;cursor:pointer;transition:opacity .15s}
+  .btn:hover{opacity:.85}
+  .btn.sm{font-size:11px;padding:5px 12px;background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+  .btn.sm:hover{color:var(--text)}
+
+  .del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 3px;opacity:.45;transition:opacity .15s}
+  .del-btn:hover{opacity:1;color:var(--bad)}
+  .empty{color:var(--muted);font-size:12px;font-style:italic;padding:6px 0}
+
+  code{font-family:var(--mono);font-size:11px;background:var(--panel2);padding:1px 4px;border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="gate">
+  <div class="g-box">
+    <h1>My Portal 🎓</h1>
+    <p>Sign in to view your progress</p>
+    <input id="g-email" type="email" placeholder="Email" autocomplete="email">
+    <input id="g-pw" type="password" placeholder="Password" autocomplete="current-password">
+    <div class="err" id="g-err"></div>
+    <button class="btn" id="g-btn">Sign in</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+<div class="wrap">
+  <header>
+    <h1>My Portal <span class="chip">Student</span></h1>
+    <div class="user-tag">
+      <span id="user-email"></span>
+      <button class="btn sm" id="signout-btn">Sign out</button>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- HEALTH -->
+    <section class="card col6">
+      <h2>🩺 Health to-dos <span class="sub">checks sync</span></h2>
+      <div class="chk" data-key="child-psych"><span class="box">✓</span><span class="nm">Book psychiatrist (Aetna, 1–3 mo wait)</span></div>
+      <div class="chk" data-key="child-therapist"><span class="box">✓</span><span class="nm">Find a therapist (start in parallel)</span></div>
+      <div class="chk" data-key="child-pediatrician"><span class="box">✓</span><span class="nm">Call Dr. DiMundo (pediatrician)</span></div>
+      <div class="chk" data-key="child-cardiac"><span class="box">✓</span><span class="nm">Cardiac Dr — follow-up visit</span></div>
+      <div class="chk" data-key="child-dentist"><span class="box">✓</span><span class="nm">Dentist — make appointment</span></div>
+    </section>
+
+    <!-- MILESTONES -->
+    <section class="card col6">
+      <h2>📅 Milestones <span class="sub">checks sync</span></h2>
+      <div class="chk" data-key="child-permit"><span class="box">✓</span><span class="nm">Driver's permit → license</span><span class="det">summer</span></div>
+      <div class="chk" data-key="child-prius"><span class="box">✓</span><span class="nm">Hand over Prius-V once licensed</span></div>
+      <div class="chk" data-key="child-college"><span class="box">✓</span><span class="nm">Visit at least one college</span></div>
+      <div class="chk" data-key="child-japan"><span class="box">✓</span><span class="nm">Japan trip (return before Aug 19)</span><span class="det">summer</span></div>
+      <div class="chk" data-key="child-summer"><span class="box">✓</span><span class="nm">Line up summer activities</span></div>
+    </section>
+
+    <!-- DRIVER'S PERMIT -->
+    <section class="card col12">
+      <h2>🚗 Driver's permit roadmap <span class="sub">CA · checks sync · see Drivers-Permit wiki</span></h2>
+      <div class="note" style="margin-bottom:6px">GDL: permit first, then 6-mo hold + practice before the license. The 6-mo wait is the bottleneck — start now. Once licensed → hand over Prius-V.</div>
+      <div class="chk" data-key="permit-driver-ed"><span class="box">✓</span><span class="nm">① Enroll in 30-hr driver ed (online, ~$25–70)</span><span class="det">enrollment cert lets him apply</span></div>
+      <div class="chk" data-key="permit-realid-decide"><span class="box">✓</span><span class="nm">② Decide REAL ID vs standard license</span></div>
+      <div class="chk" data-key="permit-dl44"><span class="box">✓</span><span class="nm">③ Complete DL/ID application online + parent signs</span></div>
+      <div class="chk" data-key="permit-docs"><span class="box">✓</span><span class="nm">④ Gather docs: identity + SSN + residency (2 for REAL ID)</span></div>
+      <div class="chk" data-key="permit-appt"><span class="box">✓</span><span class="nm">⑤ Book DMV appointment</span></div>
+      <div class="chk" data-key="permit-test"><span class="box">✓</span><span class="nm">⑥ DMV: vision, photo, knowledge test (80% to pass) → permit</span></div>
+      <div class="chk" data-key="permit-btw"><span class="box">✓</span><span class="nm">⑦ 6-hr professional behind-the-wheel (LA school, ~$300–600)</span></div>
+      <div class="chk" data-key="permit-50hrs"><span class="box">✓</span><span class="nm">⑧ Log 50 supervised hrs (10 at night)</span></div>
+      <div class="chk" data-key="permit-hold6mo"><span class="box">✓</span><span class="nm">⑨ Hold permit 6 months</span><span class="det">bottleneck</span></div>
+      <div class="chk" data-key="permit-drivetest"><span class="box">✓</span><span class="nm">⑩ Pass drive test → provisional license</span></div>
+    </section>
+
+    <!-- UC MILESTONES -->
+    <section class="card col12">
+      <h2>✅ UC prep milestones <span class="sub">checks sync</span></h2>
+      <div class="chk" data-key="uc-ag-plan"><span class="box">✓</span><span class="nm">Map a 4-year a–g course plan with the counselor</span></div>
+      <div class="chk" data-key="uc-volunteer"><span class="box">✓</span><span class="nm">Log community-service hours regularly (goal 100)</span></div>
+      <div class="chk" data-key="uc-activities"><span class="box">✓</span><span class="nm">Build the activities/awards list (UC allows 20)</span></div>
+      <div class="chk" data-key="uc-test"><span class="box">✓</span><span class="nm">Decide on SAT/ACT</span><span class="det">UC test-blind</span></div>
+      <div class="chk" data-key="uc-campuses"><span class="box">✓</span><span class="nm">Shortlist target UC campuses</span></div>
+      <div class="chk" data-key="uc-piq"><span class="box">✓</span><span class="nm">Draft Personal Insight Questions (senior fall)</span></div>
+      <div class="chk" data-key="uc-deadline"><span class="box">✓</span><span class="nm">UC application</span><span class="det">opens Aug 1 · due Nov 30 (sr)</span></div>
+    </section>
+
+    <!-- UC PREP SNAPSHOT -->
+    <section class="card col12">
+      <h2>🎓 UC prep snapshot</h2>
+      <div class="mmsum" style="border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Unweighted GPA</div><div class="val" id="ucGpa">—</div></div>
+        <div class="cell"><div class="lbl">Volunteer hours</div><div class="val pos" id="ucVol">0h</div></div>
+        <div class="cell"><div class="lbl">Courses logged</div><div class="val" id="ucCourses">0</div></div>
+        <div class="cell"><div class="lbl">Activities / awards</div><div class="val" id="ucActs">0</div></div>
+      </div>
+      <div class="note" style="margin-top:10px">Targeting a UC. Community-service goal: <b>100 hrs</b> by senior year.
+        <div class="bar" style="margin-top:6px"><i id="ucVolBar" style="width:0%"></i></div>
+      </div>
+    </section>
+
+    <!-- COURSES & GRADES -->
+    <section class="card col12">
+      <h2>📚 Courses &amp; grades <span class="sub">freshman → senior</span></h2>
+      <div id="coursesWrap"><div class="empty">loading…</div></div>
+      <div class="addrow">
+        <select id="c-year" class="cinput"><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option></select>
+        <select id="c-term" class="cinput"><option>Sem 1</option><option>Sem 2</option></select>
+        <select id="c-subject" class="cinput"><option value="">A–G</option><option>a · History</option><option>b · English</option><option>c · Math</option><option>d · Science</option><option>e · Language</option><option>f · Visual/Perf Arts</option><option>g · Elective</option></select>
+        <input id="c-course" placeholder="Course name" style="flex:2;min-width:110px">
+        <input id="c-grade" placeholder="Grade" style="max-width:70px">
+        <button class="btn" id="c-add">Add</button>
+      </div>
+      <div class="note" style="margin-top:6px">UC counts <b>a–g</b> courses in grades 10–11. For honors/AP, note it in the grade (e.g. <code>A (AP)</code>) — GPA above is a simple unweighted average.</div>
+    </section>
+
+    <!-- VOLUNTEER HOURS -->
+    <section class="card col6">
+      <h2>🤝 Volunteer hours <span class="sub">running log</span></h2>
+      <div id="volWrap"><div class="empty">loading…</div></div>
+      <div class="addrow">
+        <input id="v-date" type="date" class="cinput">
+        <input id="v-act" placeholder="Activity" style="flex:2;min-width:110px">
+        <input id="v-hrs" type="number" min="0" step="0.5" placeholder="hrs" style="max-width:70px">
+        <button class="btn" id="v-add">Add</button>
+      </div>
+    </section>
+
+    <!-- ACTIVITIES & AWARDS -->
+    <section class="card col6">
+      <h2>🏅 Activities &amp; awards <span class="sub">UC app lists up to 20</span></h2>
+      <div id="actWrap"><div class="empty">loading…</div></div>
+      <div class="addrow">
+        <input id="a-name" placeholder="Activity / award" style="flex:2;min-width:120px">
+        <input id="a-role" placeholder="Role" style="max-width:120px">
+        <button class="btn" id="a-add">Add</button>
+      </div>
+    </section>
+
+  </div><!-- /grid -->
+</div><!-- /wrap -->
+</div><!-- /app -->
+
+<script>
+const SUPABASE_URL='https://chdfupqkxlcarygopmof.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoZGZ1cHFreGxjYXJ5Z29wbW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5ODY3NzQsImV4cCI6MjA5NzU2Mjc3NH0.D2nU9h0FYS-wBNKWNd_MQio2hVx9sv4tsSfFzP-MuLU';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const el = id => document.getElementById(id);
+
+/* ---- grade helpers ---- */
+function gradePoints(g){
+  if(!g) return null;
+  const m = g.trim().toUpperCase().match(/^([A-F][+-]?)/);
+  if(!m) return null;
+  const map={'A+':4,'A':4,'A-':3.7,'B+':3.3,'B':3,'B-':2.7,'C+':2.3,'C':2,'C-':1.7,'D+':1.3,'D':1,'D-':0.7,'F':0};
+  return map[m[1]] ?? null;
+}
+function gradeClass(g){
+  if(!g) return '';
+  const l=g.trim().toUpperCase()[0];
+  return ['A','B','C','D','F'].includes(l)?'grade-'+l:'';
+}
+
+/* ---- state ---- */
+let courses=[], vols=[], acts=[], checkMap={};
+
+/* ---- checklist ---- */
+async function loadChecklist(){
+  const {data,error} = await sb.from('checklist_status').select('*');
+  checkMap={};
+  if(!error)(data||[]).forEach(r=>{ checkMap[r.item_key]=!!r.done; });
+  renderChecklist();
+}
+function renderChecklist(){
+  document.querySelectorAll('.chk[data-key]').forEach(row=>{
+    const key=row.dataset.key, done=!!checkMap[key];
+    row.classList.toggle('done',done);
+    row.onclick=()=>toggleCheck(key);
+  });
+}
+async function toggleCheck(key){
+  const done=!checkMap[key]; checkMap[key]=done; renderChecklist();
+  await sb.from('checklist_status').upsert({item_key:key,done,updated_at:new Date().toISOString()},{onConflict:'item_key'});
+}
+
+/* ---- UC snapshot ---- */
+function updateSnapshot(){
+  const grades=courses.map(c=>gradePoints(c.grade)).filter(g=>g!==null);
+  const gpa=grades.length?(grades.reduce((a,b)=>a+b,0)/grades.length).toFixed(2):'—';
+  el('ucGpa').textContent=gpa;
+  el('ucCourses').textContent=courses.length;
+  const totalVol=vols.reduce((a,v)=>a+(parseFloat(v.hours)||0),0);
+  el('ucVol').textContent=totalVol+'h';
+  el('ucActs').textContent=acts.length;
+  const pct=Math.min(100,Math.round(totalVol));
+  el('ucVolBar').style.width=pct+'%';
+}
+
+/* ---- courses ---- */
+function renderCourses(){
+  const wrap=el('coursesWrap');
+  if(!courses.length){wrap.innerHTML='<div class="empty">No courses yet — add one below.</div>';updateSnapshot();return;}
+  const years=['Freshman','Sophomore','Junior','Senior'];
+  const terms=['Sem 1','Sem 2'];
+  const byYear={};
+  years.forEach(y=>{byYear[y]={};terms.forEach(t=>byYear[y][t]=[]);});
+  courses.forEach(c=>{
+    const yr=byYear[c.school_year]||byYear['Freshman'];
+    const t=c.term==='Sem 2'?'Sem 2':'Sem 1';
+    yr[t].push(c);
+  });
+  let html='';
+  years.forEach(yr=>{
+    const yrBucket=byYear[yr];
+    const hasAny=terms.some(t=>yrBucket[t].length);
+    if(!hasAny)return;
+    html+=`<div class="yr-label">${yr}</div>`;
+    terms.forEach(t=>{
+      const rows=yrBucket[t];
+      if(!rows.length)return;
+      html+=`<div style="font-size:11px;font-weight:600;color:var(--muted);margin:8px 0 4px;padding-left:2px">${t}</div>`;
+      html+='<table><thead><tr><th>Subject</th><th>Course</th><th>Grade</th><th></th></tr></thead><tbody>';
+      rows.sort((a,b)=>a.sort_order-b.sort_order).forEach(c=>{
+        html+=`<tr>
+          <td style="color:var(--muted);font-size:11px">${c.subject||'—'}</td>
+          <td>${c.course||''}</td>
+          <td><span class="grade-chip ${gradeClass(c.grade)}">${c.grade||'—'}</span></td>
+          <td><button class="del-btn" data-id="${c.id}" data-tbl="child_courses">✕</button></td>
+        </tr>`;
+      });
+      html+='</tbody></table>';
+    });
+  });
+  wrap.innerHTML=html;
+  wrap.querySelectorAll('.del-btn').forEach(b=>b.onclick=()=>del(b.dataset.tbl,b.dataset.id));
+  updateSnapshot();
+}
+
+/* ---- volunteer ---- */
+function renderVol(){
+  const wrap=el('volWrap');
+  if(!vols.length){wrap.innerHTML='<div class="empty">No volunteer entries yet.</div>';updateSnapshot();return;}
+  const sorted=[...vols].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+  wrap.innerHTML=sorted.map(v=>`
+    <div class="vol-row">
+      <div><div>${v.activity}</div><div class="date">${v.date||''}</div></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span class="hrs">${v.hours}h</span>
+        <button class="del-btn" data-id="${v.id}" data-tbl="child_volunteer">✕</button>
+      </div>
+    </div>`).join('');
+  wrap.querySelectorAll('.del-btn').forEach(b=>b.onclick=()=>del(b.dataset.tbl,b.dataset.id));
+  updateSnapshot();
+}
+
+/* ---- activities ---- */
+function renderActs(){
+  const wrap=el('actWrap');
+  if(!acts.length){wrap.innerHTML='<div class="empty">No activities yet.</div>';updateSnapshot();return;}
+  wrap.innerHTML=acts.sort((a,b)=>a.sort_order-b.sort_order).map(a=>`
+    <div class="act-row">
+      <div><div>${a.name}</div>${a.role?`<div class="role">${a.role}</div>`:''}</div>
+      <button class="del-btn" data-id="${a.id}" data-tbl="child_activities">✕</button>
+    </div>`).join('');
+  wrap.querySelectorAll('.del-btn').forEach(b=>b.onclick=()=>del(b.dataset.tbl,b.dataset.id));
+  updateSnapshot();
+}
+
+/* ---- delete ---- */
+async function del(table,id){
+  await sb.from(table).delete().eq('id',id);
+  await load();
+}
+
+/* ---- add ---- */
+el('c-add').onclick=async()=>{
+  const course=el('c-course').value.trim(); if(!course)return;
+  await sb.from('child_courses').insert({school_year:el('c-year').value,term:el('c-term').value,subject:el('c-subject').value,course,grade:el('c-grade').value.trim()});
+  el('c-course').value=''; el('c-grade').value='';
+  await load();
+};
+el('v-add').onclick=async()=>{
+  const activity=el('v-act').value.trim(), hours=parseFloat(el('v-hrs').value)||0;
+  if(!activity||!hours)return;
+  await sb.from('child_volunteer').insert({date:el('v-date').value||null,activity,hours});
+  el('v-act').value=''; el('v-hrs').value='';
+  await load();
+};
+el('a-add').onclick=async()=>{
+  const name=el('a-name').value.trim(); if(!name)return;
+  await sb.from('child_activities').insert({name,role:el('a-role').value.trim()});
+  el('a-name').value=''; el('a-role').value='';
+  await load();
+};
+
+/* ---- load all ---- */
+async function load(){
+  const [cr,vr,ar]=await Promise.all([
+    sb.from('child_courses').select('*').order('sort_order'),
+    sb.from('child_volunteer').select('*').order('date',{ascending:false}),
+    sb.from('child_activities').select('*').order('sort_order')
+  ]);
+  courses=cr.data||[]; vols=vr.data||[]; acts=ar.data||[];
+  renderCourses(); renderVol(); renderActs();
+}
+
+/* ---- auth ---- */
+el('g-btn').onclick=async()=>{
+  el('g-err').textContent='';
+  const {error}=await sb.auth.signInWithPassword({email:el('g-email').value.trim(),password:el('g-pw').value});
+  if(error){el('g-err').textContent=error.message;return;}
+  location.reload();
+};
+el('g-pw').addEventListener('keydown',e=>{if(e.key==='Enter')el('g-btn').click();});
+el('g-email').addEventListener('keydown',e=>{if(e.key==='Enter')el('g-pw').focus();});
+el('signout-btn').onclick=async()=>{await sb.auth.signOut();location.reload();};
+
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session?.user){
+    el('gate').style.display='none';
+    el('app').style.display='block';
+    el('user-email').textContent=session.user.email;
+    await Promise.all([load(), loadChecklist()]);
+  } else {
+    el('g-email').focus();
+  }
+}
+boot();
+</script>
+</body>
+</html>
+<!-- refresh -->
