@@ -209,7 +209,7 @@
       <div id="coursesWrap"><div class="empty">loading…</div></div>
       <div class="addrow">
         <select id="c-year" class="cinput"><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option></select>
-        <select id="c-term" class="cinput"><option value="">Term</option><option>Sem 1</option><option>Sem 2</option><option>Full year</option></select>
+        <select id="c-term" class="cinput"><option>Sem 1</option><option>Sem 2</option></select>
         <select id="c-subject" class="cinput"><option value="">A–G</option><option>a · History</option><option>b · English</option><option>c · Math</option><option>d · Science</option><option>e · Language</option><option>f · Visual/Perf Arts</option><option>g · Elective</option></select>
         <input id="c-course" placeholder="Course name" style="flex:2;min-width:110px">
         <input id="c-grade" placeholder="Grade" style="max-width:70px">
@@ -305,12 +305,12 @@ function renderCourses(){
   const wrap=el('coursesWrap');
   if(!courses.length){wrap.innerHTML='<div class="empty">No courses yet — add one below.</div>';updateSnapshot();return;}
   const years=['Freshman','Sophomore','Junior','Senior'];
-  const terms=['Sem 1','Sem 2','Full year'];
+  const terms=['Sem 1','Sem 2'];
   const byYear={};
   years.forEach(y=>{byYear[y]={};terms.forEach(t=>byYear[y][t]=[]);});
   courses.forEach(c=>{
     const yr=byYear[c.school_year]||byYear['Freshman'];
-    const t=terms.includes(c.term)?c.term:'Sem 1';
+    const t=c.term==='Sem 2'?'Sem 2':'Sem 1';
     yr[t].push(c);
   });
   let html='';
