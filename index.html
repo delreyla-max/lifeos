@@ -1381,7 +1381,7 @@
       <div id="coursesWrap"><div class="note">loading…</div></div>
       <div class="addrow" style="flex-wrap:wrap">
         <select id="c-year" class="cinput"><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option></select>
-        <select id="c-term" class="cinput"><option value="">Term</option><option>Sem 1</option><option>Sem 2</option><option>Full year</option></select>
+        <select id="c-term" class="cinput"><option>Sem 1</option><option>Sem 2</option></select>
         <select id="c-subject" class="cinput"><option value="">A–G</option><option>a · History</option><option>b · English</option><option>c · Math</option><option>d · Science</option><option>e · Language</option><option>f · Visual/Perf Arts</option><option>g · Elective</option></select>
         <input id="c-course" placeholder="Course name" style="flex:2;min-width:120px">
         <input id="c-grade" placeholder="Grade" style="max-width:80px">
@@ -2079,13 +2079,17 @@
     if(wrap){
       if(!cCourses.length){ wrap.innerHTML='<div class="note">No courses yet — add freshman &amp; sophomore classes below.</div>'; }
       else {
-        const order=['Freshman','Sophomore','Junior','Senior']; const byYear={};
-        cCourses.forEach(c=>{(byYear[c.school_year]=byYear[c.school_year]||[]).push(c);});
+        const order=['Freshman','Sophomore','Junior','Senior']; const terms=['Sem 1','Sem 2']; const byYear={};
+        cCourses.forEach(c=>{(byYear[c.school_year]=byYear[c.school_year]||{}); const t=c.term==='Sem 2'?'Sem 2':'Sem 1'; (byYear[c.school_year][t]=byYear[c.school_year][t]||[]).push(c);});
         let html='';
         order.filter(y=>byYear[y]).forEach(y=>{
           html+='<div class="cyear">'+esc(y)+'</div>';
-          byYear[y].sort((a,b)=>(a.sort_order-b.sort_order)||(a.created_at||'').localeCompare(b.created_at||''));
-          byYear[y].forEach(c=>{ html+='<div class="crow"><span class="g">'+esc(c.course||'(course)')+(c.subject?' <small style="color:var(--muted)">'+esc(c.subject)+'</small>':'')+(c.term?' <small style="color:var(--muted)">· '+esc(c.term)+'</small>':'')+'</span><span class="gr">'+esc(c.grade||'—')+'</span><span class="x" data-del-course="'+c.id+'">✕</span></div>'; });
+          terms.forEach(t=>{
+            if(!(byYear[y][t]&&byYear[y][t].length))return;
+            html+='<div style="font-size:11px;font-weight:600;color:var(--muted);margin:6px 0 3px">'+t+'</div>';
+            byYear[y][t].sort((a,b)=>(a.sort_order-b.sort_order)||(a.created_at||'').localeCompare(b.created_at||''));
+            byYear[y][t].forEach(c=>{ html+='<div class="crow"><span class="g">'+esc(c.course||'(course)')+(c.subject?' <small style="color:var(--muted)">'+esc(c.subject)+'</small>':'')+'</span><span class="gr">'+esc(c.grade||'—')+'</span><span class="x" data-del-course="'+c.id+'">✕</span></div>'; });
+          });
         });
         wrap.innerHTML=html;
         wrap.querySelectorAll('[data-del-course]').forEach(x=>x.onclick=()=>delChild('child_courses',x.dataset.delCourse,cCourses));
