@@ -1460,10 +1460,10 @@
      instead of every tab fetching on every load(). */
   const TAB_LOADERS={
     today:[loadHabits],
-    money:[loadExo, wireExo, loadMoveState],
+    money:[loadExo, wireExo],
     jobs:[loadApps, wireApps, loadJobNotes],
     investing:[loadInvNotes],
-    spend:[loadSpBudgets],
+    spend:[loadSpBudgets, loadMoveState],
     child:[loadChild, wireChild, loadChildCal, loadMedHistory]
   };
   const loadedTabs=new Set();
