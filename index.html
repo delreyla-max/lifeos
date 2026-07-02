@@ -649,19 +649,6 @@
       </details>
     </section>
 
-    <!-- GOALS strip -->
-    <section class="card col6">
-      <h2>🎯 2026 goals</h2>
-      <div id="goalStrip"><div class="note">loading…</div></div>
-    </section>
-
-    <!-- MONTHLY DOCUMENTS TO UPLOAD (aggregated from all pages) -->
-    <section class="card col6">
-      <h2>📥 Monthly documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → ingest · checks sync</span></h2>
-      <ul class="cklist" id="ck-documents"></ul>
-      <div class="addrow"><input id="ckadd-documents" placeholder="Add a document…" autocomplete="off"></div>
-    </section>
-
     <!-- WEEKLY CHALLENGES -->
     <section class="card col12">
       <h2>🏆 Weekly challenges <span class="sub" style="font-weight:400">3× / week · resets Monday 12am</span></h2>
@@ -934,6 +921,13 @@
   <!-- ============================= SPEND vs BUDGET ============================= -->
   <div class="page" id="page-spend">
    <div class="grid">
+    <!-- MONTHLY DOCUMENTS TO UPLOAD (moved from Today) -->
+    <section class="card col12">
+      <h2>📥 Monthly documents to upload <span class="sub" style="font-weight:400">drop in 0-Inbox → ingest · checks sync</span></h2>
+      <ul class="cklist" id="ck-documents"></ul>
+      <div class="addrow"><input id="ckadd-documents" placeholder="Add a document…" autocomplete="off"></div>
+    </section>
+
     <!-- This month at a glance (moved from Finance) -->
     <section class="card col12">
       <h2>💵 This month at a glance</h2>
@@ -1456,8 +1450,28 @@
     if(!PAGES.includes(p)) p='today';
     PAGES.forEach(x=>{ const pg=el('page-'+x); if(pg) pg.classList.toggle('active', x===p); });
     document.querySelectorAll('#tabs a').forEach(a=>a.classList.toggle('active', a.dataset.page===p));
+    loadTab(p);
     buildCharts(p);
     if(cardArrangeOn) setTimeout(applyCardArrange, 0);
+  }
+
+  /* ---------- PER-TAB LAZY LOAD ----------
+     Each tab's DB-backed section only fetches once, the first time its tab is opened,
+     instead of every tab fetching on every load(). */
+  const TAB_LOADERS={
+    today:[loadHabits],
+    money:[loadExo, wireExo, loadMoveState],
+    jobs:[loadApps, wireApps, loadJobNotes],
+    investing:[loadInvNotes],
+    spend:[loadSpBudgets],
+    child:[loadChild, wireChild, loadChildCal, loadMedHistory]
+  };
+  const loadedTabs=new Set();
+  function loadTab(p){
+    const loaders=TAB_LOADERS[p];
+    if(!loaders || loadedTabs.has(p)) return;
+    loadedTabs.add(p);
+    loaders.forEach(fn=>fn());
   }
   window.addEventListener('hashchange',()=>showPage((location.hash||'#today').slice(1)));
 
@@ -1605,7 +1619,8 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
-    loadHabits(); loadChecklist(); loadCkItems(); loadChild(); wireChild(); loadApps(); wireApps(); loadExo(); wireExo(); loadPageLinks(); loadTabOrder(); loadJobNotes(); loadInvNotes(); loadChildCal(); loadCardOrders(); loadMoveState(); loadMedHistory(); loadSpBudgets();
+    loadChecklist(); loadCkItems(); loadPageLinks(); loadTabOrder(); loadCardOrders();
+    loadTab((location.hash||'#today').slice(1));
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
     buildCharts((location.hash||'#today').slice(1));
     setStatus('synced '+new Date().toLocaleTimeString());
