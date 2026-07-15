@@ -1360,6 +1360,7 @@
     <section class="card col12">
       <h2>🎓 UC prep snapshot</h2>
       <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Weighted GPA</div><div class="val" id="ucGpaW">—</div></div>
         <div class="cell"><div class="lbl">Unweighted GPA</div><div class="val" id="ucGpa">—</div></div>
         <div class="cell"><div class="lbl">Volunteer hours</div><div class="val pos" id="ucVol">0h</div></div>
         <div class="cell"><div class="lbl">Courses logged</div><div class="val" id="ucCourses">0</div></div>
@@ -1381,7 +1382,7 @@
         <input id="c-grade" placeholder="Grade" style="max-width:80px">
         <button class="btn" id="c-add">Add</button>
       </div>
-      <div class="note" style="margin-top:6px">UC counts <b>a–g</b> courses in grades 10–11. For honors/AP, note it in the grade (e.g. <code>A (AP)</code>) — GPA above is a simple unweighted average.</div>
+      <div class="note" style="margin-top:6px">UC counts <b>a–g</b> courses in grades 10–11. Mark AP courses by including <code>AP</code> in the grade (e.g. <code>A AP</code>) — weighted GPA uses 5.0 scale for AP courses (CA standard), unweighted uses 4.0 for all.</div>
     </section>
 
     <!-- VOLUNTEER HOURS -->
@@ -2080,6 +2081,7 @@
   /* ---------- CHILD / UC TRACKING ---------- */
   let cCourses=[], cVol=[], cActs=[], childWired=false;
   const GRADE_PTS={A:4,B:3,C:2,D:1,F:0};
+  const GRADE_PTS_AP={A:5,B:4,C:3,D:2,F:0};
   async function loadChild(){
     const [c,v,a]=await Promise.all([
       sb.from('child_courses').select('*'),
@@ -2115,7 +2117,8 @@
       if(!cVol.length){ vw.innerHTML='<div class="note">No hours logged yet.</div>'; }
       else {
         cVol.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-        vw.innerHTML=cVol.map(v=>'<div class="crow"><span class="g">'+esc(v.activity||'')+' <small style="color:var(--muted)">'+esc(v.date||'')+'</small></span><span class="gr">'+(Number(v.hours)||0)+'h</span><span class="x" data-del-vol="'+v.id+'">✕</span></div>').join('');
+        let runTot=vtot;
+        vw.innerHTML=cVol.map(v=>{const h=Number(v.hours)||0; const rt=runTot; runTot-=h; return '<div class="crow"><span class="g">'+esc(v.activity||'')+' <small style="color:var(--muted)">'+esc(v.date||'')+'</small></span><span class="gr" title="running total: '+rt+'h">'+h+'h <small style="color:var(--muted)">/ '+rt+'h</small></span><span class="x" data-del-vol="'+v.id+'">✕</span></div>';}).join('');
         vw.querySelectorAll('[data-del-vol]').forEach(x=>x.onclick=()=>delChild('child_volunteer',x.dataset.delVol,cVol));
       }
     }
@@ -2128,8 +2131,16 @@
         aw.querySelectorAll('[data-del-act]').forEach(x=>x.onclick=()=>delChild('child_activities',x.dataset.delAct,cActs));
       }
     }
-    const graded=cCourses.map(c=>GRADE_PTS[(c.grade||'').trim().charAt(0).toUpperCase()]).filter(p=>p!=null);
-    if(el('ucGpa')) el('ucGpa').textContent=graded.length?(graded.reduce((a,b)=>a+b,0)/graded.length).toFixed(2):'—';
+    const graded=cCourses.map(c=>{
+      const raw=(c.grade||'').trim();
+      const letter=raw.charAt(0).toUpperCase();
+      const isAP=/\b(AP|ap)\b/.test(raw);
+      const pts=(isAP?GRADE_PTS_AP:GRADE_PTS)[letter];
+      const uwPts=GRADE_PTS[letter];
+      return pts!=null?{w:pts,uw:uwPts??null}:null;
+    }).filter(p=>p!=null);
+    if(el('ucGpa')) el('ucGpa').textContent=graded.length?(graded.reduce((a,b)=>a+(b.uw??0),0)/graded.length).toFixed(2):'—';
+    if(el('ucGpaW')) el('ucGpaW').textContent=graded.length?(graded.reduce((a,b)=>a+b.w,0)/graded.length).toFixed(2):'—';
     if(el('ucVol')) el('ucVol').textContent=vtot+'h';
     if(el('ucCourses')) el('ucCourses').textContent=cCourses.length;
     if(el('ucActs')) el('ucActs').textContent=cActs.length;
