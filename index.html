@@ -564,6 +564,7 @@
     <a href="#today" data-page="today">🔆 Today</a>
     <a href="#spend" data-page="spend">📊 Budget</a>
     <a href="#adu" data-page="adu">🏘️ ADU Rental</a>
+    <a href="#llc" data-page="llc">🌅 LLC</a>
     <a href="#money" data-page="money">💰 Finance</a>
     <a href="#investing" data-page="investing">📈 Investing</a>
     <a href="#jobs" data-page="jobs">🔎 Career</a>
@@ -1155,6 +1156,42 @@
   </div>
 
   <!-- ============================= PROJECTS ============================= -->
+  <div class="page" id="page-llc">
+   <div class="grid">
+    <section class="card col8">
+      <h2>🌅 Sunsets over Sunrise LLC <span class="sub" style="font-weight:400">business books · separate from personal · figures from DB</span></h2>
+      <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">Revenue 2026</div><div class="val pos" id="llcRev">•••</div></div>
+        <div class="cell"><div class="lbl">Business expenses 2026</div><div class="val" id="llcExp">•••</div></div>
+        <div class="cell"><div class="lbl">Square Checking</div><div class="val" id="llcBank">•••</div></div>
+        <div class="cell"><div class="lbl">Next deadline</div><div class="val" id="llcNext">•••</div></div>
+      </div>
+      <div class="note" style="margin-top:10px" id="llcNote">Rule: every LLC dollar moves through Square Checking. Expenses paid personally before that count as owner contributions. Detail: vault <b>6-Business / Sunsets-over-Sunrise-LLC</b> and <b>LLC-Ledger-2026</b>.</div>
+    </section>
+    <section class="card col4">
+      <h2>📅 Deadlines &amp; setup <span class="sub" style="font-weight:400">checks sync</span></h2>
+      <ul class="cklist" id="ck-llc"></ul>
+      <div class="addrow"><input id="ckadd-llc" placeholder="Add a to-do…" autocomplete="off"></div>
+    </section>
+    <section class="card col6">
+      <h2>🏢 Entity facts</h2>
+      <div id="llcFacts"></div>
+    </section>
+    <section class="card col6">
+      <h2>💳 Where money goes in &amp; out</h2>
+      <div id="llcPay"></div>
+    </section>
+    <section class="card col6">
+      <h2>🧾 2026 expenses by vendor <span class="sub" style="font-weight:400" id="llcExpSub"></span></h2>
+      <div id="llcVendors"></div>
+    </section>
+    <section class="card col6">
+      <h2>📂 Documents on file <span class="sub" style="font-weight:400">checks sync · PDFs in vault Private/Business</span></h2>
+      <ul class="cklist" id="ck-llcdocs"></ul>
+      <div class="addrow"><input id="ckadd-llcdocs" placeholder="Add a document…" autocomplete="off"></div>
+    </section>
+   </div>
+  </div>
   <div class="page" id="page-projects">
    <div class="grid">
 
@@ -1434,7 +1471,7 @@
   let tasks=[], items=[], statusMap={}, SNAP={};
 
   /* ---------- ROUTING ---------- */
-  const PAGES=['today','spend','adu','money','investing','jobs','realestate','child','girlfriend','projects'];
+  const PAGES=['today','spend','adu','llc','money','investing','jobs','realestate','child','girlfriend','projects'];
   const CHILD_EMAILS=['ayipla15@gmail.com'];
   let childLock=false;
   function isChildUser(u){ return !!u && CHILD_EMAILS.includes((u.email||'').toLowerCase()); }
@@ -1619,7 +1656,7 @@
     tasks=t.data||[]; items=fi.data||[]; statusMap={}; SNAP={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
-    renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderGoals();
+    renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderLlc(); renderGoals();
     loadChecklist(); loadCkItems(); loadPageLinks(); loadTabOrder(); loadCardOrders();
     loadTab((location.hash||'#today').slice(1));
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
@@ -1932,6 +1969,18 @@
     const leaks=(g.leaks||[]).map(l=>l[0]+' +'+money(l[1])).join(' · ');
     el('gbLeaks').innerHTML='You ran ~<b>'+money(g.overByMo||0)+'/mo over budget</b> (≈'+money(g.over3mo||0)+' across Apr–Jun) — about the size of the shortfall. Biggest leaks: <b>'+leaks+'</b>. Trim roughly half of this and the +$50K is back in reach. <i>(Save pace lifts most if the new job lands.)</i>';
   }
+  function renderLlc(){
+    const L=SNAP.llc; if(!L||!el('llcRev')) return;
+    el('llcRev').textContent=money(L.revenue||0);
+    el('llcExp').textContent=money(L.expenses||0);
+    el('llcBank').textContent=(L.squareBalance==null)?'add':money(L.squareBalance);
+    el('llcNext').textContent=L.next||'—';
+    const rows=(arr)=>(arr||[]).map(x=>'<div class="row"><span>'+esc(x[0])+'</span><span class="v">'+esc(x[1])+'</span></div>').join('');
+    el('llcFacts').innerHTML=rows(L.facts);
+    el('llcPay').innerHTML=rows(L.payments);
+    el('llcVendors').innerHTML=(L.vendors||[]).map(x=>'<div class="row"><span>'+esc(x[0])+'</span><span class="v neg">-'+money(x[1])+'</span></div>').join('');
+    if(el('llcExpSub')) el('llcExpSub').textContent=L.expNote||'';
+  }
   function renderAdu(){
     const a=SNAP.adu;
     if(a&&el('aduRent')){
@@ -2008,7 +2057,7 @@
   }
 
   /* ---------- EDITABLE CHECKLISTS (DB-backed: add / delete / rename / check) ---------- */
-  const CKLISTS=['documents','taxes','taxes2025','property','adu','gf-events','gf-todos','child-todos'];
+  const CKLISTS=['llc','llcdocs','documents','taxes','taxes2025','property','adu','gf-events','gf-todos','child-todos'];
   let ckItems=[];
   async function loadCkItems(){
     const { data, error }=await sb.from('checklist_items').select('*');
