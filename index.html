@@ -484,6 +484,8 @@
   .med-dot{width:8px;height:8px;border-radius:50%;background:var(--line);flex:0 0 auto;display:inline-block}
   .med-dot.on{background:var(--good)}
   .med-hist-row .mcnt{color:var(--muted);margin-left:4px;white-space:nowrap}
+  #llcTxTbl td,#llcTxTbl th{padding:5px 6px;border-bottom:1px solid var(--line,rgba(127,127,127,.15))}
+  .llctx-form input,.llctx-form select{font:inherit;padding:5px 7px;border-radius:6px;border:1px solid rgba(127,127,127,.3);background:transparent;color:inherit}
 </style>
 </head>
 <body>
@@ -1173,6 +1175,22 @@
       <ul class="cklist" id="ck-llc"></ul>
       <div class="addrow"><input id="ckadd-llc" placeholder="Add a to-do…" autocomplete="off"></div>
     </section>
+    <section class="card col12">
+      <h2><span>📒 LLC transactions <span class="sub" style="font-weight:400">· every dollar in &amp; out · syncs</span></span><span class="sub" style="font-weight:400" id="llcTxSum"></span></h2>
+      <div class="llctx-form" style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px">
+        <input id="llcTxDate" type="date" style="width:130px">
+        <input id="llcTxDesc" placeholder="Description (e.g. Meta ads, Pro subscription)" style="flex:1;min-width:180px">
+        <input id="llcTxAmt" type="number" step="0.01" placeholder="Amount" style="width:100px">
+        <select id="llcTxDir"><option value="-1">Money out</option><option value="1">Money in</option></select>
+        <select id="llcTxCat"><option>Advertising</option><option>Software &amp; hosting</option><option>AI tools</option><option>Domains &amp; hosting</option><option>Filing fees</option><option>Taxes &amp; licenses</option><option>Office &amp; mail</option><option>Insurance</option><option>Fees</option><option>Revenue</option><option>Owner contribution</option><option>Owner draw</option><option>Other</option></select>
+        <select id="llcTxProd"><option>CampsiteScan</option><option>Tolerance Studio</option><option>LLC</option><option>gyip.com</option><option>Unassigned</option></select>
+        <select id="llcTxFrom"><option>Square Checking</option><option>Square debit card</option><option>Business credit card</option><option>Personal — BofA ...4394</option><option>Personal — Citi</option><option>Personal</option></select>
+        <button class="navbtn" id="llcTxAdd">Add</button>
+      </div>
+      <div class="note" id="llcTxByProd" style="margin-bottom:8px"></div>
+      <div style="max-height:360px;overflow:auto"><table class="tbl" id="llcTxTbl" style="width:100%;font-size:12px"></table></div>
+      <div class="note" style="margin-top:6px">Owner contribution = you paid a business cost personally (still deductible). Owner draw = you moved money from Square to yourself (not an expense). Transfers between Square and BofA aren't income or expenses.</div>
+    </section>
     <section class="card col6">
       <h2>🏢 Entity facts</h2>
       <div id="llcFacts"></div>
@@ -1657,7 +1675,7 @@
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
     renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderLlc(); renderGoals();
-    loadChecklist(); loadCkItems(); loadPageLinks(); loadTabOrder(); loadCardOrders();
+    loadChecklist(); loadCkItems(); loadLlcTx(); loadPageLinks(); loadTabOrder(); loadCardOrders();
     loadTab((location.hash||'#today').slice(1));
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
     buildCharts((location.hash||'#today').slice(1));
@@ -1969,10 +1987,42 @@
     const leaks=(g.leaks||[]).map(l=>l[0]+' +'+money(l[1])).join(' · ');
     el('gbLeaks').innerHTML='You ran ~<b>'+money(g.overByMo||0)+'/mo over budget</b> (≈'+money(g.over3mo||0)+' across Apr–Jun) — about the size of the shortfall. Biggest leaks: <b>'+leaks+'</b>. Trim roughly half of this and the +$50K is back in reach. <i>(Save pace lifts most if the new job lands.)</i>';
   }
+  /* ---------- LLC TRANSACTIONS ---------- */
+  let llcTx=[];
+  const LLC_NONEXP=['Owner contribution','Owner draw'];
+  async function loadLlcTx(){
+    const { data, error }=await sb.from('llc_transactions').select('*').order('tx_date',{ascending:false});
+    llcTx=error?[]:(data||[]); renderLlcTx();
+  }
+  function renderLlcTx(){
+    if(!el('llcTxTbl')) return;
+    const yr=String(new Date().getFullYear());
+    const ytd=llcTx.filter(t=>(t.tx_date||'').startsWith(yr));
+    const rev=ytd.filter(t=>t.category==='Revenue').reduce((a,t)=>a+Number(t.amount),0);
+    const exp=ytd.filter(t=>Number(t.amount)<0&&!LLC_NONEXP.includes(t.category)).reduce((a,t)=>a-Number(t.amount),0);
+    if(el('llcRev')) el('llcRev').textContent=money(rev);
+    if(el('llcExp')) el('llcExp').textContent=money(exp);
+    el('llcTxSum').textContent=yr+': in '+money(rev)+' · out '+money(exp)+' · net '+(rev-exp<0?'-':'')+money(Math.abs(rev-exp));
+    const bp={}; ytd.forEach(t=>{ if(LLC_NONEXP.includes(t.category)) return; const k=t.product||'Unassigned'; bp[k]=(bp[k]||0)+Number(t.amount); });
+    el('llcTxByProd').innerHTML='By product: '+Object.entries(bp).sort((a,b)=>a[1]-b[1]).map(([k,v])=>'<b>'+esc(k)+'</b> '+(v<0?'-':'')+money(Math.abs(v))).join(' · ');
+    el('llcTxTbl').innerHTML='<tr style="text-align:left;color:var(--muted)"><th>Date</th><th>Description</th><th>Category</th><th>Product</th><th>Paid from</th><th style="text-align:right">Amount</th><th></th></tr>'+
+      llcTx.map(t=>'<tr><td>'+esc(t.tx_date)+'</td><td>'+esc(t.description)+(t.note?' <small style="color:var(--muted)">'+esc(t.note)+'</small>':'')+'</td><td>'+esc(t.category)+'</td><td>'+esc(t.product||'')+'</td><td>'+esc(t.paid_from||'')+'</td><td style="text-align:right" class="'+(Number(t.amount)<0?'neg':'pos')+'">'+(Number(t.amount)<0?'-':'')+money(Math.abs(Number(t.amount)))+'</td><td><button class="navbtn" data-del="'+t.id+'" title="Delete">✕</button></td></tr>').join('');
+    el('llcTxTbl').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!b.dataset.confirm){ b.dataset.confirm=1; b.textContent='sure?'; return; } const { error }=await sb.from('llc_transactions').delete().eq('id',b.dataset.del); if(error) setStatus('Delete failed: '+error.message,true); loadLlcTx(); });
+  }
+  async function addLlcTx(){
+    const desc=el('llcTxDesc').value.trim(); const amt=parseFloat(el('llcTxAmt').value);
+    if(!desc||isNaN(amt)){ setStatus('Add a description and amount',true); return; }
+    const row={ tx_date:el('llcTxDate').value||new Date().toISOString().slice(0,10), description:desc, amount:Math.abs(amt)*Number(el('llcTxDir').value), category:el('llcTxCat').value, product:el('llcTxProd').value, paid_from:el('llcTxFrom').value };
+    const { error }=await sb.from('llc_transactions').insert(row);
+    if(error){ setStatus('Save failed: '+error.message,true); return; }
+    el('llcTxDesc').value=''; el('llcTxAmt').value=''; setStatus('saved '+new Date().toLocaleTimeString()); loadLlcTx();
+  }
+  if(el('llcTxAdd')) el('llcTxAdd').onclick=addLlcTx;
+  if(el('llcTxDir')) el('llcTxDir').onchange=()=>{ if(el('llcTxDir').value==='1') el('llcTxCat').value='Revenue'; };
+  if(el('llcTxDate')) el('llcTxDate').value=new Date().toISOString().slice(0,10);
   function renderLlc(){
     const L=SNAP.llc; if(!L||!el('llcRev')) return;
-    el('llcRev').textContent=money(L.revenue||0);
-    el('llcExp').textContent=money(L.expenses||0);
+    if(!llcTx.length){ el('llcRev').textContent=money(L.revenue||0); el('llcExp').textContent=money(L.expenses||0); }
     el('llcBank').textContent=(L.squareBalance==null)?'add':money(L.squareBalance);
     el('llcNext').textContent=L.next||'—';
     const rows=(arr)=>(arr||[]).map(x=>'<div class="row"><span>'+esc(x[0])+'</span><span class="v">'+esc(x[1])+'</span></div>').join('');
