@@ -771,21 +771,47 @@
   <!-- ============================= INVESTING ============================= -->
   <div class="page" id="page-investing">
    <div class="grid">
-    <section class="card col12">
-      <h2>📝 Investing notes <span class="sub" style="font-weight:400" id="invNotesStatus">saved · syncs everywhere</span></h2>
-      <textarea id="invNotes" class="notesarea" placeholder="Theses, watchlist, rebalancing reminders, what to buy/trim, tax-lot notes…"></textarea>
-    </section>
     <!-- FIDELITY SNAPSHOT -->
     <section class="card col12">
       <h2><span>📈 Investing — Fidelity <span class="sub" style="font-weight:400">6 accounts · figures from DB</span></span>
         <a href="https://www.fidelity.com/" target="_blank" rel="noopener" style="padding:7px 13px;font-size:12px;font-weight:600;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none;white-space:nowrap">Open Fidelity.com ↗</a></h2>
       <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
-        <div class="cell"><div class="lbl">All accounts (Sep 30 + 401k Oct 14)</div><div class="val" id="fidAll">•••</div></div>
-        <div class="cell"><div class="lbl">Retail portfolio (5 acct, Sep 30 stmt)</div><div class="val" id="fidTotal">•••</div></div>
+        <div class="cell"><div class="lbl">All accounts (Oct 31 + 401k Oct 14)</div><div class="val" id="fidAll">•••</div></div>
+        <div class="cell"><div class="lbl">Retail portfolio (5 acct, Oct 31 stmt)</div><div class="val" id="fidTotal">•••</div></div>
         <div class="cell"><div class="lbl">Omnicom 401(k) (Oct 14)</div><div class="val pos" id="fidK401">•••</div></div>
         <div class="cell"><div class="lbl">2026 market gain (retail, YTD)</div><div class="val pos" id="fidYtd">•••</div></div>
       </div>
-      <div class="note" style="margin-top:10px"><b>Why two numbers:</b> the monthly Fidelity statement covers the <b>5 retail accounts</b> — Individual $49,919 · Roth $77,881 · Rollover $47,003 · Child's 529 $16,860 · HSA $14,148 = <b>$205,811</b> (Sep 30). Your <b>Omnicom 401(k)</b> is on NetBenefits: <b>$77,771</b> (Oct 14; you put in $6,777 this year + <b>$2,141 company match</b>). <b>Heads-up:</b> ~43% of the retail money (~$83K) is sitting in money market cash.</div>
+      <div class="note" style="margin-top:10px"><b>Why two numbers:</b> the monthly Fidelity statement covers the <b>5 retail accounts</b> — Individual $48,506 · Roth $75,256 · Rollover $46,560 · Child's 529 $16,507 · HSA $14,554 = <b>$201,383</b> (Oct 31). Your <b>Omnicom 401(k)</b> is on NetBenefits: <b>$77,771</b> (Oct 14; you put in $6,777 this year + <b>$2,141 company match</b>). <b>Heads-up:</b> ~41% of the retail money (~$84K) is sitting in money market cash.</div>
+    </section>
+
+    <!-- CONTRIBUTIONS — HSA + 401(k) vs IRS max -->
+    <section class="card col12" id="ctCard">
+      <h2><span>💰 Contributions — HSA &amp; 401(k) <span class="sub" style="font-weight:400" id="ctAsOf">vs IRS max</span></span></h2>
+      <div class="mmsum" style="margin-top:2px;border-top:0;padding-top:0">
+        <div class="cell"><div class="lbl">HSA in 2026 (you + employer)</div><div class="val" id="ctHsaVal">•••</div></div>
+        <div class="cell"><div class="lbl">HSA room left (family max)</div><div class="val pos" id="ctHsaLeft">•••</div></div>
+        <div class="cell"><div class="lbl">401(k) — you, 2026</div><div class="val" id="ctKVal">•••</div></div>
+        <div class="cell"><div class="lbl">401(k) room left</div><div class="val pos" id="ctKLeft">•••</div></div>
+      </div>
+      <div class="goal" style="margin-top:12px"><div class="top"><span>HSA — family limit</span><span id="ctHsaTxt"></span></div><div class="bar"><i id="ctHsaBar" style="width:0"></i></div></div>
+      <div class="goal"><div class="top"><span>401(k) — your deferrals (pre-tax + Roth)</span><span id="ctKTxt"></span></div><div class="bar"><i id="ctKBar" style="width:0"></i></div></div>
+      <div class="note" id="ctNote" style="margin-top:8px"></div>
+    </section>
+    <section class="card col6">
+      <h2>🩺 HSA — 2026 by month <span class="sub" style="font-weight:400">bars = deposits · line = running total vs max</span></h2>
+      <div style="position:relative;height:210px;margin-top:6px"><canvas id="cCtHsaM" role="img" aria-label="HSA contributions by month in 2026 with running total against the family limit"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>🏦 401(k) — 2026 by month <span class="sub" style="font-weight:400">bars = deposits · line = running total vs max</span></h2>
+      <div style="position:relative;height:210px;margin-top:6px"><canvas id="cCtKM" role="img" aria-label="401k contributions by month in 2026 with running total against the employee deferral limit"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>🩺 HSA — year by year <span class="sub" style="font-weight:400">vs family limit</span></h2>
+      <div style="position:relative;height:210px;margin-top:6px"><canvas id="cCtHsaY" role="img" aria-label="HSA contributions by year against the IRS family limit"></canvas></div>
+    </section>
+    <section class="card col6">
+      <h2>🏦 401(k) — year by year <span class="sub" style="font-weight:400">you vs employer vs your limit</span></h2>
+      <div style="position:relative;height:210px;margin-top:6px"><canvas id="cCtKY" role="img" aria-label="401k contributions by year, yours and employer, against the IRS employee deferral limit"></canvas></div>
     </section>
 
     <!-- FIDELITY CHARTS — one card per chart -->
@@ -798,13 +824,13 @@
       <div style="position:relative;height:175px;margin-top:6px"><canvas id="cFidM" role="img" aria-label="Fidelity portfolio value by month in 2026"></canvas></div>
     </section>
     <section class="card col4">
-      <h2>🍩 By account <span class="sub" style="font-weight:400">retail Sep 30 + 401k Oct 14</span></h2>
+      <h2>🍩 By account <span class="sub" style="font-weight:400">retail Oct 31 + 401k Oct 14</span></h2>
       <div style="position:relative;height:175px;margin-top:6px"><canvas id="cFidAcc" role="img" aria-label="Fidelity value by account including the Omnicom 401k"></canvas></div>
     </section>
     <section class="card col12">
       <h2>📊 Each account, year-end <span class="sub" style="font-weight:400">2016 → 2026 · incl. 401(k)</span></h2>
       <div style="position:relative;height:230px;margin-top:6px"><canvas id="cFidAcctHist" role="img" aria-label="Each Fidelity account value at year end from 2016 to 2026, including the Omnicom 401k"></canvas></div>
-      <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → dip to $82K (2022) → $204K (2024) → $185K (2025 year-end) → <b>$206K (Sep 30, 2026)</b>; up ~$17.6K in 2026 from market moves plus $3.8K added. 2026 bars are year-to-date. The 401(k) is included in the per-account chart.</div>
+      <div class="note" style="margin-top:8px">Retail arc: $27K (2016) → $140K (2020) → dip to $82K (2022) → $204K (2024) → $185K (2025 year-end) → <b>$201K (Oct 31, 2026)</b>; up ~$12.3K in 2026 from market moves plus $5.2K added (mostly HSA). 2026 bars are year-to-date. The 401(k) is included in the per-account chart.</div>
     </section>
 
    </div>
@@ -1318,7 +1344,7 @@
     today:[loadHabits],
     money:[loadExo, wireExo],
     jobs:[loadApps, wireApps, loadJobNotes],
-    investing:[loadInvNotes],
+    investing:[],
     spend:[loadSpBudgets, loadMoveState],
     child:[loadChild, wireChild, loadChildCal, loadMedHistory]
   };
@@ -1373,31 +1399,6 @@
     if(st) st.textContent=error?('save failed'):('saved '+new Date().toLocaleTimeString());
   }
 
-  /* ---------- INVESTING NOTES (editable, persisted to ui_prefs) ---------- */
-  const INV_NOTES_KEY='investing-notes';
-  let invNotesWired=false, invNotesTimer=null;
-  async function loadInvNotes(){
-    const ta=el('invNotes'); if(!ta) return;
-    const { data, error }=await sb.from('ui_prefs').select('value').eq('key',INV_NOTES_KEY).maybeSingle();
-    if(!error && data && typeof data.value==='string' && document.activeElement!==ta) ta.value=data.value;
-    if(!invNotesWired){
-      invNotesWired=true;
-      const st=el('invNotesStatus');
-      ta.addEventListener('input',()=>{
-        if(st) st.textContent='saving…';
-        clearTimeout(invNotesTimer);
-        invNotesTimer=setTimeout(saveInvNotes,700);
-      });
-      ta.addEventListener('blur',saveInvNotes);
-    }
-  }
-  async function saveInvNotes(){
-    const ta=el('invNotes'); if(!ta) return;
-    clearTimeout(invNotesTimer);
-    const st=el('invNotesStatus');
-    const { error }=await sb.from('ui_prefs').upsert({key:INV_NOTES_KEY, value:ta.value, updated_at:new Date().toISOString()},{onConflict:'key'});
-    if(st) st.textContent=error?('save failed'):('saved '+new Date().toLocaleTimeString());
-  }
   async function saveTabOrder(){
     const order=tabAnchors().map(a=>a.dataset.page);
     const { error }=await sb.from('ui_prefs').upsert({key:TAB_ORDER_KEY, value:order, updated_at:new Date().toISOString()},{onConflict:'key'});
@@ -1474,7 +1475,7 @@
     tasks=t.data||[]; items=fi.data||[]; statusMap={}; SNAP={};
     (fs.data||[]).forEach(s=> statusMap[s.item_id+'|'+s.month]={paid:s.paid, spent:Number(s.spent)});
     (sn.data||[]).forEach(r=> SNAP[r.key]=r.value);
-    renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderAdu(); renderLlc(); renderGoals();
+    renderTodo(); renderFinance(); renderBudgetActual(); renderSnapshot(); renderGoalBank(); renderFidelity(); renderContrib(); renderAdu(); renderLlc(); renderGoals();
     loadChecklist(); loadCkItems(); loadLlcTx(); loadPageLinks(); loadTabOrder(); loadCardOrders();
     loadTab((location.hash||'#today').slice(1));
     BASE=mortSchedule(0); renderAmortTable(); renderMortCalc(); wireMortCalc();
@@ -1853,6 +1854,72 @@
     el('fidK401').textContent=money(f.k401||0);
         el('fidYtd').textContent=(f.ytd>=0?'+':'')+money(f.ytd||0)+(f.ytdPct!=null?' ('+(f.ytdPct>=0?'+':'')+f.ytdPct+'%)':'');
   }
+
+  /* ---------- CONTRIBUTIONS (HSA + 401k vs IRS limits) ---------- */
+  // IRS limits. 401(k) = employee deferral (pre-tax + Roth combined), catch-up NOT included. HSA = family HDHP, employer money counts toward it.
+  const CT_LIM={ hsa:{2020:7100,2021:7200,2022:7300,2023:7750,2024:8300,2025:8550,2026:8750},
+                 k:{2016:18000,2017:18000,2018:18500,2019:19000,2020:19500,2021:19500,2022:20500,2023:22500,2024:23000,2025:23500,2026:24500} };
+  function ctData(){
+    const d=SNAP.chart_contrib; if(!d||!d.years||!d.months) return null;
+    const sum=a=>(a||[]).reduce((s,x)=>s+(x||0),0), L=d.years.length-1;
+    const o=Object.assign({},d,{hsa_y:d.hsa_y.slice(),k_you_y:d.k_you_y.slice(),k_er_y:d.k_er_y.slice()});
+    o.hsa_y[L]=sum(d.hsa_you)+sum(d.hsa_er); o.k_you_y[L]=sum(d.k_you); if(sum(d.k_er)>0) o.k_er_y[L]=sum(d.k_er);
+    o.sum=sum; return o;
+  }
+  function renderContrib(){
+    const card=el('ctCard'); if(!card) return;
+    const d=ctData(); if(!d){ card.style.display='none'; return; }
+    card.style.display='';
+    const L=d.years.length-1, Y=d.years[L], hl=CT_LIM.hsa[Y], kl=CT_LIM.k[Y];
+    const h=d.hsa_y[L], k=d.k_you_y[L], ke=d.k_er_y[L], hy=d.sum(d.hsa_you), he=d.sum(d.hsa_er);
+    const left=12-d.months.length;
+    el('ctAsOf').textContent='vs IRS max · through '+(d.asof||'');
+    el('ctHsaVal').textContent=money(h); el('ctHsaLeft').textContent=money(Math.max(0,hl-h));
+    el('ctKVal').textContent=money(k); el('ctKLeft').textContent=money(Math.max(0,kl-k));
+    el('ctHsaTxt').textContent=money(h)+' of '+money(hl)+' · '+Math.round(h/hl*100)+'%';
+    el('ctKTxt').textContent=money(k)+' of '+money(kl)+' · '+Math.round(k/kl*100)+'%';
+    el('ctHsaBar').style.width=Math.min(100,h/hl*100)+'%'; el('ctKBar').style.width=Math.min(100,k/kl*100)+'%';
+    const pace=(room)=>left>0?' To hit the max you would need ~'+money(Math.max(0,room)/left)+'/mo for the last '+left+' month'+(left>1?'s':'')+'.':'';
+    el('ctNote').innerHTML='<b>HSA:</b> you '+money(hy)+' + employer '+money(he)+' = '+money(h)+'; room left '+money(Math.max(0,hl-h))+'.'+pace(hl-h)+
+      ' <b>401(k):</b> you '+money(k)+' ('+(d.k_note||'pre-tax + Roth')+') + employer '+money(ke)+'; room left '+money(Math.max(0,kl-k))+'.'+pace(kl-k)+
+      ' <span style="color:var(--muted)">Limits: HSA family '+money(hl)+' (employer counts; +$1,000 if 55+), 401(k) '+money(kl)+' deferral (+catch-up if 50+; employer match does not count toward it).</span>';
+  }
+  function ctMonthChart(id,you,er,lim,cumEr,cYou,cEr){
+    const d=ctData(); if(!d) return;
+    let run=0; const cum=d.months.map((_,i)=>{ run+=(you[i]||0)+(cumEr?(er[i]||0):0); return Math.round(run*100)/100; });
+    const gridc=getComputedStyle(document.body).getPropertyValue('--line')||'rgba(128,128,128,.2)';
+    const ax={grid:{color:gridc},ticks:{font:{size:9}}};
+    const C2=(id2,cfg)=>{ const e=el(id2); if(!e||charts[id2]) return; charts[id2]=new Chart(e,cfg); };
+    C2(id,{data:{labels:d.months,datasets:[
+      {type:'bar',label:'You',data:you,backgroundColor:cYou,borderWidth:0,stack:'s',yAxisID:'y'},
+      ...(er.some(x=>x>0)?[{type:'bar',label:'Employer',data:er,backgroundColor:cEr,borderWidth:0,stack:'s',yAxisID:'y'}]:[]),
+      {type:'line',label:cumEr?'Running total (you + employer)':'Running total (you)',data:cum,borderColor:'#378add',backgroundColor:'#378add',pointRadius:2,borderWidth:2,tension:.2,yAxisID:'y2'},
+      {type:'line',label:'IRS max',data:d.months.map(()=>lim),borderColor:'#e24b4a',borderDash:[5,4],pointRadius:0,borderWidth:1.5,yAxisID:'y2'}
+    ]},options:{interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},
+      tooltip:{callbacks:{label:c=>c.dataset.label+': $'+Math.round(c.parsed.y).toLocaleString()}}},
+      scales:{x:{...ax,stacked:true},y:{...ax,stacked:true,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+v}},
+        y2:{position:'right',beginAtZero:true,suggestedMax:lim*1.05,grid:{drawOnChartArea:false},ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
+  }
+  function ctYearChart(id,series,limMap,years){
+    const gridc=getComputedStyle(document.body).getPropertyValue('--line')||'rgba(128,128,128,.2)';
+    const ax={grid:{color:gridc},ticks:{font:{size:9}}};
+    const e=el(id); if(!e||charts[id]) return;
+    const lims=years.map(y=>limMap[y]);
+    charts[id]=new Chart(e,{data:{labels:years.map(String),datasets:series.map(s=>({type:'bar',label:s.label,data:s.data,backgroundColor:s.color,borderWidth:0}))
+      .concat([{type:'line',label:'IRS max',data:lims,borderColor:'#e24b4a',borderDash:[5,4],pointRadius:0,borderWidth:1.5,stepped:true}])},
+      options:{plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:9,font:{size:9}}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+(c.parsed.y==null?'—':'$'+Math.round(c.parsed.y).toLocaleString()),
+          afterBody:items=>{ const it=items.find(x=>x.dataset.type==='bar'&&x.dataset.label.indexOf('You')===0)||items.find(x=>x.dataset.type==='bar'); if(!it||it.parsed.y==null) return ''; return Math.round(it.parsed.y/lims[it.dataIndex]*100)+'% of the '+'$'+lims[it.dataIndex].toLocaleString()+' limit'; }}}},
+        scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v>=1000?(v/1000)+'K':v)}}}}});
+  }
+  function buildContribCharts(){
+    const d=ctData(); if(!d) return; const L=d.years.length-1, Y=d.years[L];
+    ctMonthChart('cCtHsaM',d.hsa_you,d.hsa_er,CT_LIM.hsa[Y],true,'#1d9e75','#8fd3bb');
+    ctMonthChart('cCtKM',d.k_you,d.k_er,CT_LIM.k[Y],false,'#378add','#9cc3ee');
+    ctYearChart('cCtHsaY',[{label:'Contributed (you + employer)',data:d.hsa_y,color:'#1d9e75'}],CT_LIM.hsa,d.years);
+    ctYearChart('cCtKY',[{label:'You',data:d.k_you_y,color:'#378add'},{label:'Employer',data:d.k_er_y,color:'#9cc3ee'}],CT_LIM.k,d.years);
+  }
+
   function renderGoals(){
     const wrap=el('goalStrip'); if(!wrap) return; const g=SNAP.goals||[];
     if(!g.length){ wrap.innerHTML='<div class="note">No goals set.</div>'; return; }
@@ -2922,6 +2989,7 @@
           scales:{x:ax,y:{...ax,beginAtZero:true,ticks:{font:{size:9},callback:v=>'$'+(v/1000)+'K'}}}}});
     }
     if(page==='investing'){
+      buildContribCharts();
       const ye=SNAP.chart_fid_ye;
       if(ye) C('cFidYE',{type:'line',data:{labels:ye.labels,
         datasets:[{data:ye.data,borderColor:'#378add',backgroundColor:'rgba(55,138,221,.15)',fill:true,tension:.3,pointRadius:2,borderWidth:2,spanGaps:true}]},
