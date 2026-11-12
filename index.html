@@ -984,27 +984,9 @@
       </div>
       <div class="note" style="margin-top:10px" id="llcNote">Rule: every LLC dollar moves through Square Checking. Expenses paid personally before that count as owner contributions. Detail: vault <b>6-Business / Sunsets-over-Sunrise-LLC</b> and <b>LLC-Ledger-2026</b>.</div>
     </section>
-    <section class="card col4">
-      <h2>📅 Deadlines &amp; setup <span class="sub" style="font-weight:400">checks sync</span></h2>
-      <ul class="cklist" id="ck-llc"></ul>
-      <div class="addrow"><input id="ckadd-llc" placeholder="Add a to-do…" autocomplete="off"></div>
-    </section>
     <section class="card col6">
       <h2>🏢 Entity facts</h2>
       <div id="llcFacts"></div>
-    </section>
-    <section class="card col6">
-      <h2>💳 Where money goes in &amp; out</h2>
-      <div id="llcPay"></div>
-    </section>
-    <section class="card col6">
-      <h2>🧾 2026 expenses by vendor <span class="sub" style="font-weight:400" id="llcExpSub"></span></h2>
-      <div id="llcVendors"></div>
-    </section>
-    <section class="card col6">
-      <h2>📂 Documents on file <span class="sub" style="font-weight:400">checks sync · PDFs in vault Private/Business</span></h2>
-      <ul class="cklist" id="ck-llcdocs"></ul>
-      <div class="addrow"><input id="ckadd-llcdocs" placeholder="Add a document…" autocomplete="off"></div>
     </section>
    </div>
   </div>
@@ -1578,9 +1560,6 @@
     el('llcNext').textContent=L.next||'—';
     const rows=(arr)=>(arr||[]).map(x=>'<div class="row"><span>'+esc(x[0])+'</span><span class="v">'+esc(x[1])+'</span></div>').join('');
     el('llcFacts').innerHTML=rows(L.facts);
-    el('llcPay').innerHTML=rows(L.payments);
-    el('llcVendors').innerHTML=(L.vendors||[]).map(x=>'<div class="row"><span>'+esc(x[0])+'</span><span class="v neg">-'+money(x[1])+'</span></div>').join('');
-    if(el('llcExpSub')) el('llcExpSub').textContent=L.expNote||'';
   }
   function renderAdu(){
     const a=SNAP.adu;
@@ -1699,7 +1678,7 @@
   }
 
   /* ---------- EDITABLE CHECKLISTS (DB-backed: add / delete / rename / check) ---------- */
-  const CKLISTS=['llc','llcdocs','documents','taxes','taxes2025','property','adu','gf-events','gf-todos','child-todos'];
+  const CKLISTS=['documents','taxes','taxes2025','property','adu','gf-events','gf-todos','child-todos'];
   let ckItems=[];
   async function loadCkItems(){
     const { data, error }=await sb.from('checklist_items').select('*');
